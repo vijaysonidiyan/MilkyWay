@@ -51,8 +51,19 @@ namespace MilkWayIndia.Models
             con.Close();
             return dtLoginUser;
         }
-
-        public int InsertStaff(Staff obj)
+		public DataTable VendorLogin(string UserName, string Password)
+		{
+			con.Open();
+			SqlCommand cmdLoginUser = new SqlCommand("select * from tbl_Vendor_Master WHERE UserName=@UserName and Password=@Password", con);
+			cmdLoginUser.Parameters.AddWithValue("@UserName", UserName);
+			cmdLoginUser.Parameters.AddWithValue("@Password", Password);
+			SqlDataAdapter daLoginUser = new SqlDataAdapter(cmdLoginUser);
+			DataTable dtLoginUser = new DataTable();
+			daLoginUser.Fill(dtLoginUser);
+			con.Close();
+			return dtLoginUser;
+		}
+		public int InsertStaff(Staff obj)
         {
             int i = 0;
             try

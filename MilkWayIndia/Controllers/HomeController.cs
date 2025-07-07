@@ -63,22 +63,19 @@ namespace MilkWayIndia.Controllers
                 if (dt.Rows.Count > 0)
                 {
                     string a = dt.Rows[0]["Id"].ToString();
-
                     
-
-
                     HttpCookie cookie = new HttpCookie("gstusr");
                     cookie.Values.Add("key", dt.Rows[0]["Id"].ToString());
                     cookie.Expires = DateTime.Now.AddHours(3);
                     Response.Cookies.Add(cookie);
-
 
                     // string b = Request.Cookies["gstusr"].Value;
                     Session["Msg"] = "";
                     Session["UserId"] = dt.Rows[0]["Id"].ToString();
                     Session["Username"] = staff.UserName;
                     Session["RoleName"] = dt.Rows[0]["Role"].ToString();
-                    if (!string.IsNullOrEmpty(dt.Rows[0]["Photo"].ToString()))
+					Session["isVendorLogin"] = false;
+					if (!string.IsNullOrEmpty(dt.Rows[0]["Photo"].ToString()))
                         Session["ProfilePic"] = dt.Rows[0]["Photo"].ToString();
                     else
                         Session["ProfilePic"] = "";
@@ -88,9 +85,36 @@ namespace MilkWayIndia.Controllers
                 }
                 else
                 {
-                    ViewBag.SuccessMsg = "Incorrect Username or Password.";
-                    ModelState.Clear();
-                }
+					DataTable dtVendor = staff.VendorLogin(staff.UserName, staff.Password);
+					if (dtVendor.Rows.Count > 0)
+					{
+						string a = dtVendor.Rows[0]["Id"].ToString();
+
+						HttpCookie cookie = new HttpCookie("gstusr");
+						cookie.Values.Add("key", dtVendor.Rows[0]["Id"].ToString());
+						cookie.Expires = DateTime.Now.AddHours(3);
+						Response.Cookies.Add(cookie);
+                        
+                        // string b = Request.Cookies["gstusr"].Value;
+						Session["Msg"] = "";
+						Session["UserId"] = dtVendor.Rows[0]["Id"].ToString();
+						Session["Username"] = dtVendor.Rows[0]["FirstName"].ToString() + " " + dtVendor.Rows[0]["LastName"].ToString();
+						Session["RoleName"] = "Vendor";
+						Session["isVendorLogin"] = true;
+						if (!string.IsNullOrEmpty(dtVendor.Rows[0]["Photo"].ToString()))
+							Session["ProfilePic"] = dtVendor.Rows[0]["Photo"].ToString();
+						else
+							Session["ProfilePic"] = "";
+						if (ReturnURL != "")
+							return Redirect(ReturnURL);
+						return RedirectToAction("Index", "Admin");
+					}
+					else
+					{
+						ViewBag.SuccessMsg = "Incorrect Username or Password.";
+						ModelState.Clear();
+					}
+				}
             }
             else
             {
