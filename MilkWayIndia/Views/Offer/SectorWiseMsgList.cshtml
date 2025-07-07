@@ -1,0 +1,148 @@
+﻿
+@{
+    ViewBag.Title = "SectorWiseMsgList";
+    Layout = "~/Views/Shared/_MyLayout.cshtml";
+}
+
+@section contain
+{
+
+
+    <script src="~/Content/plugins/jQuery/jquery-2.2.3.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var MasterClass = document.getElementById("LiMst");
+            if (MasterClass != null) {
+                MasterClass.className = MasterClass.className + " active";
+
+            }
+        });
+    </script>
+
+    <section class="content-header">
+        @if (@TempData["error"] != null)
+        {
+            <script type="text/javascript">
+                alert("@TempData["error"]");
+            </script>
+        }
+
+
+        <div class="box-header with-border">
+            <h3 class="box-title">Sector Wise Message List</h3>
+            <div class="box-tools">
+                <div class="input-group input-group-sm pull-right">
+                    @*<asp:LinkButton runat="server" ID="lbtnAdd" class="btn btn-default pull-right btn-add" PostBackUrl="~/.aspx">Back</asp:LinkButton>*@
+                    @if (ViewBag.IsAdd == true)
+                    {
+                        <input type="button" class="btn btn-primary pull-right btn-add" value="Add" onclick="location.href='@Url.Action("AddOfferSectorWise", "Offer")'" />
+                    }
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+
+    <!-- Main content -->
+    <section class="content">
+
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box">
+                    <div class="box-body">
+
+                        <div class="box-body table-responsive no-padding">
+                            <table id="example1" class="table table-bordered table-striped">
+                                @{int rowNo = 0;}
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>State Name</th>
+                                        <th>City Name</th>
+                                        <th>Sector Name</th>
+                                        <th>Message</th>
+                                        
+                                        <th>Status</th>
+                                         <td></td>
+                                        <td></td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (System.Data.DataRow drclient in ViewBag.MessageList.Rows)
+                                    {
+                                    <tr>
+                                        <td>@(rowNo += 1)</td>
+                                        <td>@drclient["statename"]</td>
+                                        <td>@drclient["Cityname"]</td>
+                                        <td>@drclient["SectorName"]</td>
+                                        <td>@drclient["Message"]</td>
+
+                                        <td>
+
+
+
+                                            @if (!string.IsNullOrEmpty(drclient["IsActive"].ToString()))
+                                            {
+                                                if (drclient["IsActive"].ToString() == "True")
+                                                {
+                                                    <button class="btn label label-success btnStatus" id="@drclient["Id"]" data-rel="@drclient["Id"]" data-url="/Offer/status1?ID=@drclient["Id"]" type="button"> Active</button>
+                                                }
+                                                else
+                                                {
+                                                    <button class="btn label label-danger btnStatus" id="@drclient["Id"]" data-rel="@drclient["Id"]" data-url="/Offer/status1?ID=@drclient["Id"]" type="button"> InActive</button>
+                                                }
+                                            }
+                                        </td>
+
+                                         <td><a href="/Offer/EditSectorMsg/@drclient["Id"]"><i class="fa fa-edit"></i></a></td>
+                                        <td><a href="/Sector/DeleteSectorMsg/@drclient["Id"]" , onclick="return confirm('Are you sure you want to delete this Data?');"><i class="fa fa-trash-o"></i></a></td>
+                                    </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+    <script>
+        $(function () {
+
+            $('#example1').DataTable({
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false
+            });
+
+
+
+            $(document).ready(function () {
+                $("#example1").on("click", ".btnStatus", function () {
+                    var url = $(this).data('url');
+                    var ID = $(this).data('rel');
+                    $('#' + ID).removeClass('label-success');
+                    $('#' + ID).removeClass('label-danger');
+                    $(this).prop('disabled', true);
+                    $.get(url, function (data) {
+                        if (data.status == "1") {
+                            $('#' + ID).addClass(data.class);
+                            $('#' + ID).html(data.name);
+                        }
+                    });
+                    $('.btnStatus').prop('disabled', false);
+                    return false;
+                });
+            });
+        });
+    </script>
+}
+

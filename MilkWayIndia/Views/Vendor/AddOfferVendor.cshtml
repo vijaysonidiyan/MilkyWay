@@ -1,0 +1,300 @@
+﻿@model MilkWayIndia.Models.Vendor
+@{
+    ViewBag.Title = "AddOfferVendor";
+    Layout = "~/Views/Shared/_MyLayout.cshtml";
+}
+
+@section contain
+{
+    <script src="~/Content/plugins/jQuery/jquery-2.2.3.min.js"></script>
+    <link href="~/Content/plugins/datepicker/datepicker3.css" rel="stylesheet" />
+    <script src="~/Content/plugins/datepicker/bootstrap-datepicker.js"></script>
+    <script>
+        $(document).ready(function () {
+            var MasterClass = document.getElementById("ReminderLi");
+            if (MasterClass != null) {
+                MasterClass.className = MasterClass.className + " active";
+            }
+        });
+    </script>
+    <script>
+        $(function () {
+            $(".select2").select2();
+        });
+    </script>
+    <script language="javascript" type="text/javascript">
+        $(document).ready(function () {
+            //$("#ddlState").prop("disabled", true);
+            $("#ddlState").change(function () {
+            var id = $("#ddlState").val();
+            $.ajax({
+                cache: false,
+                type: "GET",
+                url: '@Url.Action("GetCity", "Sector")',
+                data: { "Statecode": id },
+                success: function (json, textStatus) {
+                    $("#ddlCity").empty();
+                    json = json || {};
+                    $("#ddlCity").append('<option value=0>--Select--</option>');
+                    for (var i = 0; i < json.length; i++) {
+                        $("#ddlCity").append('<option value="' + json[i].Citycode + '">' + json[i].CityName + '</option>');
+                    }
+                    $("#ddlCity").prop("disabled", false);
+                },
+                error: function () {
+                    alert("Data Not Found");
+                }
+        });
+        });
+    });
+    </script>
+
+    <section class="content-header">
+        <h1>
+            Add Vendor For Offer section
+        </h1>
+        <ol class="breadcrumb">
+            <li><a href="@Url.Action("Index", "Admin")"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="active">vendor</li>
+        </ol>
+    </section>
+    <section class="content">
+        <div class="col-md-12">
+            <div class="box box-info">
+                <div class="form-horizontal">
+                    @using (Html.BeginForm("AddOfferVendor", "Vendor", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                    {
+                        <div class="box-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div id="SuccessMsg" style="color: red">@ViewBag.SuccessMsg</div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Master Category</label>
+                                        <div class="col-sm-9">
+                                            <select id="ddlmastercat" name="ddlmastercat" class="form-control">
+                                                <option value="0">---Select---</option>
+                                                <option value="Restaurant">Restaurant</option>
+                                                <option value="SaloonSpa">Saloon & Spa </option>
+                                                <option value="HealthWelness">Health & Welness </option>
+                                                <option value="Miscellaneous">Miscellaneous </option>
+                                                <option value="ActivityEvents">Activities & Events </option>
+                                                <option value="Services">Services </option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="inputEmail3" class="col-sm-3 control-label">FirstName</label>
+                                        <div class="col-sm-9">
+                                            @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control", @id = "FirstName" })
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">LastName</label>
+                                        <div class="col-sm-9">
+                                            @Html.TextBoxFor(m => m.LastName, new { placeholder = "", @id = "LastName", @class = "form-control", onClick = "ClearTextbox('UserName')" })
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Store Name</label>
+                                        <div class="col-sm-9">
+                                            @Html.TextBoxFor(m => m.StoreName, new { placeholder = "", @id = "StoreName", @class = "form-control", onClick = "ClearTextbox('UserName')" })
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Mobile</label>
+                                        <div class="col-sm-9">
+                                            @Html.TextBoxFor(m => m.MobileNo, new { placeholder = "", @id = "MobileNo", @class = "form-control", onClick = "ClearTextbox('UserName')", onkeypress = "return ValidateNumber(event);", maxlength = 10 })
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Email</label>
+                                        <div class="col-sm-9">
+                                            @Html.TextBoxFor(m => m.Email, new { placeholder = "", @id = "Email", @class = "form-control", onClick = "ClearTextbox('UserName')" })
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Address</label>
+                                        <div class="col-sm-9">
+                                            @Html.TextAreaFor(m => m.Address, new { placeholder = "", @id = "Address", @class = "form-control", onClick = "ClearTextbox('UserName')" })
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">UserName</label>
+                                        <div class="col-sm-9">
+                                            @Html.TextBoxFor(m => m.UserName, new { placeholder = "", @id = "UserName", @class = "form-control", onClick = "ClearTextbox('UserName')" })
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Password</label>
+                                        <div class="col-sm-9">
+                                            @Html.TextBoxFor(m => m.Password, new { placeholder = "", @id = "Password", @class = "form-control", onClick = "ClearTextbox('UserName')" })
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Company Name</label>
+                                        <div class="col-sm-9">
+                                            @Html.TextBoxFor(m => m.CompanyName, new { placeholder = "", @id = "CompanyName", @class = "form-control", onClick = "ClearTextbox('CompanyName')" })
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">GSTNo</label>
+                                        <div class="col-sm-9">
+                                            @Html.TextBoxFor(m => m.GSTNo, new { placeholder = "", @id = "GSTNo", @class = "form-control", onClick = "ClearTextbox('GSTNo')" })
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">PanCardNo</label>
+                                        <div class="col-sm-9">
+                                            @Html.TextBoxFor(m => m.PanCardNo, new { placeholder = "", @id = "PanCardNo", @class = "form-control", onClick = "ClearTextbox('PanCardNo')" })
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="FLedgerCode" class="col-sm-3 control-label">Logo</label>
+                                        <div class="col-sm-9">
+                                            <input type="file" name="Photo" id="Photo" /><br />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="FLedgerCode" class="col-sm-3 control-label">Own Slider</label>
+                                        <div class="col-sm-9">
+                                            <input type="file" name="Slider1" id="Slider1" /><br />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="FLedgerCode" class="col-sm-3 control-label">General Slider</label>
+                                        <div class="col-sm-9">
+                                            <input type="file" name="Slider2" id="Slider2" /><br />
+                                        </div>
+                                    </div>
+
+
+                                 
+
+                                </div>
+
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Vendor Type</label>
+                                        <div class="col-sm-9">
+                                            <select id="ddlVendorType" name="ddlVendorType" class="form-control">
+                                                <option value="0">---Select---</option>
+                                                <option value="Self-Delivered">Self-Delivered</option>
+                                                <option value="Normal">Normal</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">StateName</label>
+                                        <div class="col-sm-6">
+                                            <select id="ddlState" name="ddlState" class="form-control select2">
+                                                <option value="0">---Select---</option>
+                                                @if (ViewBag.StateList != null)
+                                                {
+                                                    foreach (System.Data.DataRow drStateName in ViewBag.StateList.Rows)
+                                                    {
+                                                        <option value="@drStateName["id"]">@drStateName["statename"]</option>
+                                                    }
+                                                }
+                                            </select>
+
+                                            @if (ViewBag.StateName != null)
+                                            {
+                                                <script>
+                                                    document.getElementById('ddlState').value = '@ViewBag.StateName';
+                                                </script>
+                                            }
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">CityName</label>
+                                        <div class="col-sm-6">
+                                            <select id="ddlCity" name="ddlCity" class="form-control select2"></select>
+
+                                            @if (ViewBag.CityName != null)
+                                            {
+                                                <script>
+                                                document.getElementById('ddlCity').value = '@ViewBag.CityName';
+                                                </script>
+                                            }
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="inputEmail3" class="col-sm-3 control-label">SectorName</label>
+                                        <div class="col-sm-6">
+
+                                            <div id="div_sectors" class="scrollbox">
+
+                                            </div>
+
+                                            @* @Html.TextBoxFor(m => m.SectorName, new { @class = "form-control", @id = "SectorName", onClick = "ClearTextbox('SectorName')" })*@
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="inputEmail3" class="col-sm-3 control-label">Milkyway Percentage</label>
+                                        <div class="col-sm-9">
+                                            @Html.TextBoxFor(m => m.MilkywayPer, new { @class = "form-control", @id = "MilkywayPer" })
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        &nbsp;&nbsp;@Html.CheckBox("IsDiscountActive", new { @checked = "checked" })IsActive
+                                        <label for="inputEmail3" class="col-sm-3 control-label">Discount On total Billing</label>
+                                        <div class="col-sm-9">
+                                            @Html.TextBoxFor(m => m.Offerper, new { @class = "form-control", @id = "Offerper" })
+
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="inputEmail3" class="col-sm-3 control-label">Terms & Condition</label>
+                                        <div class="col-sm-9">
+                                            @Html.TextAreaFor(m => m.VendorTerms, new { @class = "form-control", @id = "VendorTerms" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="box-footer text-right">
+                            @* <input type="button" class="btn btn-orange" value="Cancel" />*@
+                            <input type="submit" value="Save" class="btn btn-primary" onclick="return ValidVendor();" />
+                        </div>
+                    }
+                </div>
+                </div>
+            </div>
+        </section>
+                <script>
+                    $(function () {
+                        //GetProductAttribute();
+                        var url = '/Vendor/FetchSectorList';
+                        var div_sectors = $('#div_sectors');
+                        $('#ddlCity').change(function () {
+                            var selectedCity = $(this).val();
+                            if (!selectedCity) {
+                                div_sectors.empty();
+                                return;
+                            }
+                            if (selectedCity > 0) {
+                                $.get(url, { id: selectedCity }, function (data) {
+                                    div_sectors.html(data);
+                                })
+                            }
+                            else {
+                                div_sectors.empty();
+                            }
+                        });
+                    });
+
+
+
+
+                </script>
+}
+

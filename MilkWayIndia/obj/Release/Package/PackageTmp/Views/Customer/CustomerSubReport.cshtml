@@ -1,0 +1,310 @@
+﻿@{
+    ViewBag.Title = "DeliveryBoyDailyOrder";
+    Layout = "~/Views/Shared/_MyLayout.cshtml";
+}
+
+@section contain
+{
+    <script src="~/js/jquery.js"></script>
+    @*<script src="~/Content/plugins/jQuery/jquery-2.2.3.min.js"></script>*@
+
+    <!-- Bootstrap 3.3.6 -->
+    <link rel="stylesheet" href="~/Content/bootstrap/css/bootstrap.min.css">
+    <!-- DataTables -->
+    <link href="~/Content/plugins/datatables/dataTables.bootstrap.css" rel="stylesheet">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="~/Content/dist/css/AdminLTE.min.css">
+    <!-- AdminLTE Skins. Choose a skin from the css/skins
+       folder instead of downloading all of them to reduce the load. -->
+    <link rel="stylesheet" href="~/Content/dist/css/skins/_all-skins.min.css">
+    <link href="~/Content/plugins/datepicker/datepicker3.css" rel="stylesheet" />
+    <script src="~/Content/plugins/datepicker/bootstrap-datepicker.js"></script>
+    <style>
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .txtwidth {
+            width: 80px;
+        }
+    </style>
+    <style>
+        .select2-container--default .select2-selection--single {
+            border: 1px solid #d2d6de;
+            border-radius: 0px;
+        }
+
+        .select2-container .select2-selection--single {
+            height: 34px;
+        }
+    </style>
+    @*<script src="~/Content/plugins/select2/select2.full.min.js"></script>*@
+    <script>
+  $(function () {
+    $(".select2").select2();
+  });
+    </script>
+    <script>
+    $(document).ready(function () {
+        var MasterClass = document.getElementById("LiProduct");
+        if (MasterClass != null) {
+            MasterClass.className = MasterClass.className + " active";
+
+        }
+    });
+    </script>
+    <section class="content-header">
+        @if (@TempData["error"] != null)
+    {
+            <script type="text/javascript">
+                alert("@TempData["error"]");
+            </script>
+        }
+        <div class="box-header with-border">
+            <h3 class="box-title">Customer Subscription Days</h3>
+            @*<div class="box-tools">
+                    <div class="input-group input-group-sm pull-right">
+                        <input type="button" class="btn btn-primary pull-right btn-add" value="Add" onclick="location.href='@Url.Action("AddSectorProductAssign", "Vendor")'" />
+                    </div>
+                </div>*@
+        </div>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box box-info">
+                    <div class="box">
+                        <div class="box-header with-border">
+                            @*@using (Html.BeginForm("DeliveryBoyDailyOrderPrint", "CustomerOrder", FormMethod.Post))//new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "upddiv" }
+                                {*@
+
+                            <div class="btn-group-vertical ">
+                                @using (Html.BeginForm())
+                                {
+                                    <div class="box-header with-border">
+                                        <div class="btn-group-vertical ">
+                                            <div class="btn-group-vertical ">
+                                                <div class="form-group has-feedback">
+                                                    <select id="ddlSector" name="ddlSector" class="form-control select2">
+                                                        <option value="0">---Select---</option>
+                                                        @if (ViewBag.Sector != null)
+                                                        {
+                                                            foreach (System.Data.DataRow drSectorName in ViewBag.Sector.Rows)
+                                                            {
+                                                                <option value="@drSectorName["Id"]">@drSectorName["SectorName"] </option>
+                                                            }
+                                                        }
+                                                    </select>
+                                                    @if (ViewBag.SectorId != null)
+                                                    {
+                                                        <script>
+                                        document.getElementById('ddlSector').value = '@ViewBag.SectorId';
+                                                        </script>
+                                                    }
+                                                </div>
+                                            </div>
+
+                                            <div class="btn-group-vertical ">
+                                                <div class="btn-group-vertical ">
+                                                    <div class="form-group has-feedback">
+                                                        <select id="ddlBuilding" name="ddlBuilding" class="form-control select2">
+                                                            <option value="0">---Select---</option>
+                                                            @if (ViewBag.Building != null)
+                                                            {
+                                                                foreach (System.Data.DataRow drBuildingName in ViewBag.Building.Rows)
+                                                                {
+                                                                    <option value="@drBuildingName["Id"]">@drBuildingName["BuildingName"]-@drBuildingName["BlockNo"]</option>
+                                                                }
+                                                            }
+                                                        </select>
+                                                        @if (ViewBag.BuildingId != null)
+                                                        {
+                                                            <script>
+                                                                document.getElementById('ddlBuilding').value = '@ViewBag.BuildingId';
+                                                            </script>
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="btn-group-vertical ">
+                                                <div class="form-group has-feedback">
+                                                    <select id="ddlDays" name="ddlDays" class="form-control select2">
+                                                        <option value="0">---Select---</option>
+                                                                <option value="3">3</option>
+                                                                <option value="5">5</option>
+                                                                <option value="7">7</option>
+                                                                <option value="10">10</option>
+                                                                <option value="15">15</option>
+                                                    </select>
+                                                    @if (ViewBag.Days != null)
+                                                    {
+                                                        <script>
+                                                            document.getElementById('ddlDays').value = '@ViewBag.DaysId';
+                                                        </script>
+                                                    }
+                                                </div>
+                                            </div>
+                                                <div class="btn-group-vertical">
+                                                    <div class="form-group has-feedback">
+                                                        <button type="submit" id="clkbtncomp" class="btn btn-primary">Submit</button>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+                                    </div>
+                                    
+                                }
+                                @*<div class="btn-group-vertical">
+                                    <div class="form-group has-feedback">
+                                        <input type="submit" id="btn" value="Print" class="btn btn-success btn-block" onclick="pdf()" />
+                                    </div>
+                                </div>*@
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box">
+                    <div class="box-body">
+                        <div class="box-body table-responsive no-padding">
+                            <table id="example1" class="table table-bordered table-striped">
+                                @{int rowNo = 0;}
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Customer</th>
+                                        <th>Sector</th>
+                                        <th>Address</th>
+                                        <th>Total days</th>
+                                        <th>Pending days</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (System.Data.DataRow drclient in ViewBag.ProductorderList.Rows)
+                                    {
+                                        <tr>
+                                            <td>@(rowNo += 1)</td>
+                                            <td>@drclient["CustomerName"]</td>
+                                            <td>@drclient["SectorName"]</td>
+                                            <td>@drclient["BlockNo"] @drclient["FlatNo"] @drclient["BuildingName"]</td>
+                                            <td style="color:green ">@drclient["Subsdays"]</td>
+                                            <td style="color:red">@drclient["Pandingday"]</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+
+    <script>
+        $(document).ready(function () {
+            $("#ddlSector").change(function () {
+                debugger;
+                //event.preventDefault();
+                var id = $(this).find('option:selected').val();
+
+                $.ajax({
+                    url: '/Sector/GetBuildingList?id=' + id,
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",// Not to set any content header
+                    datatype: "json",
+                    processData: false,
+                    success: function (data) {
+                        Data = data;
+                        var dataRows = JSON.parse(Data);
+                        console.log(dataRows);
+
+                        var ddlBuilding = $("[id*=ddlBuilding]");
+                        //ddlBuilding.empty().append();
+                        ddlBuilding.empty().append('<option selected="selected" value="0">---Select---</option>');
+                        for (var i = 0; i < dataRows.length; i++) {
+                            var row = new Array();
+                            var id = dataRows[i].Id;
+                            var name = dataRows[i].BuildingName;
+                            var block = dataRows[i].BlockNo;
+
+                            var opt = new Option(dataRows[i].name);
+                            console.log(id + "," + name);
+
+                            $('#ddlBuilding').append('<option value="' + id + '">' + name + ' - ' + block + '</option>');
+
+                        }
+
+                    }
+                });
+            });
+
+           
+        });
+    </script>
+
+    <!-- jQuery 2.2.3 -->
+    <script src="~/Content/plugins/jQuery/jquery-2.2.3.min.js"></script>
+
+    <script src="~/Content/bootstrap/js/bootstrap.min.js"></script>
+    <!-- DataTables -->
+    <!-- DataTables -->
+    <script src="~/Content/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="~/Content/plugins/datatables/dataTables.bootstrap.min.js"></script>
+    <script>
+    $(function () {
+        $('#example1').DataTable({
+            "paging": true,
+            "lengthChange": true,
+            "searching": true,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false
+        });
+    });
+
+    function pdf(){
+        //$('#clkbtncompprint').click(function () {
+        var FromDate = $('#datepicker').val();
+        var ToDate = $('#datepicker1').val();
+        var DeliveryboyId = $('#ddlStaff').val();
+        var CustomerId = $('#ddlCustomer').val();
+        $.ajaxSetup({ async: false });
+        var urlInsert = '/CustomerOrder/DeliveryBoyDailyOrderPrint?DeliveryboyId=' +DeliveryboyId+ '&CustomerId='+ CustomerId+'&FromDate='+ FromDate+ '&ToDate='+ ToDate;
+        window.location = urlInsert;
+        @*$.ajax({
+            url: $url,
+            data: { 'DeliveryboyId': DeliveryboyId, 'CustomerId': CustomerId, 'FromDate': FromDate, 'ToDate': ToDate },
+            datatype: "json",
+            type: "POST",
+            cache: false,
+            success: function (data) {
+                if (data != null) {
+
+                }
+                else {
+                    value = '@TempData["error"] = "Data Is Not Found!!!"';
+                }
+            }
+        })*@
+    }
+    //});
+
+
+    </script>
+}
+
+
+
+

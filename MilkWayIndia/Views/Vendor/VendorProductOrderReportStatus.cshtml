@@ -1,0 +1,353 @@
+﻿
+@{
+    ViewBag.Title = "";
+    Layout = null;
+}
+
+
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title></title>
+    <link rel="icon" href="https://milkywayindia.com/img/logo.png" type="image/x-icon">
+</head>
+<body>
+    <div id='printarea'>
+        <style>
+            body {
+                font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
+                text-align: center;
+                color: #777;
+            }
+
+                body h1 {
+                    margin-bottom: 0px;
+                    padding-bottom: 0px;
+                    color: #000;
+                }
+
+                body h3 {
+                    font-weight: 300;
+                    margin-top: 10px;
+                    margin-bottom: 20px;
+                    color: #555;
+                }
+
+                body a {
+                    color: #06F;
+                }
+
+            .heading {
+                max-width: 800px;
+                margin: auto;
+                padding: 0px;
+            }
+
+                .heading p {
+                    margin-bottom: 10px;
+                    margin-top: 10px;
+                }
+
+            .main-box {
+                max-width: 800px;
+                margin: auto;
+                padding: 30px;
+                font-size: 16px;
+                line-height: 24px;
+                font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
+                color: #000;
+                background-image: url(https://milkywayindia.com/img/cow-pattern.png);
+                background-size: contain;
+            }
+
+            .main-contain {
+                background-color: #fff;
+                padding: 15px;
+            }
+
+            .main-box table {
+                width: 100%;
+                line-height: inherit;
+                text-align: left;
+            }
+
+                .main-box table td, .main-box table th {
+                    padding: 5px;
+                    vertical-align: top;
+                     font-size:18px;
+                }
+
+                .main-box table tr.top table td {
+                    padding-bottom: 20px;
+                }
+
+                    .main-box table tr.top table td.title {
+                        font-size: 45px;
+                        line-height: 45px;
+                        color: #333;
+                    }
+
+                .main-box table tr.information table td {
+                    padding-bottom: 40px;
+                }
+
+                .main-box table tr.heading td {
+                    background: #eee;
+                    border-bottom: 1px solid #ddd;
+                    font-weight: bold;
+                }
+
+                .main-box table tr.details td {
+                    padding-bottom: 20px;
+                }
+
+                .main-box table tr.item td {
+                    border-bottom: 1px solid #eee;
+                }
+
+                .main-box table tr.item.last td {
+                    border-bottom: none;
+                }
+
+            .no-border td {
+                border: 0px !important;
+                padding: 0px !important;
+            }
+
+            .main-box table tr.total td:nth-child(2) {
+                border-top: 2px solid #eee;
+                font-weight: bold;
+            }
+
+            .main-box table.score td, .main-box table.score th {
+                border-top: 1px solid #000;
+                border-left: 1px solid #000;
+                text-align: left;
+            }
+
+                .main-box table.score td:last-child, .main-box table.score th:last-child {
+                    border-right: 1px solid #000;
+                }
+
+            .main-box table.score tr:last-child td {
+                border-bottom: 1px solid #000;
+            }
+
+            .main-box .h3 {
+                font-size: 18px;
+                font-weight: bold;
+                padding: 0px;
+            }
+
+                .main-box .h3 span {
+                    font-size: 12px;
+                    font-weight: normal;
+                }
+
+            .main-box .head {
+                padding: 0px 7em;
+                text-align: center;
+                font-size: 18px;
+                font-weight: bold;
+            }
+
+            .main-box .subhead {
+                padding: 0px 7em;
+                text-align: center;
+                font-size: 12px;
+            }
+
+            .information {
+                margin-top: 30px;
+                padding: 0px 2em;
+            }
+
+            .score {
+                margin-top: 30px;
+                padding: 0px 0em;
+            }
+
+            .information ol li {
+                padding: 5px 0px;
+            }
+
+            .bb {
+                border-bottom: 1px dotted #000;
+            }
+
+            .pt20 {
+                padding-top: 20px !important;
+            }
+
+            .p20 {
+                padding: 10px 20px !important;
+            }
+
+            .information p {
+                text-align: left;
+                padding: 10px;
+            }
+
+            .information span {
+                padding-bottom: 5px;
+                text-align: left;
+                display: block;
+                text-decoration: underline;
+                /*white-space: pre-wrap;      /* CSS3 */
+                /*white-space: -moz-pre-wrap; /* Firefox */
+                /*white-space: -pre-wrap;     /* Opera <7 */
+                /*white-space: -o-pre-wrap;   /* Opera 7 */
+                /*word-wrap: break-word;      /* IE */
+            }
+
+            .left {
+                text-align: left;
+            }
+
+            @@media print {
+                .printbreak {
+                    page-break-after: always;
+                }
+
+                .main-box {
+                    max-width: 800px;
+                    margin: auto;
+                    padding: 30px;
+                    font-size: 16px;
+                    line-height: 24px;
+                    font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
+                    color: #000;
+                    background-image: url(https://milkywayindia.com/img/cow-pattern.png);
+                    background-size: contain;
+                }
+            }
+
+            @@media only screen and (max-width: 600px) {
+                .main-box table tr.top table td {
+                    width: 100%;
+                    display: block;
+                    text-align: center;
+                }
+
+                .main-box table tr.information table td {
+                    width: 100%;
+                    display: block;
+                    text-align: center;
+                }
+            }
+        </style>
+
+        <div class="main-box">
+            <div class="main-contain">
+                <table class="heading">
+                    <tr>
+                        <td width="40%"></td>
+                        <td>
+                            <img src="https://milkywayindia.com/img/logo.png" style="width:100%; max-width:300px;">
+                        </td>
+                        <td width="40%"></td>
+                    </tr>
+                </table>
+                <table cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td class="head"></td>
+                    </tr>
+                    <tr style="text-align:right">
+                        <td class="h3 pt20">Date : @ViewBag.FromDate</td>
+                    </tr>
+                </table>
+                <table class="score" cellpadding="0" cellspacing="0" width="100%">
+                    @{int rowNo = 0, _totalQty = 0, _currentRow = 0;}
+                    @{string _sectorName = "", _vendor = "";}
+                    @{int totalRow = ViewBag.ProductorderList.Rows.Count;}
+                    @foreach (System.Data.DataRow drclient in ViewBag.ProductorderList.Rows)
+                    {
+                        rowNo = rowNo + 1;
+                        _currentRow = _currentRow + 1;
+                        if (_sectorName != drclient["Sector"].ToString())
+                        {
+                            if (_vendor == drclient["Vendor"].ToString())
+                            {
+                                <tr>
+                                    <td colspan="2"></td>
+                                    <td></td>
+                                    <td>@_totalQty</td>
+                                </tr>
+                                <tr style="height:50px">
+                                    <td colspan="5"></td>
+                                </tr>
+                            }
+                            if (_vendor != drclient["Vendor"].ToString() && _vendor != "")
+                            {
+                                <tr>
+                                    <td colspan="2"></td>
+                                    <td></td>
+                                    <td>@_totalQty</td>
+                                </tr>
+                                <tr style="height:50px">
+                                    <td colspan="5"></td>
+                                </tr>
+                            }
+                            <tr>
+                                <td colspan="5"><b>Sector</b> : @drclient["Sector"] </td>
+                            </tr>
+                            if (_vendor == drclient["Vendor"].ToString())
+                            {
+                                <tr>
+                                    <td colspan="5"><b>Vendor</b> : @drclient["Vendor"] </td>
+                                </tr>
+                            }
+                            _sectorName = drclient["Sector"].ToString();
+                            _totalQty = 0;
+                            rowNo = 1;
+                        }
+                        if (_vendor != drclient["Vendor"].ToString())
+                        {
+                            <tr>
+                                <td colspan="5"><b>Vendor</b> : @drclient["Vendor"] </td>
+                            </tr>
+                            _vendor = drclient["Vendor"].ToString();
+                            <tr>
+                                <td>Sr. No.</td>
+                                <td>
+                                    Product Name
+                                </td>
+                                <td>Status</td>
+                                <td width="10%">Qty</td>
+                            </tr>
+                        }
+                        <tr>
+                            <td>@rowNo</td>
+                            <td>@drclient["ProductName"]</td>
+                            <td>@drclient["Statuss"]</td>
+                            <td>@drclient["Qty"]</td>
+                        </tr>
+                        _totalQty = _totalQty + Convert.ToInt32(drclient["Qty"].ToString());
+                        if (_currentRow == totalRow)
+                        {
+                            <tr>
+                                <td colspan="2"></td>
+                                <td></td>
+                                <td>@_totalQty</td>
+                            </tr>
+                        }
+                    }
+                </table>
+            </div>
+        </div>
+    </div>
+    <input type='button' id='btn' value='Print' onclick='printDiv();' style="display: block;margin: 0px auto;">
+    <script>
+        function printDiv() {
+            var divToPrint = document.getElementById('printarea');
+            var newWin = window.open('', 'Print-Window');
+            newWin.document.open();
+            newWin.document.write('<html><body onload="window.print()">' + divToPrint.innerHTML + '</body></html>');
+            newWin.document.close();
+            setTimeout(function () { newWin.close(); }, 10);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,309 @@
+﻿@{
+    ViewBag.Title = "VendorProductOrderAmount";
+    Layout = "~/Views/Shared/_MyLayout.cshtml";
+}
+
+@section contain
+{
+    <script src="~/Content/plugins/jQuery/jquery-2.2.3.min.js"></script>
+    <script>
+    $(document).ready(function () {
+        var MasterClass = document.getElementById("ReportLi");
+        if (MasterClass != null) {
+            MasterClass.className = MasterClass.className + " active";
+
+        }
+    });
+    </script>
+    <link href="~/Content/plugins/datepicker/datepicker3.css" rel="stylesheet" />
+    <script src="~/Content/plugins/datepicker/bootstrap-datepicker.js"></script>
+    <section class="content-header">
+        @if (@TempData["error"] != null)
+    {
+            <script type="text/javascript">
+            alert("@TempData["error"]");
+            </script>
+        }
+    </section>
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box box-info">
+                    <div class="box">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">Vendor Product Amount List</h3>
+
+                            @using (Ajax.BeginForm("VendorProductOrderAmount", "Vendor", new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "upddiv" }))
+                            {
+                                <div class="box-header with-border">
+                                    <div class="btn-group-vertical ">
+                                        <div class="btn-group-vertical ">
+                                            <div class="form-group has-feedback">
+                                                <select id="ddlSector" name="ddlSector" class="form-control select2">
+                                                    <option value="0">---Select---</option>
+                                                    @if (ViewBag.Sector != null)
+                                                    {
+                                                        foreach (System.Data.DataRow drSectorName in ViewBag.Sector.Rows)
+                                                        {
+                                                            <option value="@drSectorName["Id"]">@drSectorName["SectorName"] </option>
+                                                        }
+                                                    }
+                                                </select>
+                                                @if (ViewBag.SectorId != null)
+                                                {
+                                                    <script>
+                                        document.getElementById('ddlSector').value = '@ViewBag.SectorId';
+                                                    </script>
+                                                }
+                                            </div>
+                                        </div>
+                                        <div class="btn-group-vertical">
+                                            <div class="form-group has-feedback">
+                                                <select id="ddlVendor" name="ddlVendor" class="form-control select2">
+                                                    <option value="0">---Select---</option>
+                                                    @if (ViewBag.Vendor != null)
+                                                    {
+                                                        foreach (System.Data.DataRow drStaffName in ViewBag.Vendor.Rows)
+                                                        {
+                                                            <option value="@drStaffName["Id"]">@drStaffName["FirstName"] @drStaffName["LastName"]</option>
+                                                        }
+                                                    }
+                                                </select>
+                                                @if (ViewBag.VendorId != null)
+                                                {
+                                                    <script>
+                                        document.getElementById('ddlVendor').value = '@ViewBag.VendorId';
+                                                    </script>
+                                                }
+                                            </div>
+                                        </div>
+                                        <div class="btn-group-vertical ">
+                                            <div class="input-group date form-group has-feedback">
+                                                @Html.TextBox("datepicker", "", new
+                                           {
+                                               placeholder = "From Date",
+                                               @class = "form-control",
+                                               @Value = ViewBag.FromDate
+                                           })
+                                            </div>
+                                        </div>
+                                        <div class="btn-group-vertical ">
+                                            <div class="input-group date form-group has-feedback">
+                                                @Html.TextBox("datepicker1", "", new
+                                           {
+                                               placeholder = "To Date",
+                                               @class = "form-control",
+                                               @Value = ViewBag.ToDate
+                                           })
+                                            </div>
+                                        </div>
+                                        <div class="btn-group-vertical">
+                                            <div class="form-group has-feedback">
+                                                <button type="submit" id="clkbtncomp" class="btn btn-primary" onclick="return Valid()">Submit</button>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            }
+                            <div class="btn-group-vertical">
+                                <div class="form-group has-feedback">
+                                    @* <button type="submit" id="clkbtncompprint" class="btn btn-danger">Print</button>*@
+                                    <input type="submit" id="btn" value="Print" class="btn btn-success btn-block" onclick="pdf()" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box">
+                    <div class="box-body">
+                        <div class="box-body table-responsive no-padding">
+                            <table id="example1" class="table table-bordered table-striped">
+                                @{int rowNo = 0;}
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Date</th>
+                                        <th>Sector</th>
+                                        <th>Vendor</th>
+                                        <th>Product</th>
+                                        <th>Qty</th>
+                                        <th>Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (System.Data.DataRow drclient in ViewBag.ProductorderList.Rows)
+                                    {
+                                        <tr>
+                                            <td>@(rowNo += 1)</td>
+                                            <td>@drclient["OrderDate"]</td>
+                                            <td>@drclient["Sector"]</td>
+                                            <td>@drclient["Vendor"]</td>
+                                            <td>@drclient["ProductName"]</td>
+                                            <td>@drclient["Qty"]</td>
+                                            <td>@drclient["PurchasePrice"]</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+    <script>
+    $('#datepicker').datepicker({
+        "setDate": new Date(),
+        "autoclose": true,
+        format: 'dd/mm/yyyy',
+        todayHighlight: true,
+        defaultDate: new Date(),
+    });
+  //  $("#datepicker").datepicker('setDate', new Date());
+    $('#datepicker1').datepicker({
+        "setDate": new Date(),
+        "autoclose": true,
+        format: 'dd/mm/yyyy',
+        todayHighlight: true,
+        defaultDate: new Date(),
+    });
+   // $("#datepicker1").datepicker('setDate', new Date());
+    </script>
+
+    @*@Html.Partial("_PagingSortingSearchingJSPartial")*@
+    <script>
+    $(function () {
+
+        $('#example1').DataTable({
+            "paging": true,
+            "lengthChange": true,
+            "searching": true,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false
+        });
+    });
+    </script>
+    <script>
+        $(document).ready(function () {
+            $("#ddlSector").change(function () {
+
+                var id = $(this).find('option:selected').val();
+
+                $.ajax({
+                    url: '/Vendor/GetVendorList?id=' + id,
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",// Not to set any content header
+                    datatype: "json",
+                    processData: false,
+                    success: function (data) {
+                        Data = data;
+                        var dataRows = JSON.parse(Data);
+                        console.log(dataRows);
+
+                        var ddlVendor = $("[id*=ddlVendor]");
+                        //ddlBuilding.empty().append();
+                        ddlVendor.empty().append('<option selected="selected" value="0">---Select---</option>');
+                        for (var i = 0; i < dataRows.length; i++) {
+                            var row = new Array();
+                            var id = dataRows[i].Id;
+                            var fname = dataRows[i].FirstName;
+                            var lname = dataRows[i].LastName;
+
+                            var opt = new Option(dataRows[i].fname);
+                            console.log(id + "," + fname);
+
+                            $('#ddlVendor').append('<option value="' + id + '">' + fname + ' ' + lname + '</option>');
+
+                        }
+
+                    }
+                });
+            });
+
+
+        });
+
+        function Valid() {
+            var status = true
+
+            //$('#clkbtncompprint').click(function () {
+            var FromDate = $('#datepicker').val();
+            var ToDate = $('#datepicker1').val();
+           
+            if (FromDate == "" || FromDate == null) {
+
+                document.getElementById('datepicker').style.border = "1px solid #ff0000";
+
+                status = false;
+            }
+            else {
+                document.getElementById('datepicker').style.border = "";
+            }
+            if (ToDate == "" || ToDate == null) {
+                document.getElementById('datepicker1').style.border = "1px solid #ff0000";
+                status = false;
+            }
+            else {
+                document.getElementById('datepicker1').style.border = "";
+            }
+            
+            if (status == true)
+                return true;
+            else
+                return false;
+        }
+
+        function pdf() {
+            var status = true
+           
+            //$('#clkbtncompprint').click(function () {
+            var FromDate = $('#datepicker').val();
+            var ToDate = $('#datepicker1').val();
+            var SectorId = $('#ddlSector').val();
+            var VendorId = $('#ddlVendor').val();
+            if (FromDate == "" || FromDate == null || ToDate == "" || ToDate == null) {
+                if (FromDate == "" || FromDate == null) {
+                    document.getElementById('datepicker').style.border = "1px solid #ff0000";
+                    status = false;
+                }
+                else {
+                    document.getElementById('datepicker').style.border = "";
+                }
+                if (ToDate == "" || ToDate == null) {
+                    document.getElementById('datepicker1').style.border = "1px solid #ff0000";
+                    status = false;
+                }
+                else {
+                    document.getElementById('datepicker1').style.border = "";
+                }
+            }
+            else {
+                $.ajaxSetup({ async: false });
+                var urlInsert = '/Vendor/VendorProductOrderAmountPrint?SectorId=' + SectorId + '&VendorId=' + VendorId + '&FromDate=' + FromDate + '&ToDate=' + ToDate;
+                window.location = urlInsert;
+            }
+
+            if (status == true)
+                return true;
+            else
+                return false;
+            }
+
+    </script>
+}
+
+
+
+
+
+

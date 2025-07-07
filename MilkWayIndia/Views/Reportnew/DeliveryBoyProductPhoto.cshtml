@@ -1,0 +1,364 @@
+﻿
+@{
+    ViewBag.Title = "DeliveryBoyProductPhoto";
+    Layout = "~/Views/Shared/_MyLayout.cshtml";
+}
+
+@section contain
+{
+
+
+    <script src="~/js/jquery.js"></script>
+    @*<script src="~/Content/plugins/jQuery/jquery-2.2.3.min.js"></script>*@
+
+    <!-- Bootstrap 3.3.6 -->
+    <link rel="stylesheet" href="~/Content/bootstrap/css/bootstrap.min.css">
+    <!-- DataTables -->
+    <link href="~/Content/plugins/datatables/dataTables.bootstrap.css" rel="stylesheet">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="~/Content/dist/css/AdminLTE.min.css">
+    <!-- AdminLTE Skins. Choose a skin from the css/skins
+       folder instead of downloading all of them to reduce the load. -->
+    <link rel="stylesheet" href="~/Content/dist/css/skins/_all-skins.min.css">
+    <link href="~/Content/plugins/datepicker/datepicker3.css" rel="stylesheet" />
+    <script src="~/Content/plugins/datepicker/bootstrap-datepicker.js"></script>
+    <style>
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .txtwidth {
+            width: 80px;
+        }
+    </style>
+    <style>
+        .select2-container--default .select2-selection--single {
+            border: 1px solid #d2d6de;
+            border-radius: 0px;
+        }
+
+        .select2-container .select2-selection--single {
+            height: 34px;
+        }
+    </style>
+    @*<script src="~/Content/plugins/select2/select2.full.min.js"></script>*@
+    <script>
+        $(function () {
+            $(".select2").select2();
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            var MasterClass = document.getElementById("ReportLi");
+            if (MasterClass != null) {
+                MasterClass.className = MasterClass.className + " active";
+
+            }
+        });
+    </script>
+    <section class="content-header">
+        @if (@TempData["error"] != null)
+        {
+            <script type="text/javascript">
+                alert("@TempData["error"]");
+            </script>
+        }
+        <div class="box-header with-border">
+            <h3 class="box-title">Delivery Manager Product Photo </h3>
+            @*
+                @ViewBag.Testing<div class="box-tools">
+                    <div class="input-group input-group-sm pull-right">
+                        <input type="button" class="btn btn-primary pull-right btn-add" value="Add" onclick="location.href='@Url.Action("AddSectorProductAssign", "Vendor")'" />
+                    </div>
+                </div>*@
+        </div>
+    </section>
+
+
+
+    <section class="content">
+        @using (Html.BeginForm())
+        {
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="box box-info">
+                        <div class="box">
+                            <div class="box-header with-border">
+
+
+                                <div class="btn-group-vertical ">
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group has-feedback">
+
+                                                <select id="ddlDm" name="ddlDm" class="form-control select2">
+                                                    <option value="0">---Select DeliveryBoy---</option>
+
+                                                    @if (ViewBag.Dm != null)
+                                                    {
+                                                        foreach (System.Data.DataRow drService in ViewBag.Dm.Rows)
+                                                        {
+                                                            <option value="@drService["Id"]">@drService["Name"]</option>
+                                                        }
+                                                    }
+                                                </select>
+                                                @if (ViewBag.Dm1 != null)
+                                                {
+                                                    <script>
+                                                        document.getElementById('ddlDm').value = '@ViewBag.Dm1';
+                                                    </script>
+                                                }
+                                            </div>
+                                        </div>
+
+
+
+
+
+
+                                    </div>
+
+
+
+
+                                    <div class="row">
+
+
+                                        <div class="col-md-12">
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <div class="input-group date form-group has-feedback">
+                                                        @Html.TextBox("datepicker", "", new { placeholder = "From Date", @class = "form-control", @Value = ViewBag.FromDate, autocomplete = "off" })
+                                                    </div>
+                                                </div>
+
+
+                                                <div class="col-md-4">
+                                                    <div class="input-group date form-group has-feedback">
+                                                        @Html.TextBox("datepicker1", "", new { placeholder = "To Date", @class = "form-control", @Value = ViewBag.ToDate, autocomplete = "off" })
+                                                    </div>
+                                                </div>
+
+
+                                                <div class="col-md-4">
+                                                    <div class="form-group has-feedback">
+                                                        <button type="submit" id="clkbtncomp" name="submit" value="submit" class="btn btn-primary" onclick="return Valid()">Submit</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-2">
+
+                                        </div>
+                                    </div>
+
+
+
+                                </div>
+
+
+
+
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="box">
+                        <div class="box-body">
+
+                            <div class="box-body table-responsive no-padding">
+                                <table id="example1" class="table table-bordered table-striped">
+                                    @{int rowNo = 0;}
+                                    <thead>
+                                        <tr>
+                                            <th>No</th>
+
+                                            <th>Name</th>
+                                            <th>Date</th>
+
+
+                                            <th>Product</th>
+
+                                            <th>Descrition</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+
+                                        @foreach (System.Data.DataRow drclient in ViewBag.DMStatusList.Rows)
+                                        {
+
+
+                                           
+                                            string rstatus = "";
+                                            <tr>
+                                                <td>@(rowNo += 1)</td>
+
+
+                                                <td>@drclient["Name"] </td>
+                                                <td>
+
+                                                    @drclient["Uploaddate"]
+                                                </td>
+                                                <td><img src='~/image/DmImage/@drclient["Photo"]' width="80" height="70" /></td>
+                                                <td>@drclient["Description"]</td>
+
+
+
+
+
+                                            </tr>
+
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        }
+    </section>
+
+
+
+
+
+
+
+
+
+    <script>
+        $('#datepicker').datepicker({
+            "setDate": new Date(),
+            "autoclose": true,
+            format: 'dd/mm/yyyy',
+            todayHighlight: true,
+            defaultDate: new Date(),
+        });
+        // $("#datepicker").datepicker('setDate', new Date());
+        $('#datepicker1').datepicker({
+            "setDate": new Date(),
+            "autoclose": true,
+            format: 'dd/mm/yyyy',
+            todayHighlight: true,
+            defaultDate: new Date(),
+        });
+        // $("#datepicker1").datepicker('setDate', new Date());
+    </script>
+
+    <!-- jQuery 2.2.3 -->
+    <script src="~/Content/plugins/jQuery/jquery-2.2.3.min.js"></script>
+
+    <script src="~/Content/bootstrap/js/bootstrap.min.js"></script>
+    <!-- DataTables -->
+    <!-- DataTables -->
+    <script src="~/Content/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="~/Content/plugins/datatables/dataTables.bootstrap.min.js"></script>
+    <script>
+        $(function () {
+            $('#example1').DataTable({
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false
+            });
+        });
+
+        function Valid() {
+            var status = true
+
+            //$('#clkbtncompprint').click(function () {
+            var FromDate = $('#datepicker').val();
+            var ToDate = $('#datepicker1').val();
+
+            if (FromDate == "" || FromDate == null) {
+
+                document.getElementById('datepicker').style.border = "1px solid #ff0000";
+
+                status = false;
+            }
+            else {
+                document.getElementById('datepicker').style.border = "";
+            }
+            if (ToDate == "" || ToDate == null) {
+                document.getElementById('datepicker1').style.border = "1px solid #ff0000";
+                status = false;
+            }
+            else {
+                document.getElementById('datepicker1').style.border = "";
+            }
+
+            if (status == true)
+                return true;
+            else
+                return false;
+        }
+
+        function pdf() {
+            var status = true
+            //$('#clkbtncompprint').click(function () {
+            var FromDate = $('#datepicker').val();
+            var ToDate = $('#datepicker1').val();
+            var DeliveryboyId = $('#ddlStaff').val();
+            var CustomerId = $('#ddlCustomer').val();
+            var Status = $('#ddlStatus').val();
+            if (FromDate == "" || FromDate == null || ToDate == "" || ToDate == null) {
+                if (FromDate == "" || FromDate == null) {
+                    document.getElementById('datepicker').style.border = "1px solid #ff0000";
+                    status = false;
+                }
+                else {
+                    document.getElementById('datepicker').style.border = "";
+                }
+                if (ToDate == "" || ToDate == null) {
+                    document.getElementById('datepicker1').style.border = "1px solid #ff0000";
+                    status = false;
+                }
+                else {
+                    document.getElementById('datepicker1').style.border = "";
+                }
+            }
+            else {
+                $.ajaxSetup({ async: false });
+                var urlInsert = '/CustomerOrder/DeliveryBoyDailyOrderPrint?DeliveryboyId=' + DeliveryboyId + '&CustomerId=' + CustomerId + '&FromDate=' + FromDate + '&ToDate=' + ToDate + '&Status=' + Status;
+                window.location = urlInsert;
+            }
+            $.ajax({
+            url: $url,
+            data: { 'DeliveryboyId': DeliveryboyId, 'CustomerId': CustomerId, 'FromDate': FromDate, 'ToDate': ToDate },
+            datatype: "json",
+            type: "POST",
+            cache: false,
+            success: function (data) {
+                if (data != null) {
+
+                }
+                else {
+                    value = '@TempData["error"] = "Data Is Not Found!!!"';
+                }
+            }
+        })
+        }
+        //});
+
+
+    </script>
+}
+

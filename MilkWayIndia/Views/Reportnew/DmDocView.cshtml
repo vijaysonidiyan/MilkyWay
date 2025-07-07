@@ -1,0 +1,252 @@
+﻿@model MilkWayIndia.Models.DeliveryBoy
+@{
+    ViewBag.Title = "DmDocView";
+    Layout = "~/Views/Shared/_MyLayout.cshtml";
+}
+
+@section contain
+{
+
+    <script src="~/Content/plugins/jQuery/jquery-2.2.3.min.js"></script>
+    <link href="~/Content/plugins/datepicker/datepicker3.css" rel="stylesheet" />
+    <script src="~/Content/plugins/datepicker/bootstrap-datepicker.js"></script>
+    <script>
+        $(document).ready(function () {
+            var MasterClass = document.getElementById("LiMst");
+            if (MasterClass != null) {
+                MasterClass.className = MasterClass.className + " active";
+            }
+        });
+    </script>
+    <script>
+        $(function () {
+            $(".select2").select2();
+        });
+    </script>
+
+
+    <section class="content-header">
+        <h1>
+            View DM  Document
+        </h1>
+        <ol class="breadcrumb">
+            <li><a href="@Url.Action("Index", "Admin")"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="active">DM Document</li>
+        </ol>
+    </section>
+
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="col-md-6">
+            <div class="box box-info">
+                <div class="box-header with-border">
+                    <div class="btn-group-vertical">
+                        <button class="btn btn-success" type="button" onclick="location.href='@Url.Action("DeliveryBoyDoc", "Reportnew")'">Back To List</button>
+                    </div>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
+                </div>
+                <div class="form-horizontal">
+                    @using (Ajax.BeginForm("DmDocView", "Reportnew", new AjaxOptions { OnSuccess = "onSuccessLogin", UpdateTargetId = "SuccessMsg" }))
+                    {
+                        <div class="box-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div id="SuccessMsg" style="color: red">@ViewBag.SuccessMsg</div>
+
+                                    <div class="form-group">
+                                        <label for="inputEmail3" class="col-sm-2 control-label">Aadhar</label>
+                                        <div class="col-sm-5">
+
+                                            <a href="~/image/DmDoc/@ViewBag.Aadhar">@ViewBag.Aadhar</a>
+                                        </div>
+                                        <div class="col-sm-5">
+                                            <select id="ddlaadhar" name="ddlaadhar" class="form-control select2">
+                                                <option value="0">---Select---</option>
+                                                <option value="Pending">Pending </option>
+                                                <option value="Approved">Approved</option>
+                                                <option value="Checked">Checked</option>
+                                                <option value="Rejected">Rejected</option>
+
+                                            </select>
+                                            @if (ViewBag.Aadharstatus != null)
+                                            {
+                                                <script>
+                                                    document.getElementById('ddlaadhar').value = '@ViewBag.Aadharstatus';
+                                                </script>
+                                            }
+
+                                        </div>
+
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="inputEmail3" class="col-sm-2 control-label">Pan</label>
+                                        <div class="col-sm-5">
+
+                                            <a href="~/image/DmDoc/@ViewBag.Pan">@ViewBag.Pan</a>
+                                        </div>
+                                        <div class="col-sm-5">
+                                            <select id="ddlpan" name="ddlpan" class="form-control select2">
+                                                <option value="0">---Select---</option>
+                                                <option value="Pending">Pending </option>
+                                                <option value="Approved">Approved</option>
+                                                <option value="Checked">Checked</option>
+                                                <option value="Rejected">Rejected</option>
+
+                                            </select>
+                                            @if (ViewBag.Panstatus != null)
+                                            {
+                                                <script>
+                                                    document.getElementById('ddlpan').value = '@ViewBag.Panstatus';
+                                                </script>
+                                            }
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="form-group">
+                                        <label for="inputEmail3" class="col-sm-2 control-label">License</label>
+                                        <div class="col-sm-5">
+                                            <a href="~/image/DmDoc/@ViewBag.License">@ViewBag.License</a>
+                                        </div>
+                                        <div class="col-sm-5">
+                                            <select id="ddllicense" name="ddllicense" class="form-control select2">
+                                                <option value="0">---Select---</option>
+                                                <option value="Pending">Pending </option>
+                                                <option value="Approved">Approved</option>
+                                                <option value="Checked">Checked</option>
+                                                <option value="Rejected">Rejected</option>
+
+                                            </select>
+                                            @if (ViewBag.Licensestatus != null)
+                                            {
+                                                <script>
+                                                    document.getElementById('ddllicense').value = '@ViewBag.Licensestatus';
+                                                </script>
+                                            }
+
+                                        </div>
+
+                                    </div>
+
+                                    @**@
+                                    <div class="form-group">
+                                        <label for="inputEmail3" class="col-sm-2 control-label">Account No</label>
+                                        <div class="col-sm-5">
+
+                                            @Html.TextBoxFor(m => m.bankaccount, new { @class = "form-control", @id = "Amount", onkeypress = "return ValidateNumber(event);", @Value = ViewBag.BankAccount, onClick = "ClearTextbox('Amount')" })
+                                        </div>
+
+                                        <div class="col-sm-5">
+                                        </div>
+                                    </div>
+
+
+                                    <div class="form-group">
+                                        <label for="inputEmail3" class="col-sm-2 control-label">Account Name</label>
+                                        <div class="col-sm-5">
+
+                                            @Html.TextBoxFor(m => m.Accholdername, new { @class = "form-control", @id = "Amount", onkeypress = "return ValidateNumber(event);", @Value = ViewBag.AccholderName, onClick = "ClearTextbox('Amount')" })
+                                        </div>
+
+                                        <div class="col-sm-5">
+                                        </div>
+                                    </div>
+
+
+                                    <div class="form-group">
+                                        <label for="inputEmail3" class="col-sm-2 control-label">Bank Name</label>
+                                        <div class="col-sm-5">
+
+                                            @Html.TextBoxFor(m => m.bankname, new { @class = "form-control", @id = "Amount", onkeypress = "return ValidateNumber(event);", @Value = ViewBag.Bankname, onClick = "ClearTextbox('Amount')" })
+                                        </div>
+
+                                        <div class="col-sm-5">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="inputEmail3" class="col-sm-2 control-label">IFSC</label>
+                                        <div class="col-sm-5">
+
+                                            @Html.TextBoxFor(m => m.ifsc, new { @class = "form-control", @id = "Amount", onkeypress = "return ValidateNumber(event);", @Value = ViewBag.Ifsc, onClick = "ClearTextbox('Amount')" })
+                                        </div>
+
+                                        <div class="col-sm-5">
+                                            <select id="ddlbank" name="ddlbank" class="form-control select2">
+                                                <option value="0">---Select---</option>
+                                                <option value="Pending">Pending </option>
+                                                <option value="Approved">Approved</option>
+                                                <option value="Checked">Checked</option>
+                                                <option value="Rejected">Rejected</option>
+
+                                            </select>
+                                            @if (ViewBag.Bankstatus != null)
+                                            {
+                                                <script>
+                                                    document.getElementById('ddlbank').value = '@ViewBag.Bankstatus';
+                                                </script>
+                                            }
+
+                                        </div>
+
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="inputEmail3" class="col-sm-2 control-label">Description</label>
+                                        <div class="col-sm-5">
+
+                                            @Html.TextAreaFor(m => m.Description, new { @class = "form-control", @id = "Description", onkeypress = "return ValidateNumber(event);" })
+                                        </div>
+
+                                        <div class="col-sm-5">
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="box-footer text-right">
+
+
+                            <button type="submit" id="clkbtncomp" name="submit" value="Save" class="btn btn-info" onclick="return ValidSector();">Submit</button>
+
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </section>
+    <script>
+        function onSuccessLogin() {
+            //document.getElementById("ddlservice").value = "";
+            //document.getElementById("ddlprovider").value = "";
+            //document.getElementById("ddltype").value = "";
+            //document.getElementById("Amount").value = "";
+        }
+
+        function pname() {
+            var providername = "";
+
+            var skillsSelect = document.getElementById("ddlprovider");
+            var selectedText = skillsSelect.options[skillsSelect.selectedIndex].text;
+
+            // providername = document.getElementById("ddlprovider").sele;
+            document.getElementById("providername").value = selectedText;
+            //  alert(selectedText);
+
+            //if ($("#ddlSector").val() == null || $("#ddlSector").val() == "" || $("#ddlSector").val() == "0") {
+            //    document.getElementById("select2-ddlSector-container").style.border = "1px solid #ff0000";
+            //    document.getElementById("select2-ddlSector-container").style.color = "#ff0000";
+            //    document.getElementById("select2-ddlSector-container").value = "0";
+            //    return false;
+        }
+
+    </script>
+}
+

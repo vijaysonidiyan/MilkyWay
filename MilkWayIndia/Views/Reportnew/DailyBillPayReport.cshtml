@@ -1,0 +1,482 @@
+﻿
+@{
+    ViewBag.Title = "DailyBillPayReport";
+    Layout = "~/Views/Shared/_MyLayout.cshtml";
+}
+
+@section contain
+{
+    <script src="~/js/jquery.js"></script>
+    @*<script src="~/Content/plugins/jQuery/jquery-2.2.3.min.js"></script>*@
+
+    <!-- Bootstrap 3.3.6 -->
+    <link rel="stylesheet" href="~/Content/bootstrap/css/bootstrap.min.css">
+    <!-- DataTables -->
+    <link href="~/Content/plugins/datatables/dataTables.bootstrap.css" rel="stylesheet">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="~/Content/dist/css/AdminLTE.min.css">
+    <!-- AdminLTE Skins. Choose a skin from the css/skins
+       folder instead of downloading all of them to reduce the load. -->
+    <link rel="stylesheet" href="~/Content/dist/css/skins/_all-skins.min.css">
+    <link href="~/Content/plugins/datepicker/datepicker3.css" rel="stylesheet" />
+    <script src="~/Content/plugins/datepicker/bootstrap-datepicker.js"></script>
+    <style>
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .txtwidth {
+            width: 80px;
+        }
+    </style>
+    <style>
+        .select2-container--default .select2-selection--single {
+            border: 1px solid #d2d6de;
+            border-radius: 0px;
+        }
+
+        .select2-container .select2-selection--single {
+            height: 34px;
+        }
+    </style>
+    @*<script src="~/Content/plugins/select2/select2.full.min.js"></script>*@
+    <script>
+        $(function () {
+            $(".select2").select2();
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            var MasterClass = document.getElementById("ReportLi");
+            if (MasterClass != null) {
+                MasterClass.className = MasterClass.className + " active";
+
+            }
+        });
+    </script>
+    <section class="content-header">
+        @if (@TempData["error"] != null)
+        {
+            <script type="text/javascript">
+                alert("@TempData["error"]");
+            </script>
+        }
+        <div class="box-header with-border">
+            <h3 class="box-title">Daily Bill report </h3>
+            @*
+                @ViewBag.Testing<div class="box-tools">
+                    <div class="input-group input-group-sm pull-right">
+                        <input type="button" class="btn btn-primary pull-right btn-add" value="Add" onclick="location.href='@Url.Action("AddSectorProductAssign", "Vendor")'" />
+                    </div>
+                </div>*@
+    
+    </div>
+    </section>
+
+
+
+
+
+    <section class="content">
+        @using (Html.BeginForm())
+        {
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="box box-info">
+                        <div class="box">
+                            <div class="box-header with-border">
+
+
+                                <div class="btn-group-vertical ">
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group has-feedback">
+
+                                                <select id="ddlservice" name="ddlservice" class="form-control select2">
+                                                    <option value="0">---Select Service---</option>
+                                                    <option value="Mobile/DTH">Mobile/DTH</option>
+                                                    <option value="Electricty/Gas">Electricty/Gas</option>
+                                                    @if (ViewBag.Service != null)
+                                                    {
+                                                        foreach (System.Data.DataRow drService in ViewBag.Service.Rows)
+                                                        {
+                                                            <option value="@drService["Name"]">@drService["Name"]</option>
+                                                        }
+                                                    }
+                                                </select>
+                                                @if (ViewBag.Servicename != null)
+                                                {
+                                                    <script>
+                document.getElementById('ddlservice').value = '@ViewBag.Servicename';
+                                                    </script>
+                                                }
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <div class="form-group has-feedback">
+                                                <button type="submit" id="clkbtncomp" name="submit" value="WeekBillPayment" class="btn btn-warning">Week Bill Payment</button>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-2">
+
+                                            <div class="form-group has-feedback">
+                                                <button type="submit" id="clkbtncomp" name="submit" value="TodaysBillPayment" class="btn btn-success" >Todays Bill Payment</button>
+                                            </div>
+
+                                        </div>
+
+                                        <div class="col-md-2">
+
+                                            <div class="form-group has-feedback">
+                                                <button type="submit" id="clkbtncomp" name="submit" value="YesterdayBillPayment" class="btn btn-info" >Yesterday Bill Payment</button>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+
+
+
+                                    <div class="row">
+
+
+                                        <div class="col-md-12">
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <div class="input-group date form-group has-feedback">
+                                                        @Html.TextBox("datepicker", "", new { placeholder = "From Date", @class = "form-control", @Value = ViewBag.FromDate, autocomplete = "off" })
+                                                    </div>
+                                                </div>
+
+
+                                                <div class="col-md-4">
+                                                    <div class="input-group date form-group has-feedback">
+                                                        @Html.TextBox("datepicker1", "", new { placeholder = "To Date", @class = "form-control", @Value = ViewBag.ToDate, autocomplete = "off" })
+                                                    </div>
+                                                </div>
+
+
+                                                <div class="col-md-4">
+                                                    <div class="form-group has-feedback">
+                                                        <button type="submit" id="clkbtncomp" name="submit" value="submit" class="btn btn-primary" onclick="return Valid()">Submit</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-2">
+
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+
+                                            <div class="col-md-6" style="text-align:left;">
+                                                <span style="font-family:Verdana;font-size:20px;">Available Balance:</span>
+                                                @if (ViewBag.Balance != null)
+                                                {
+                                                    <span id="SuccessMsg" style="color:indigo;font-size:18px;">
+
+                                                        @ViewBag.Balance
+                                                    </span>
+                                                }
+                                            </div>
+
+
+                                            <div class="col-md-6" style="text-align:right;">
+                                                
+                                                <span style="font-family:Verdana;font-size:20px;">Require Balance:</span> 
+                                                    @if (ViewBag.requirebalance != null)
+                                                    {
+                                                        <span id="SuccessMsg" style="color:indigo;font-size:18px;">
+
+                                                            @ViewBag.requirebalance
+                                                        </span>
+                                                    }
+                                                    
+                                              
+                                            </div>
+
+
+                                        </div>
+                                        </div>
+
+
+
+                                    </div>
+
+
+
+
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="box">
+                        <div class="box-body">
+
+                            <div class="box-body table-responsive no-padding">
+                                <table id="example1" class="table table-bordered table-striped">
+                                    @{int rowNo = 0;}
+                                    <thead>
+                                        <tr>
+                                            <th>No</th>
+                                            <th>Customer Id</th>
+                                            <th>Customer Name</th>
+                                            <th>RechargeType</th>
+                                            <th>Operator Name</th>
+
+                                            <th>Recharge Amount</th>
+                                            <th>Recharge Date</th>
+                                            <th>Transaction Id</th>
+                                            <th>Recharge No.</th>
+                                            <th>Response Status</th>
+
+                                            <th>Billing Status</th>
+
+                                            <td></td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+
+                                        @foreach (System.Data.DataRow drclient in ViewBag.CashbackBillList.Rows)
+                                        {
+
+
+                                            //double per = 0.0;
+                                            //double ramount = 0.0;
+                                            //double cashbackamnt = 0.0;
+                                            //ramount = Convert.ToDouble(@drclient["Amount"]);
+                                            //per = Convert.ToDouble(@drclient["Amount1"]);
+                                            //cashbackamnt = (ramount * per) / 100;
+                                            string rstatus = "";
+                                        <tr>
+                                            <td>@(rowNo += 1)</td>
+
+                                            <td>
+
+
+                                                @drclient["CustomerId"]
+
+                                            </td>
+                                            <td>@drclient["FirstName"] @drclient["LastName"]</td>
+                                            <td>
+
+                                                @drclient["RechargeType"]
+                                            </td>
+                                            <td>@drclient["OperatorName"]</td>
+                                            <td>@drclient["Amount"]</td>
+                                            <td>@drclient["RechargeDate"]</td>
+
+                                            <td>
+
+                                                @drclient["TransactionId"]
+
+
+                                            </td>
+
+                                            <td>
+
+                                                @drclient["RechargeNo"]
+
+
+                                            </td>
+                                            <td>@drclient["Responsemsg"]</td>
+
+
+
+                                            @if (@drclient["Status"].ToString() == "1")
+                                            {
+                                                rstatus = "Success";
+                                                <td>
+
+                                                    <span style="background-color:green; color:#fff;padding-left:5px;padding-right:5px;padding-top:2px;padding-bottom:2px; border-radius:2px;">@rstatus</span>
+                                                </td>
+                                            }
+                                            @if (@drclient["Status"].ToString() == "2")
+                                            {
+                                                rstatus = "Failure";
+
+                                                <td>
+                                                    <span style="background-color:red; color:#fff;padding-left:5px;padding-right:5px;padding-top:2px;padding-bottom:2px; border-radius:2px;">@rstatus</span>
+                                                </td>
+                                            }
+
+                                            @if (@drclient["Status"].ToString() == "0")
+                                            {
+                                                rstatus = "Pending";
+
+                                                <td>
+                                                    <span style="background-color:red; color:#fff;padding-left:5px;padding-right:5px;padding-top:2px;padding-bottom:2px; border-radius:2px;">@rstatus</span>
+                                                </td>
+                                            }
+
+                                            @if (@drclient["Status"].ToString() == "4" || @drclient["Status"].ToString() == "5")
+                                            {
+                                                rstatus = "Insufficient balance With Provider.";
+
+                                                <td>
+                                                    <span style="background-color:red; color:#fff;padding-left:5px;padding-right:5px;padding-top:2px;padding-bottom:2px; border-radius:2px;">@rstatus</span>
+                                                </td>
+                                            }
+
+
+                                            <td><a href="/CashBack/DeleteCashBackSet/@drclient["Id"]" , onclick="return confirm('Are you sure you want to delete this Data?');"><i class="fa fa-trash-o"></i></a></td>
+                                        </tr>
+
+                                        }
+            </tbody>
+            </table>
+            </div>
+
+            </div>
+            </div>
+            </div>
+            </div>
+
+        }
+    </section>
+
+
+
+
+
+   
+
+
+
+    <script>
+        $('#datepicker').datepicker({
+            "setDate": new Date(),
+            "autoclose": true,
+            format: 'dd/mm/yyyy',
+            todayHighlight: true,
+            defaultDate: new Date(),
+        });
+        // $("#datepicker").datepicker('setDate', new Date());
+        $('#datepicker1').datepicker({
+            "setDate": new Date(),
+            "autoclose": true,
+            format: 'dd/mm/yyyy',
+            todayHighlight: true,
+            defaultDate: new Date(),
+        });
+        // $("#datepicker1").datepicker('setDate', new Date());
+    </script>
+
+    <!-- jQuery 2.2.3 -->
+    <script src="~/Content/plugins/jQuery/jquery-2.2.3.min.js"></script>
+
+    <script src="~/Content/bootstrap/js/bootstrap.min.js"></script>
+    <!-- DataTables -->
+    <!-- DataTables -->
+    <script src="~/Content/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="~/Content/plugins/datatables/dataTables.bootstrap.min.js"></script>
+    <script>
+        $(function () {
+            $('#example1').DataTable({
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false
+            });
+        });
+
+        function Valid() {
+            var status = true
+
+            //$('#clkbtncompprint').click(function () {
+            var FromDate = $('#datepicker').val();
+            var ToDate = $('#datepicker1').val();
+
+            if (FromDate == "" || FromDate == null) {
+
+                document.getElementById('datepicker').style.border = "1px solid #ff0000";
+
+                status = false;
+            }
+            else {
+                document.getElementById('datepicker').style.border = "";
+            }
+            if (ToDate == "" || ToDate == null) {
+                document.getElementById('datepicker1').style.border = "1px solid #ff0000";
+                status = false;
+            }
+            else {
+                document.getElementById('datepicker1').style.border = "";
+            }
+
+            if (status == true)
+                return true;
+            else
+                return false;
+        }
+
+        function pdf() {
+            var status = true
+            //$('#clkbtncompprint').click(function () {
+            var FromDate = $('#datepicker').val();
+            var ToDate = $('#datepicker1').val();
+            var DeliveryboyId = $('#ddlStaff').val();
+            var CustomerId = $('#ddlCustomer').val();
+            var Status = $('#ddlStatus').val();
+            if (FromDate == "" || FromDate == null || ToDate == "" || ToDate == null) {
+                if (FromDate == "" || FromDate == null) {
+                    document.getElementById('datepicker').style.border = "1px solid #ff0000";
+                    status = false;
+                }
+                else {
+                    document.getElementById('datepicker').style.border = "";
+                }
+                if (ToDate == "" || ToDate == null) {
+                    document.getElementById('datepicker1').style.border = "1px solid #ff0000";
+                    status = false;
+                }
+                else {
+                    document.getElementById('datepicker1').style.border = "";
+                }
+            }
+            else {
+                $.ajaxSetup({ async: false });
+                var urlInsert = '/CustomerOrder/DeliveryBoyDailyOrderPrint?DeliveryboyId=' + DeliveryboyId + '&CustomerId=' + CustomerId + '&FromDate=' + FromDate + '&ToDate=' + ToDate + '&Status=' + Status;
+                window.location = urlInsert;
+            }
+            $.ajax({
+            url: $url,
+            data: { 'DeliveryboyId': DeliveryboyId, 'CustomerId': CustomerId, 'FromDate': FromDate, 'ToDate': ToDate },
+            datatype: "json",
+            type: "POST",
+            cache: false,
+            success: function (data) {
+                if (data != null) {
+
+                }
+                else {
+                    value = '@TempData["error"] = "Data Is Not Found!!!"';
+                }
+            }
+        })
+        }
+        //});
+
+
+    </script>
+
+
+
+}

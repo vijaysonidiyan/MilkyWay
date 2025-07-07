@@ -1,0 +1,2 @@
+ProductId,CategoryName,ProductName,YoutubeTitle,YoutubeURL,Subscription,Price,CGST,SGST,IGST,PurchasePrice,SalePrice,Profit,IsDaily
+1,Milk,Amul Gold - 500 ML,,,0.5,30,0,0,0,29,30,0.4,FALSE

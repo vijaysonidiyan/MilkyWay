@@ -1,0 +1,46 @@
+﻿@model MilkWayIndia.Models.BillPayCircleVM
+
+<div id="ModalPopUp" class="modal-dialog" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+            <h4 class="modal-title">@ViewBag.ModelTitle</h4>
+        </div>
+        @using (Ajax.BeginForm("AddCirlce", "billpay", null, new AjaxOptions { OnSuccess = "SuccessCircle" }, new { @id = "frmCircle" }))
+        {
+            @Html.HiddenFor(s => s.ID)
+        <div class="modal-body">
+            <div class="form-group">
+                <label>Circle Name <span class="text-danger">@Html.ValidationMessageFor(x => x.Name)</span></label>
+                @Html.TextBoxFor(m => m.Name, new { @class = "form-control", placeholder = "Circle Name", @required = "required" })
+            </div>
+
+            <div class="form-group">
+                <label>Circle Code </label>
+                @Html.TextBoxFor(m => m.CircleCode, new { @class = "form-control", placeholder = "Circle Code", @required = "required" })
+            </div>
+
+
+            <div class="form-group">
+                <label>Sort Order </label>
+                @Html.TextBoxFor(m => m.SortOrder, new { @class = "form-control", placeholder = "Sort Order", @required = "required" })
+            </div>
+        </div>
+            <div class="modal-footer">
+                <button type="submit" name="state" value="Save" class="btn btn-success btn-sm pull-left" onclick="return ValidateCircleName();"> Save </button>
+                <button type="button" class="btn btn-secondary btn-sm pull-left" data-dismiss="modal"> Close </button>
+            </div>
+        }
+    </div>
+</div>
+<script>
+    function ValidateCircleName() {
+        var Name = $('#Name').val();
+        $('input').removeClass('field-error');
+        $('#frmCircle span').text('');
+        if (Name == null || Name == "") {
+            $('#Name').addClass('field-error');
+            return false;
+        }       
+    }
+</script>

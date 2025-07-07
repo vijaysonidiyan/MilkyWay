@@ -1,0 +1,144 @@
+﻿@model MilkWayIndia.Models.Subscription
+@{
+    ViewBag.Title = "EditSubscription";
+    Layout = "~/Views/Shared/_MyLayout.cshtml";
+}
+
+@section contain
+{
+    <script src="~/Content/plugins/jQuery/jquery-2.2.3.min.js"></script>
+    <link href="~/Content/plugins/datepicker/datepicker3.css" rel="stylesheet" />
+    <script src="~/Content/plugins/datepicker/bootstrap-datepicker.js"></script>
+    <script>
+        $(document).ready(function () {
+            var MasterClass = document.getElementById("LiSubscri");
+            if (MasterClass !=null) {
+                MasterClass.className = MasterClass.className + " active";
+            }
+        });
+    </script>
+<style>
+    .select2-container--default .select2-selection--single {
+        border: 1px solid #d2d6de;
+        border-radius: 0px;
+    }
+
+    .select2-container .select2-selection--single {
+        height: 33px;
+    }
+</style>
+    <script>
+  $(function () {
+    $(".select2").select2();
+  });
+    </script>
+    <section class="content-header">
+        <h1>
+            Add Subscription
+        </h1>
+        <ol class="breadcrumb">
+            <li><a href="@Url.Action("Index", "Admin")"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="active">Subscription</li>
+        </ol>
+    </section>
+    <!-- Main content -->
+    <section class="content">
+        <div class="col-md-6">
+            <div class="box box-info">
+                <div class="box-header with-border">
+                    <div class="btn-group-vertical">
+                        <button class="btn btn-success" type="button" onclick="location.href='@Url.Action("SubscriptionList", "Subscription")'">Back To Panel</button>
+                    </div>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
+                </div>
+                <div class="form-horizontal">
+                    @using (Ajax.BeginForm("EditSubscription", "Subscription", new AjaxOptions { OnSuccess = "onSuccessLogin", UpdateTargetId = "SuccessMsg" }))
+                    {
+                        <div class="box-body">
+                            <div class="row">
+                                <div class="col-md-12">
+
+                                    <div id="SuccessMsg" style="color: red">@ViewBag.SuccessMsg</div>
+                                    <div class="form-group">
+                                        <label for="inputEmail3" class="col-sm-3 control-label">Subscription Name</label>
+                                        <div class="col-sm-6">
+                                            @Html.TextBoxFor(m => m.Name, new { @class = "form-control", @id = "Name",@Value=ViewBag.Name })
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputEmail3" class="col-sm-3 control-label">Days</label>
+                                        <div class="col-sm-6">
+                                            @Html.TextBoxFor(m => m.Days, new { @class = "form-control", @id = "Days", onkeypress = "return ValidateNumber(event);", maxlength = 4, @Value = ViewBag.Days })
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputEmail3" class="col-sm-3 control-label">Amount</label>
+                                        <div class="col-sm-6">
+                                            @Html.TextBoxFor(m => m.Amount, new { @class = "form-control", @id = "Amount", onkeypress = "return ValidateNumber(event);", maxlength = 10, @Value = ViewBag.Amount })
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="box-footer text-right">
+                            @*<input type="button" class="btn btn-orange" value="Cancel" />*@
+                            <input type="submit" value="Save" class="btn btn-primary" onclick="return ValidSubscription();" />
+
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        function ValidSubscription() {
+            var status = true;
+            var sector = document.getElementById("Name").value;
+            if (sector == null || sector == "" || sector == "Please Enter Subscription Name") {
+                document.getElementById("Name").style.border = "1px solid #ff0000";
+                document.getElementById("Name").style.color = "#ff0000";
+                document.getElementById("Name").value = "Please Enter Subscription Name";
+                status = false;
+                return false;
+            }
+
+            var pincode = document.getElementById("Days").value;
+            if (pincode == null || pincode == "" || pincode == "Please Enter Days") {
+                document.getElementById("Days").style.border = "1px solid #ff0000";
+                document.getElementById("Days").style.color = "#ff0000";
+                document.getElementById("Days").value = "Please Enter Days";
+                status = false;
+                return false;
+            }
+
+            var amt = document.getElementById("Amount").value;
+            if (amt == null || amt == "" || amt == "Please Enter Days") {
+                document.getElementById("Amount").style.border = "1px solid #ff0000";
+                document.getElementById("Amount").style.color = "#ff0000";
+                document.getElementById("Amount").value = "Please Enter Days";
+                status = false;
+                return false;
+            }
+        }
+
+        function ValidateNumber(e) {
+
+            var keycode = (e.which) ? e.which : e.keyCode;
+            //console.log(keycode);
+            var phn = document.getElementById('MobileNo');
+            //comparing pressed keycodes
+            if (!(keycode == 8 || keycode == 46) && (keycode < 48 || keycode > 57)) {
+                return false;
+            }
+            return true;
+        };
+
+    </script>
+
+}
+

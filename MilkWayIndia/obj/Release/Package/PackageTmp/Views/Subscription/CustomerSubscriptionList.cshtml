@@ -1,0 +1,275 @@
+﻿@{
+    Layout = "~/Views/Shared/_MyLayout.cshtml";
+}
+@section contain
+{
+    <script src="~/Content/plugins/jQuery/jquery-2.2.3.min.js"></script>
+<link href="~/Content/plugins/datepicker/datepicker3.css" rel="stylesheet" />
+<script src="~/Content/plugins/datepicker/bootstrap-datepicker.js"></script>
+    <script>
+    $(document).ready(function () {
+        var MasterClass = document.getElementById("DownlinePanelLi");
+        if (MasterClass != null) {
+            MasterClass.className = MasterClass.className + " active";
+
+        }
+    });
+    </script>
+    <section class="content-header">
+        @if (@TempData["error"] != null)
+    {
+        <script type="text/javascript">
+                            alert("@TempData["error"]");
+        </script>
+
+        }
+        <div class="box-header with-border">
+            <h3 class="box-title">Customer Subscription List</h3>
+            <div class="box-tools">
+                <div class="input-group input-group-sm pull-right">
+                    @*<asp:LinkButton runat="server" ID="lbtnAdd" class="btn btn-default pull-right btn-add" PostBackUrl="~/.aspx">Back</asp:LinkButton>*@
+                    <input type="button" class="btn btn-primary pull-right btn-add" value="Add" onclick="location.href='@Url.Action("AddCustomerSubscription", "Subscription")'" />
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box">
+                    <div class="box-body">
+                        <div class="box-body table-responsive no-padding">
+                            <table id="example1" class="table table-bordered table-striped">
+                                @{int rowNo = 0;}
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>CustomerName</th>
+                                        <th>Subscription</th>
+                                        <th>FromDate</th>
+                                        <th>ToDate</th>
+                                        <th>Amount</th>
+                                        <th>Status</th>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (System.Data.DataRow drclient in ViewBag.CustomerSubscriptionList.Rows)
+                                    {
+                                        <tr>
+                                            <td>@(rowNo += 1)</td>
+                                            <td>@drclient["CustomerName"]</td>
+                                            <td>@drclient["Subscription"]</td>
+                                            <td>@drclient["FDate"]</td>
+                                            <td>@drclient["TDate"]</td>
+                                            <td>@drclient["Amount"]</td>
+                                           @if (Convert.ToString(@drclient["SubscriptionStatus"]) == "Open")
+                                           {
+                                            <td style="color:green">@drclient["SubscriptionStatus"]</td>
+                                           }
+                                           else
+                                           {
+                                            <td style="color:red">@drclient["SubscriptionStatus"]</td>}
+                                            <td><a href="/Subscription/EditCustomerSubscription/@drclient["Id"]"><i class="fa fa-edit"></i></a></td>
+                                            <td><a href="/Subscription/DeleteCustomerSubscription/@drclient["Id"]" , onclick="return confirm('Are you sure you want to delete this Data?');"><i class="fa fa-trash-o"></i></a></td>
+                                            <td><a href="javascript:void(OpenPopup('@drclient["CustomerId"]','@drclient["Id"]'))"><i class="fa fa-edit"></i></a></td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+<div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content" style="width:565px;">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                Name : <label id="DEPNAME" name="DEPNAME"></label>
+                <h4 class="modal-title">Cancle Subscription</h4>
+            </div>
+@*@using (Ajax.BeginForm("CancelCustomerSubscription", "Subscription", new AjaxOptions { OnSuccess = "onSuccessLogin", UpdateTargetId = "SuccessMsg" }))
+{*@
+            <div class="modal-body">
+                <div class="modal1"></div>
+                <div id="SuccessMsgVerify" style="color: red"></div>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="col-xs-4">
+                            @Html.Hidden("hdfCustomerId")
+                            @Html.Hidden("hdfSubscriptionId")
+                            <label>Subscription Start Date</label>
+                            @Html.TextBox("datepicker", "", new { placeholder = "", @id = "datepicker", @class = "form-control" })
+                        </div>
+                        <div class="col-xs-4">
+                            <label>Subscription End Date</label>
+                            @Html.TextBox("datepicker1", "", new { placeholder = "", @id = "datepicker1", @class = "form-control" })
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="col-xs-4">
+                            <label>Wallet Balance</label>
+                            @Html.TextBox("wallet", "", new { placeholder = "", @id = "wallet", @class = "form-control", @disabled = "disabled" })
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="col-xs-4">
+                            <label>Reward Point</label>
+                            @Html.TextBox("points", "", new { placeholder = "", @id = "points", @class = "form-control", @disabled = "disabled" })
+                        </div>
+                    </div>
+                </div><br />
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" onclick="ValidEntry()">Cancle Subscription</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal" onclick="redirectpage()">Close</button>
+                </div>
+            </div>
+@*}*@
+        </div>
+    </div>
+</div>
+    @*@Html.Partial("_PagingSortingSearchingJSPartial")*@
+    <script>
+    $(function () {
+        $('#example1').DataTable({
+            "paging": true,
+            "lengthChange": true,
+            "searching": true,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false
+        });
+    });
+
+    function OpenPopup(customerid, subscriptionid) {
+        $('#myModal').modal('show');
+        //ShowProgress();
+        $.ajax({
+            url: '/Subscription/GetCustomerSubscriptionDetail',
+            data: '{"customerid":"' + customerid + '","subscriptionid":"' + subscriptionid + '"}',
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            datatype: "json",
+            success: function (response) {
+                //$('#myModal').modal('show');
+                Data = response;
+                var dataRows = JSON.parse(Data.jsonString);
+                console.log(dataRows);
+                $('#DEPNAME').html(dataRows[0].FirstName + ' ' + dataRows[0].LastName);
+                document.getElementById('hdfCustomerId').value = customerid;
+                document.getElementById('hdfSubscriptionId').value = subscriptionid;
+                $.each(dataRows, function (index, item) {
+                    var sdate = dataRows[0].FromDate;
+                    var date = new Date(sdate);
+                    var month = date.getMonth() + 1;
+                    var dt = date.getDate();
+                    dt = parseInt(dt);
+                    document.getElementById('datepicker').value = (dt.toString().length > 1 ? dt : "0" + dt) + "/" + (month.toString().length > 1 ? month : "0" + month) + "/" + date.getFullYear();
+                    //document.getElementById('datepicker').value = dataRows[0].SubnFromDate;
+
+                    var tdate = dataRows[0].ToDate;
+                    var date = new Date(tdate);
+                    var month = date.getMonth() + 1;
+                    var dt = date.getDate();
+                    dt = parseInt(dt);
+                    document.getElementById('datepicker1').value = (dt.toString().length > 1 ? dt : "0" + dt) + "/" + (month.toString().length > 1 ? month : "0" + month) + "/" + date.getFullYear();
+                    //document.getElementById('datepicker1').value = dataRows[0].SubnToDate;
+                });
+
+                var dataRows1 = JSON.parse(Data.jsonString1);
+                console.log(dataRows1);
+                document.getElementById('wallet').value = dataRows1;
+
+                var dataRows2 = JSON.parse(Data.jsonString2);
+                console.log(dataRows2);
+                document.getElementById('points').value = dataRows2;
+
+
+            },
+        });
+
+    }
+    </script>
+<script>
+    $('#datepicker').datepicker({
+        "autoclose": true,
+
+        todayHighlight: true
+    });
+
+    $('#datepicker1').datepicker({
+        "autoclose": true,
+
+        todayHighlight: true
+    });
+
+    function ValidEntry() {
+        var status = true;
+
+       
+        var fdate = document.getElementById("datepicker").value;
+        if (fdate == null || fdate == "" || fdate == "Please Enter FromDate") {
+            document.getElementById("datepicker").style.border = "1px solid #ff0000";
+            document.getElementById("datepicker").style.color = "#ff0000";
+            document.getElementById("datepicker").value = "Please Enter FromDate";
+            status = false;
+            return false;
+        }
+        //var month1 = fdate.getMonth() + 1;
+        //var day1 = fdate.getDate();
+        //day1 = parseInt(day1);
+
+        var tdate = document.getElementById("datepicker1").value;
+        if (tdate == null || tdate == "" || tdate == "Please Enter ToDate") {
+            document.getElementById("datepicker1").style.border = "1px solid #ff0000";
+            document.getElementById("datepicker1").style.color = "#ff0000";
+            document.getElementById("datepicker1").value = "Please Enter FromDate";
+            status = false;
+            return false;
+        }
+        var id = document.getElementById('hdfCustomerId').value;
+        var SubscriptionId = document.getElementById('hdfSubscriptionId').value;
+
+        
+            $.ajax({
+                url: '/Subscription/CancelCustomerSubscription',
+                data: '{"Customerid":"' + id + '","Fromdate":"' + fdate + '","Todate":"' + tdate + '","SubscriptionId":"' + SubscriptionId + '"}',
+                type: "POST",
+                contentType: "application/json; charset=utf-8",// Not to set any content header
+                datatype: "json",
+                success: function (response) {
+                    //$('#myModal').modal('show');
+                    Data = response;
+                    var dataRows = JSON.parse(Data);
+                    console.log(dataRows);
+                    $('#SuccessMsgVerify').html(dataRows);
+                },
+            });
+      
+        //var CDate = new Date();
+        //var month = CDate.getMonth() + 1;
+        //var day = CDate.getDate();
+        //day = parseInt(day);
+        //CDate = (day.toString().length > 1 ? day : "0" + day) + '-' + (month.toString().length > 1 ? month : "0" + month) + '-' + CDate.getFullYear();
+
+
+        //var d1 = new Date(CDate.getFullYear(), (month.toString().length > 1 ? month : "0" + month), (day.toString().length > 1 ? day : "0" + day));
+        //var d2 = new Date(fdate.getFullYear(), (month1.toString().length > 1 ? month1 : "0" + month1), (day1.toString().length > 1 ? day1 : "0" + day1));
+    }
+</script>
+
+}
+

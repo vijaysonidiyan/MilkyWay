@@ -1,0 +1,465 @@
+﻿
+@{
+    ViewBag.Title = "CustomerNotificationList";
+    Layout = "~/Views/Shared/_MyLayout.cshtml";
+}
+
+@section contain
+{
+    <script src="~/Content/plugins/jQuery/jquery-2.2.3.min.js"></script>
+
+    <!-- Bootstrap 3.3.6 -->
+    <link rel="stylesheet" href="~/Content/bootstrap/css/bootstrap.min.css">
+    <!-- DataTables -->
+    <link href="~/Content/plugins/datatables/dataTables.bootstrap.css" rel="stylesheet">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="~/Content/dist/css/AdminLTE.min.css">
+    <!-- AdminLTE Skins. Choose a skin from the css/skins
+       folder instead of downloading all of them to reduce the load. -->
+    <link rel="stylesheet" href="~/Content/dist/css/skins/_all-skins.min.css">
+    <link href="~/Content/plugins/datepicker/datepicker3.css" rel="stylesheet" />
+    <script src="~/Content/plugins/datepicker/bootstrap-datepicker.js"></script>
+    <style>
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .txtwidth {
+            width: 80px;
+        }
+    </style>
+    <style>
+        .select2-container--default .select2-selection--single {
+            border: 1px solid #d2d6de;
+            border-radius: 0px;
+        }
+
+        .select2-container .select2-selection--single {
+            height: 34px;
+        }
+    </style>
+    @*<script src="~/Content/plugins/select2/select2.full.min.js"></script>*@
+    <script>
+        $(function () {
+            $(".select2").select2();
+        });
+    </script>
+
+    <script language="javascript" type="text/javascript">
+        $(document).ready(function () {
+            //$("#ddlState").prop("disabled", true);
+            $("#ddlState").change(function () {
+            var id = $("#ddlState").val();
+            $.ajax({
+                cache: false,
+                type: "GET",
+                url: '@Url.Action("GetCity", "Sector")',
+                data: { "Statecode": id },
+                success: function (json, textStatus) {
+                    $("#ddlCity").empty();
+                    json = json || {};
+                    $("#ddlCity").append('<option value=0>--Select City--</option>');
+                    for (var i = 0; i < json.length; i++) {
+                        $("#ddlCity").append('<option value="' + json[i].Citycode + '">' + json[i].CityName + '</option>');
+                    }
+                    $("#ddlCity").prop("disabled", false);
+                },
+                error: function () {
+                    alert("Data Not Found");
+                }
+        });
+            });
+
+
+
+            $("#ddlCity").change(function () {
+                var cid = $("#ddlCity").val();
+                var sid = $("#ddlState").val();
+
+                var URL = '/Sector/GetSector?Stateid=' + sid + "&CityId=" + cid;
+                $('#ddlSector').html('');
+                $.getJSON(URL, function (data) {
+                    $('#ddlSector').html(data);
+                });
+
+            });
+
+    });
+    </script>
+
+    <script>
+        $(function () {
+            //GetProductAttribute();
+            var url = '/Vendor/FetchSectorList';
+            var div_sectors = $('#div_sectors');
+            $('#ddlCity').change(function () {
+                var selectedCity = $(this).val();
+                if (!selectedCity) {
+                    div_sectors.empty();
+                    return;
+                }
+                if (selectedCity > 0) {
+                    $.get(url, { id: selectedCity }, function (data) {
+                        div_sectors.html(data);
+                    })
+                }
+                else {
+                    div_sectors.empty();
+                }
+            });
+        });
+
+
+
+        //function SuccessAssign(data) {
+        //    if (data.status = "1") {
+        //        toastr["success"]("Product Add Successfully...");
+        //        var div_sectors = $('#div_sectors');
+        //        $("#ddlVendor").select2("val", "0");
+        //        div_sectors.empty();
+        //        GetProductAttribute();
+        //    }
+        //    else {
+        //        toastr["error"]("error");
+        //    }
+        //}
+    </script>
+    <section class="content-header">
+        @if (@TempData["error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible" style="padding:4px">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                <h5>@TempData["error"]</h5>
+            </div>
+        }
+        <div class="box-header with-border">
+            <h3 class="box-title">Customer Notification List</h3>
+            <div class="box-tools">
+                <div class="input-group input-group-sm pull-right">
+                    @*<asp:LinkButton runat="server" ID="lbtnAdd" class="btn btn-default pull-right btn-add" PostBackUrl="~/.aspx">Back</asp:LinkButton>*@
+                    <a href="/Customer/CustomerNotification" class="btn btn-primary pull-right btn-add">Add</a>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="content">
+        @using (Html.BeginForm())
+        {
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="box">
+                        <div class="box-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        @Html.TextBox("txtproid", "", new { @class = "form-control", @readonly = "readonly", style = "color:red; ",@type="hidden" })
+                                        <br />
+
+                                        <select id="ddlCustomer" name="ddlCustomer" class="form-control select2">
+                                            <option value="0">---Select Customer---</option>
+                                            @if (ViewBag.Customer != null)
+                                            {
+                                                foreach (System.Data.DataRow drCustomerName in ViewBag.Customer.Rows)
+                                                {
+                                                    <option value="@drCustomerName["Id"]">@drCustomerName["FirstName"] @drCustomerName["LastName"] (@drCustomerName["FlatNo"] , @drCustomerName["blockno"] , @drCustomerName["BuildingName"])</option>
+                                                }
+                                            }
+                                        </select>
+                                        @if (ViewBag.CustomerId != null)
+                                        {
+                                            <script>
+
+                                                 document.getElementById("ddlCustomer").value = '@ViewBag.CustomerId';
+
+                                            </script>
+                                        }
+                                    </div>
+
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <div class="input-group date form-group has-feedback">
+                                            @Html.TextBox("datepicker", "", new
+                                       {
+                                           placeholder = "From Date",
+                                           @class = "form-control",
+                                           @Value = ViewBag.FromDate,
+                                           autocomplete = "off"
+                                       })
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <div class="input-group date form-group has-feedback">
+                                            @Html.TextBox("datepicker1", "", new
+                                       {
+                                           placeholder = "To Date",
+                                           @class = "form-control",
+                                           @Value = ViewBag.ToDate,
+                                           autocomplete = "off"
+                                       })
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+
+                                    <div class="form-group">
+
+                                        <div class="col-sm-12">
+                                            <select id="ddlState" name="ddlState" class="form-control select2">
+                                                <option value="0">---State---</option>
+                                                @if (ViewBag.StateList != null)
+                                                {
+                                                    foreach (System.Data.DataRow drStateName in ViewBag.StateList.Rows)
+                                                    {
+                                                        <option value="@drStateName["id"]">@drStateName["statename"]</option>
+                                                    }
+                                                }
+                                            </select>
+
+                                            @if (ViewBag.StateName != null)
+                                            {
+                                                <script>
+                                                    document.getElementById('ddlState').value = '@ViewBag.StateName';
+                                                </script>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="form-group">
+
+                                        <div class="col-sm-12">
+                                            <select id="ddlCity" name="ddlCity" class="form-control select2"></select>
+
+                                            @if (ViewBag.CityName != null)
+                                            {
+                                                <script>
+                                                document.getElementById('ddlCity').value = '@ViewBag.CityName';
+                                                </script>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+                                <div class="col-md-4">
+                                    <div class="form-group">
+
+
+                                        <select id="ddlSector" name="ddlSector" class="form-control select2"></select>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="btn-group-vertical" style="margin-left:10px;">
+                                <div class="form-group has-feedback">
+                                    <button type="submit" id="clkbtncomp" name="submit" value="submit" class="btn btn-primary">Submit</button>
+                                    <button type="submit" id="clkbtncomp1" name="submit" value="Search" class="btn btn-primary">Search All</button>
+                                    <button type="submit" id="clkbtndel" name="submit" value="Delete" class="btn btn-danger">Delete</button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="box">
+                        <div class="box-body">
+                            <div class="box-body table-responsive no-padding">
+                                <table id="example1" class="table table-bordered table-striped">
+                                    @{int rowNo = 0;}
+                                    <thead>
+                                        <tr>
+                                            <th><input type="checkbox" id="selectall" name="selectall" value="selectall"></th>
+                                            <th>No</th>
+                                            <th>Name</th>
+                                            <th>Mobile</th>
+                                            <th>Title</th>
+                                            <th>Notification</th>
+                                            <th>Image</th>
+                                            <th>Link</th>
+                                            <th>Updated On</th>
+                                            <th>Type</th>
+                                            <th>Status</th>
+
+                                            @*<th></th>*@
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (System.Data.DataRow drclient in ViewBag.CustomerNotList.Rows)
+                                        {
+                                            <tr>
+                                                <td><input type="checkbox" id="@drclient["CnId"].ToString()" name="chkpro" value="@drclient["CnId"].ToString()" onclick="addcheckbox('@drclient["CnId"].ToString()');"></td>
+                                                <td>@(rowNo += 1)</td>
+                                                <td>@drclient["Name"] </td>
+                                                <td>@drclient["MobileNo"]</td>
+                                                <td>@drclient["Title"]</td>
+                                                <td>@drclient["Notification"]</td>
+                                                <td>
+
+
+                                                    <img src="~/image/Notification/@drclient["Image"]" style="width:50px;height:50px;" />
+                                                </td>
+
+
+                                                <td>
+                                                    @drclient["NewLink"]
+
+                                                </td>
+
+                                                <td>@drclient["UpdatedOn"]</td>
+                                                <td>@drclient["Type"]</td>
+                                                <td>@drclient["Status"]</td>
+
+
+
+
+
+                                                @* <td><a href="/Customer/Edit/@drclient["Id"]"><i class="fa fa-edit"></i></a></td>*@
+                                                <td><a href="/Customer/DeleteCustomerNotification/@drclient["CnId"]" , onclick="return confirm('Are you sure you want to delete this Data?');"><i class="fa fa-trash-o"></i></a></td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </section>
+
+    <script>
+        $(function () {
+
+            $('#example1').DataTable({
+                "paging": true,
+                "pageLength": 25,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false
+            });
+
+    </script>
+
+
+    <script>
+        $('#datepicker').datepicker({
+            "setDate": new Date(),
+            "autoclose": true,
+            format: 'dd/mm/yyyy',
+            todayHighlight: true,
+            defaultDate: new Date(),
+        });
+        // $("#datepicker").datepicker('setDate', new Date());
+        $('#datepicker1').datepicker({
+            "setDate": new Date(),
+            "autoclose": true,
+            format: 'dd/mm/yyyy',
+            todayHighlight: true,
+            defaultDate: new Date(),
+        });
+        // $("#datepicker1").datepicker('setDate', new Date());
+    </script>
+
+    <script>
+
+        document.getElementById('selectall').onclick = function () {
+            var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            var ch = "";
+            if (this.checked == true) {
+                for (var checkbox of checkboxes) {
+                    checkbox.checked = this.checked;
+                    if (checkbox.value != "selectall") {
+
+
+                        if (ch == "") {
+                            ch = checkbox.value;
+
+                        }
+                        else {
+                            ch = ch + "," + checkbox.value;
+                        }
+                    }
+
+                }
+            }
+            else {
+
+                for (var checkbox of checkboxes) {
+                    checkbox.checked = false;
+
+
+                }
+
+
+
+                document.getElementById("txtproid").value = "";
+
+            }
+
+
+            document.getElementById("txtproid").value = ch;
+        }
+
+        function addcheckbox(a) {
+            var b = a;
+            var c = b;
+            // document.getElementById("txtproid").value = "";
+            var d = document.getElementById("txtproid").value;
+            var mystring, myNewString;
+            var checkboxes = document.querySelectorAll('input[name="chkpro"]:checked');
+            let count = 0;
+
+            var ch = "";
+            for (var checkbox of checkboxes) {
+                //document.getElementById("txtproid").append(checkbox.value + ' ');
+
+                let text = document.getElementById("txtproid").value;
+                let result = text.includes(checkbox.value);
+
+                //alert(result);
+                count = count + 1;
+                //alert(checkbox.value);
+                //if (result == false) {
+                if (ch == "") {
+                    ch = checkbox.value;
+
+                }
+                else {
+                    ch = ch + "," + checkbox.value;
+                }
+
+               
+
+
+            }
+
+            // alert(ch);
+            document.getElementById("txtproid").value = ch;
+           
+        }
+    </script>
+}
+

@@ -1,0 +1,249 @@
+﻿@model MilkWayIndia.Models.Customer
+@{
+    Layout = "~/Views/Shared/_MyLayout.cshtml";
+}
+
+@section contain
+{
+    <script src="~/js/jquery.js"></script>
+    @*<script src="~/Content/plugins/jQuery/jquery-2.2.3.min.js"></script>*@
+    <link href="~/Content/plugins/datepicker/datepicker3.css" rel="stylesheet" />
+    <script src="~/Content/plugins/datepicker/bootstrap-datepicker.js"></script>
+    <script src="~/scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var MasterClass = document.getElementById("LiProduct");
+            if (MasterClass != null) {
+                MasterClass.className = MasterClass.className + " active";
+            }
+        });
+    </script>
+
+    <style>
+        .select2-container--default .select2-selection--single {
+            border: 1px solid #d2d6de;
+            border-radius: 0px;
+        }
+
+        .select2-container .select2-selection--single {
+            height: 33px;
+        }
+    </style>
+    <script>
+        $(function () {
+            $(".select2").select2();
+        });
+    </script>
+    <section class="content-header">
+        <h1>
+            Product Assign To SubCategory
+        </h1>
+        <ol class="breadcrumb">
+            <li><a href="@Url.Action("Index", "Admin")"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="active">Product Assign To SubCategory</li>
+        </ol>
+    </section>
+    <!-- Main content -->
+    <section class="content">
+        <div class="col-md-12">
+            <div class="box box-info">
+                <div class="box-header with-border">
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
+                </div>
+                @using (Ajax.BeginForm("UpdateCategory", "Category", null, new AjaxOptions { OnSuccess = "SuccessCategory" }, new { @id = "frmCategory" }))
+                {
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div id="SuccessMsg" style="color: red">@ViewBag.SuccessMsg</div>
+                            <div class="form-group">
+                                <label for="inputEmail3" class="col-sm-1 control-label">Category Name</label>
+                                <div class="col-sm-3">
+                                    <select id="ddlCategory" name="ddlCategory" class="form-control select2">
+                                        <option value="0">---Select---</option>
+                                        @if (ViewBag.lstCategory != null)
+                                        {
+                                            foreach (System.Data.DataRow drCustomerName in ViewBag.lstCategory.Rows)
+                                            {
+                                                <option value="@drCustomerName["Id"]">@drCustomerName["CategoryName"]</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                                <label for="inputEmail3" class="col-sm-1 control-label">Sub Category</label>
+                                <div class="col-sm-3">
+                                    <select id="ddlSubCategory" name="ddlSubCategory" class="form-control"></select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    @*  *@
+                    <div class="row">
+                        <div class="col-md-12">
+                            
+                            <div class="form-group">
+                                <label for="inputEmail3" class="col-sm-1 control-label">Parent Category</label>
+                                <div class="col-sm-3">
+                                    <select id="ddlpCategory" name="ddlpCategory" class="form-control select2">
+                                        <option value="0">---Select---</option>
+                                        @if (ViewBag.Category != null)
+                                        {
+                                            foreach (System.Data.DataRow drCustomerName in ViewBag.Category.Rows)
+                                            {
+                                                <option value="@drCustomerName["Id"]">@drCustomerName["ParentCategory"]</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                                <label for="inputEmail3" class="col-sm-1 control-label">Sub Category</label>
+                                <div class="col-sm-3">
+                                    <select id="ddlpSubCategory" name="ddlSubpCategory" class="form-control"></select>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <button type="button" id="btnSubmit" class="btn btn-primary btn1" value="">View Product</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row">
+                            <header id="Header2" class="panel-heading" style="margin-top:-10px">
+                                <h4>Product</h4>
+                            </header>
+                            <table id="tblExistingDetails" class="display table table-striped table-bordered dt-responsive" style="border: 1px solid #ddd !important;">
+                                <thead>
+                                    <tr>
+                                        <th>@Html.CheckBox("cbCheckAll", new { OnClick = "checkAll(this)" })</th>
+                                        <th>Product Name</th>
+                                        <th style="display:none">Pid</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="box-footer text-right">
+                    <div class="alert alert-success alert-dismissable" id="insertalert" style="width: 30%;display:none" data-auto-dismiss="1000">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    </div>
+                    @*onclick="return ValidCategory();"*@
+                    <input type="submit" id="btnSave" value="Save" class="btn btn-primary" />
+                </div>
+                }
+            </div>
+        </div>
+    </section>
+    <div class="loaderbody" id="loaderbody">
+        <div class="loader"></div>
+    </div>
+    <script src="~/Content/bootstrap/js/bootstrap.min.js"></script>
+    <script>
+        function SuccessCategory(data) {
+            if (data.success == "1") {
+                $('#SuccessMsg').html('Successfully Update Successfully.')
+                $('#tblExistingDetails tbody').html('');
+                $('#ddlCategory').val('0');
+                $('#ddlSubCategory').val('0');
+            }
+        }
+
+        function ValidCategory() {
+            var status = true;
+            $('select').removeClass('field-error');
+            var Category = document.getElementById("ddlSubCategory").value;
+            if (Category == null || Category == "" || Category == "0") {
+                $('#ddlSubCategory').addClass('field-error');
+                $("#ddlSubCategory").focus();
+                return false;
+            }
+        }
+
+        function setSubCategory() {
+            var catid = $('#ddlCategory').val();
+            var URL = '/product/GetSubCategory?CategoryId=' + catid;
+            $('#ddlSubCategory').html('');
+            $.getJSON(URL, function (data) {
+                $('#ddlSubCategory').html(data);
+            });
+        }
+        function setSubpCategory() {
+            var catid = $('#ddlpCategory').val();
+            var URL = '/product/GetSubCategorynew?CategoryId=' + catid;
+            $('#ddlpSubCategory').html('');
+            $.getJSON(URL, function (data) {
+                $('#ddlpSubCategory').html(data);
+            });
+        }
+
+        $(document).ready(function () {
+            $("#loaderbody").addClass('hide');
+
+            $(document).bind('ajaxStart', function () {
+                $("#loaderbody").removeClass('hide');
+            }).bind('ajaxStop', function () {
+                $("#loaderbody").addClass('hide');
+            });
+
+            setSubCategory();
+            $('#ddlCategory').change(function () {
+                setSubCategory();
+
+                var catid = $('#ddlCategory').val();
+                var URL = '/Category/GetProductByCategory?id=' + catid;
+                $.getJSON(URL, function (data) {
+                    const jsonObject = JSON.parse(data);
+                    var rowCount = $("#tblExistingDetails tbody tr").length;
+                    counter = rowCount + 1;
+                    var tr = '';
+                    $.each(jsonObject, function (i, item) {
+                        counter = i + 1;
+                        tr += '<tr><td><input type="checkbox" id="' + counter + '" name="chk[]" value="' + item.Id + '" CssClass="JchkAll"></td><td class="pro_Id" style="display:none">' + item.Id + '<td>' + item.ProductName + '</td></tr>';
+                    });
+                    $('#tblExistingDetails tbody').html(tr);
+                });
+            });
+
+
+
+            $('#ddlpCategory').change(function () {
+                setSubpCategory();
+            });
+
+
+            $(document).on("click", ".btn1", function ()  {
+               // setSubCategory();
+
+                var catid = $('#ddlpSubCategory').val();
+                var pcatid = $('#ddlpCategory').val();
+                var URL = '/Category/GetProductBySubCategory?id=' + catid + '&pcat=' + pcatid;
+                $.getJSON(URL, function (data) {
+                    const jsonObject = JSON.parse(data);
+                    var rowCount = $("#tblExistingDetails tbody tr").length;
+                    counter = rowCount + 1;
+                    var tr = '';
+                    $.each(jsonObject, function (i, item) {
+                        counter = i + 1;
+                        tr += '<tr><td><input type="checkbox" id="' + counter + '" name="chk[]" value="' + item.Id + '" CssClass="JchkAll"></td><td class="pro_Id" style="display:none">' + item.Id + '<td>' + item.ProductName + '</td></tr>';
+                    });
+                    $('#tblExistingDetails tbody').html(tr);
+                });
+            });
+        });
+
+        function checkAll(cb) {
+            var ctrls = document.getElementsByTagName('input');
+            for (var i = 0; i < ctrls.length; i++) {
+                var cbox = ctrls[i];
+                if (cbox.type == "checkbox") {
+                    cbox.checked = cb.checked;
+                }
+            }
+        }
+    </script>
+
+}

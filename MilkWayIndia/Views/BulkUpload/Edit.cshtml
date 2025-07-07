@@ -1,0 +1,194 @@
+﻿@model MilkWayIndia.Entity.tbl_Product_Temp
+@{
+    Layout = "~/Views/Shared/_MyLayout.cshtml";
+}
+@section contain
+{
+    <script src="~/Content/plugins/jQuery/jquery-2.2.3.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var MasterClass = document.getElementById("LiProduct");
+            if (MasterClass != null) {
+                MasterClass.className = MasterClass.className + " active";
+
+            }
+        });
+    </script>
+    @*<section class="content-header">
+            <div class="box-header with-border">
+                <h3 class="box-title">Product Bulk Upload</h3>
+            </div>
+        </section>*@
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box box-primary">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Edit Product</h3>
+                    </div>
+                    <div class="form-horizontal">
+                        <form role="form" action="/bulkupload/edit" method="post" enctype="multipart/form-data">
+                            <div class="box-body">
+                                @Html.HiddenFor(m => m.ID)
+                                <div id="SuccessMsg" style="color: red">@ViewBag.SuccessMsg</div>
+                                <div class="row">
+                                    <div class="col-xs-4">
+                                        <div class="form-group">
+                                            <label for="inputEmail3" class="col-sm-3 control-label">Category</label>
+                                            <div class="col-sm-9">
+                                                @Html.TextBoxFor(m => m.CategoryName, new { @class = "form-control" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-4">
+                                        <div class="form-group">
+                                            <label for="inputEmail3" class="col-sm-3 control-label">Product Name</label>
+                                            <div class="col-sm-9">
+                                                @Html.TextBoxFor(m => m.ProductName, new { @class = "form-control" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-4">
+                                        <div class="form-group">
+                                            <label for="inputEmail3" class="col-sm-3 control-label">MRP</label>
+                                            <div class="col-sm-9">
+                                                @Html.TextBoxFor(m => m.MRP, new { @class = "form-control", onkeypress = "return ValidateNumber(event);" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-4">
+                                        <div class="form-group">
+                                            <label for="inputEmail3" class="col-sm-3 control-label">Sale Price</label>
+                                            <div class="col-sm-9">
+                                                @Html.TextBoxFor(m => m.SalePrice, new { @class = "form-control" , onkeypress = "return ValidateNumber(event);" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-4">
+                                        <div class="form-group">
+                                            <label for="inputEmail3" class="col-sm-3 control-label">Purchase Price</label>
+                                            <div class="col-sm-9">
+                                                @Html.TextBoxFor(m => m.PurchasePrice, new { @class = "form-control", onkeypress = "return ValidateNumber(event);" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-4">
+                                        <div class="form-group">
+                                            <label for="inputEmail3" class="col-sm-3 control-label">CGST (%)</label>
+                                            <div class="col-sm-9">
+                                                @Html.TextBoxFor(m => m.CGST, new { @class = "form-control", onkeypress = "return ValidateNumber(event);" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-4">
+                                        <div class="form-group">
+                                            <label for="inputEmail3" class="col-sm-3 control-label">SGST (%)</label>
+                                            <div class="col-sm-9">
+                                                @Html.TextBoxFor(m => m.SGST, new { @class = "form-control", onkeypress = "return ValidateNumber(event);" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-4">
+                                        <div class="form-group">
+                                            <label for="inputEmail3" class="col-sm-3 control-label">IGST (%)</label>
+                                            <div class="col-sm-9">
+                                                @Html.TextBoxFor(m => m.IGST, new { @class = "form-control", onkeypress = "return ValidateNumber(event);" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-4">
+                                        <div class="form-group">
+                                            <label for="inputEmail3" class="col-sm-3 control-label">Profit/Margin</label>
+                                            <div class="col-sm-9">
+                                                @Html.TextBoxFor(m => m.Profit, new { @class = "form-control" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-4">
+                                        <div class="form-group">
+                                            <label for="inputEmail3" class="col-sm-3 control-label">Details</label>
+                                            <div class="col-sm-9">
+                                                @Html.TextAreaFor(m => m.Details, new { @class = "form-control" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-4">
+                                        <div class="form-group">
+                                            <label for="inputEmail3" class="col-sm-3 control-label">Subcription</label>
+                                            <div class="col-sm-9">
+                                                @Html.TextBoxFor(m => m.Subcription, new { @class = "form-control", onkeypress = "return ValidateNumber(event);" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-4">
+                                        <div class="form-group">
+                                            <label for="inputEmail3" class="col-sm-3 control-label">Youtube Title</label>
+                                            <div class="col-sm-9">
+                                                @Html.TextBoxFor(m => m.YoutubeTitle, new { @class = "form-control" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-4">
+                                        <div class="form-group">
+                                            <label for="inputEmail3" class="col-sm-3 control-label">Youtube URL</label>
+                                            <div class="col-sm-9">
+                                                @Html.TextBoxFor(m => m.YoutubeURL, new { @class = "form-control" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-4">
+                                        <div class="form-group">
+                                            <label for="inputEmail3" class="col-sm-3 control-label">Is Daily</label>
+                                            <div class="col-sm-5">
+                                                <input type="checkbox" class="Checked" id="IsDaily" name="IsDaily" @ViewBag.IsDaily />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-4">
+                                        <div class="form-group">
+                                            <label for="inputEmail3" class="col-sm-3 control-label">Is Active</label>
+                                            <div class="col-sm-5">
+                                                <input type="checkbox" class="Checked" id="IsActive" name="IsActive" @ViewBag.IsActive />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="box-footer text-right">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                                <a href="/bulkupload/detail/@ViewBag.UploadID" class="btn btn-danger">Back To List</a>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+    <script>
+        function ValidateNumber(e) {
+            var keycode = (e.which) ? e.which : e.keyCode;                                    
+            if (!(keycode == 8 || keycode == 46) && (keycode < 48 || keycode > 57)) {
+                return false;
+            }
+            return true;
+        };
+    </script>
+}
+
+
+
+
+
+

@@ -1,0 +1,39 @@
+﻿@model List<MilkWayIndia.Models.SectorViewModel>
+
+@if (Model != null)
+{
+   
+    <input id="myCheckbox" type="checkbox" /><label>&nbsp; Select All</label>
+    foreach (var item in Model)
+    {
+                                             <div>
+                                                 @if (!string.IsNullOrEmpty(item.RoleId))
+                                                 {
+                                                     string a = item.ID;
+                                                     <input type="checkbox" name="chkSector[]" value="@item.ID" checked />
+                                                     @item.Name
+                                                 }
+
+                                                 else
+                                                 {
+                                                     string a = item.ID;
+                                                     <input type="checkbox" name="chkSector[]" value="@item.ID" />
+                                                     @item.Name
+                                                 }
+                                             </div>
+    }
+}
+<script>
+    $('#myCheckbox').click(function () {
+        if ($(this).is(":checked")) {
+            $('#div_sectors').find('input[type="checkbox"]').each(function () {
+                $(this).prop("checked", true);
+            });
+        }
+        else {
+            $('[id *= div_sectors]').find('input[type="checkbox"]').each(function () {
+                $(this).prop("checked", false);
+            });
+        }
+    });
+</script>

@@ -1,0 +1,163 @@
+﻿@model MilkWayIndia.Models.Customer
+<div class="box-body">
+    <div class="row">
+        <div class="col-md-12">
+            @Html.HiddenFor(s => s.Id)
+            <div id="SuccessMsg" style="color: red">@ViewBag.SuccessMsg</div>
+            <div class="form-group">
+                <label for="inputEmail3" class="col-sm-3 control-label">FirstName</label>
+                <div class="col-sm-6">
+                    @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control", @id = "FirstName" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label">LastName</label>
+                <div class="col-sm-6">
+                    @Html.TextBoxFor(m => m.LastName, new { placeholder = "", @id = "LastName", @class = "form-control", onClick = "ClearTextbox('UserName')" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Mobile No</label>
+                <div class="col-sm-6">
+                    @Html.TextBoxFor(m => m.MobileNo, new { placeholder = "", @id = "MobileNo", @class = "form-control", onClick = "ClearTextbox('UserName')", onkeypress = "return ValidateNumber(event);", maxlength = 10 })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Email</label>
+                <div class="col-sm-6">
+                    @Html.TextBoxFor(m => m.Email, new { placeholder = "", @id = "Email", @class = "form-control", onClick = "ClearTextbox('UserName')" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Address</label>
+                <div class="col-sm-6">
+                    @Html.TextAreaFor(m => m.Address, new { placeholder = "", @id = "Address", @class = "form-control", onClick = "ClearTextbox('UserName')" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Password</label>
+                <div class="col-sm-6">
+                    @Html.TextBoxFor(m => m.Password, new { placeholder = "", @id = "Password", @class = "form-control", onClick = "ClearTextbox('UserName')" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Sector</label>
+                <div class="col-sm-6">
+                    @Html.DropDownListFor(model => model.SectorId, ViewBag.Sector as SelectList, "-- Select Sector --", new { @class = "form-control select2" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Credit</label>
+                <div class="col-sm-6">
+                    @Html.TextBoxFor(m => m.Credit, new { @class = "form-control", type = "number" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Order By</label>
+                <div class="col-sm-6">
+                    @Html.TextBoxFor(m => m.OrderBy, new { @class = "form-control", type = "number" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Latitude/Longitude</label>
+                <div class="col-sm-6">
+                    @Html.TextBoxFor(m => m.lat, new { placeholder = "", @id = "Lat", @class = "form-control", onClick = "ClearTextbox('UserName')" })
+                </div>
+            </div>
+            @*<div class="form-group">
+            <label class="col-sm-2 control-label">Longitude</label>
+            <div class="col-sm-6">
+                @Html.TextBoxFor(m => m.lon, new { placeholder = "", @id = "Lon", @class = "form-control", onClick = "ClearTextbox('UserName')" })
+            </div>
+        </div>*@
+            <div class="form-group">
+                <label for="FLedgerCode" class="col-sm-3 control-label">Photo</label>
+                <div class="col-sm-3">
+                    <input type="file" name="Photo" id="Photo" /><br />
+                    @Html.HiddenFor(m => m.Photo)
+                    @Html.HiddenFor(m => m.ReferralCode)
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Customer Type</label>
+                <div class="col-sm-6">
+                    <select id="ddlcustype" name="ddlcustype" class="form-control select2">
+                        <option value="0">---Select---</option>
+                        <option value="General">General</option>
+                        <option value="B2B">B2B</option>
+                    </select>
+                    <script>
+                      document.getElementById('ddlcustype').value = '@ViewBag.CustomerType';
+                    </script>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="box-footer text-right">
+    @*<input type="button" class="btn btn-orange" value="Cancel" />*@
+    <input type="submit" value="Save" class="btn btn-primary" onclick="return ValidCustomer();" />
+
+</div>
+<script>
+    function ValidateNumber(e) {
+        var keycode = (e.which) ? e.which : e.keyCode;
+        var phn = document.getElementById('MobileNo');
+        if (!(keycode == 8 || keycode == 46) && (keycode < 48 || keycode > 57)) {
+            return false;
+        }
+        return true;
+    };
+
+    function ValidCustomer() {
+        var status = true;
+        $('select').removeClass('field-error');
+        $('input').removeClass('field-error');
+        $('span.select2').removeClass('field-error');
+        $('label.text-danger').remove();
+        var FirstName = document.getElementById("FirstName").value;
+        if (FirstName == null || FirstName == "") {
+            $('#FirstName').addClass('field-error');
+            status = false;
+        }
+
+        var LastName = document.getElementById("LastName").value;
+        if (LastName == null || LastName == "" || LastName == "Please Enter LastName") {
+            $('#LastName').addClass('field-error');
+            status = false;
+        }
+
+        var MobileNo = document.getElementById("MobileNo").value;
+        if (MobileNo == null || MobileNo == "" || MobileNo == "Please Enter MobileNo") {
+            $('#MobileNo').addClass('field-error');
+            status = false;
+        }
+        var UserEmail = document.getElementById("Email").value;
+        if (/(.+)(.+){2,}\.(.+){2,}/.test(UserEmail) || UserEmail == "Please Enter Valid Email" || UserEmail == "") {
+
+        }
+        else {
+            $('#Email').addClass('field-error');
+            status = false;
+        }
+
+        var Password = document.getElementById("Password").value;
+        if (Password == null || Password == "" || Password == "Please Enter Password") {
+            $('#Password').addClass('field-error');
+            status = false;
+        }
+        if (Password.length < 1 || Password == "Password Must Be 1 Char Long") {
+            $('#Password').addClass('field-error');
+            $('#Password').parent().append("<label class='text-danger'>Password Must Be 1 Char Long</label>");
+            status = false;
+        }
+        //if ($("#SectorId").val() == null || $("#SectorId").val() == "" || $("#SectorId").val() == "0") {
+        //    $('#SectorId').parent().find('span.select2').addClass('field-error');
+        //    status = false;
+        //}
+        return status;
+    }
+</script>

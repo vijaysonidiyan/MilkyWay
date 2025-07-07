@@ -1,0 +1,867 @@
+﻿@{
+    ViewBag.Title = "index";
+    Layout = "~/Views/Shared/_MyLayout.cshtml";
+}
+@section contain
+{
+    <script src="~/js/jquery.js"></script>
+    @*<script src="~/Content/plugins/jQuery/jquery-2.2.3.min.js"></script>*@
+
+    <!-- Bootstrap 3.3.6 -->
+    <link rel="stylesheet" href="~/Content/bootstrap/css/bootstrap.min.css">
+    <!-- DataTables -->
+    <link href="~/Content/plugins/datatables/dataTables.bootstrap.css" rel="stylesheet">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="~/Content/dist/css/AdminLTE.min.css">
+    <!-- AdminLTE Skins. Choose a skin from the css/skins
+       folder instead of downloading all of them to reduce the load. -->
+    <link rel="stylesheet" href="~/Content/dist/css/skins/_all-skins.min.css">
+    <link href="~/Content/plugins/datepicker/datepicker3.css" rel="stylesheet" />
+    <script src="~/Content/plugins/datepicker/bootstrap-datepicker.js"></script>
+    <style>
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .txtwidth {
+            width: 80px;
+        }
+    </style>
+    <style>
+        .select2-container--default .select2-selection--single {
+            border: 1px solid #d2d6de;
+            border-radius: 0px;
+        }
+
+        .select2-container .select2-selection--single {
+            height: 34px;
+        }
+    </style>
+    @*<script src="~/Content/plugins/select2/select2.full.min.js"></script>*@
+    <script>
+        $(function () {
+            $(".select2").select2();
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            var MasterClass = document.getElementById("LiDashboard");
+            if (MasterClass != null) {
+                MasterClass.className = MasterClass.className + " active";
+
+            }
+        });
+    </script>
+    <section class="content-header">
+        @if (@TempData["error"] != null)
+        {
+            <script type="text/javascript">
+                alert("@TempData["error"]");
+            </script>
+        }
+        <div class="box-header with-border">
+            <h3 class="box-title">Customer Subscription List</h3>
+        </div>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box box-info">
+                    <div class="box">
+                        <div class="box-header with-border">
+                            <div class="btn-group-vertical ">
+                                @using (Html.BeginForm())
+                                {
+                                    <div class="box-header with-border">
+                                        <div class="btn-group-vertical ">
+                                            <div class="btn-group-vertical ">
+                                                <div class="form-group has-feedback">
+                                                    <select id="ddlSector" name="ddlSector" class="form-control select2">
+                                                        <option value="0">---Select Sector---</option>
+                                                        @if (ViewBag.Sector != null)
+                                                        {
+                                                            foreach (System.Data.DataRow drSectorName in ViewBag.Sector.Rows)
+                                                            {
+                                                                <option value="@drSectorName["Id"]">@drSectorName["SectorName"] </option>
+                                                            }
+                                                        }
+                                                    </select>
+                                                    @if (ViewBag.SectorId != null)
+                                                    {
+                                                        <script>
+                                                            document.getElementById('ddlSector').value = '@ViewBag.SectorId';
+                                                        </script>
+                                                    }
+                                                </div>
+                                            </div>
+
+                                            <div class="btn-group-vertical ">
+                                                <div class="btn-group-vertical ">
+                                                    <div class="form-group has-feedback">
+                                                        <select id="ddlBuilding" name="ddlBuilding" class="form-control select2">
+                                                            <option value="0">---Select Building---</option>
+                                                            @if (ViewBag.Building != null)
+                                                            {
+                                                                foreach (System.Data.DataRow drBuildingName in ViewBag.Building.Rows)
+                                                                {
+                                                                    <option value="@drBuildingName["Id"]">@drBuildingName["BuildingName"]-@drBuildingName["BlockNo"]</option>
+                                                                }
+                                                            }
+                                                        </select>
+                                                        @if (ViewBag.BuildingId != null)
+                                                        {
+                                                            <script>
+                                                                document.getElementById('ddlBuilding').value = '@ViewBag.BuildingId';
+                                                            </script>
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="btn-group-vertical ">
+                                                <div class="btn-group-vertical ">
+                                                    <div class="form-group has-feedback">
+                                                        <select id="ddlDays" name="ddlDays" class="form-control select2">
+                                                            <option value="0">---Select---</option>
+                                                            <option value="3">3</option>
+                                                            <option value="5">5</option>
+                                                            <option value="7">7</option>
+                                                            <option value="10">10</option>
+                                                            <option value="15">15</option>
+                                                        </select>
+                                                        @if (ViewBag.DaysId != null)
+                                                        {
+                                                            <script>
+                                                                document.getElementById('ddlDays').value = '@ViewBag.DaysId';
+                                                            </script>
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="btn-group-vertical">
+                                                <div class="form-group has-feedback">
+                                                    <button type="submit" id="clkbtncomp" class="btn btn-primary">Submit</button>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <div class="box-body table-responsive no-padding">
+                                <table id="example1" class="table table-bordered table-striped">
+                                    @{int rowNo = 0;}
+                                    <thead>
+                                        <tr>
+                                            <th>No</th>
+                                            <th>Customer</th>
+                                            <th>Sector</th>
+                                            <th>Address</th>
+                                            <th>Total days</th>
+                                            <th>Pending days</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (System.Data.DataRow drclient in ViewBag.ProductorderList.Rows)
+                                        {
+                                            <tr>
+                                                <td>@(rowNo += 1)</td>
+                                                <td>@drclient["CustomerName"]</td>
+                                                <td>@drclient["SectorName"]</td>
+                                                <td>@drclient["BlockNo"] @drclient["FlatNo"] @drclient["BuildingName"]</td>
+                                                <td style="color:green ">@drclient["Subsdays"]</td>
+                                                <td style="color:red">@drclient["Pandingday"]</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="box-header with-border">
+            <h3 class="box-title">Customer Wallet Low Balance List</h3>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box box-info">
+                    <div class="box">
+                        <div class="box-header with-border">
+                            <div class="btn-group-vertical ">
+                                @*@using (Html.BeginForm("CustomerWallet","Admin"))
+                                    {*@
+                                <div class="box-header with-border">
+                                    <div class="btn-group-vertical ">
+                                        <div class="btn-group-vertical ">
+                                            <div class="form-group has-feedback">
+                                                <select id="ddlSectorlb" name="ddlSectorlb" class="form-control select2">
+                                                    <option value="0">---Select Sector---</option>
+                                                    @if (ViewBag.Sector != null)
+                                                    {
+                                                        foreach (System.Data.DataRow drSectorName in ViewBag.Sector.Rows)
+                                                        {
+                                                            <option value="@drSectorName["Id"]">@drSectorName["SectorName"] </option>
+                                                        }
+                                                    }
+                                                </select>
+                                                @if (ViewBag.SectorId != null)
+                                                {
+                                                    <script>
+                                                        document.getElementById('ddlSectorlb').value = '@ViewBag.SectorId';
+                                                    </script>
+                                                }
+                                            </div>
+                                        </div>
+
+                                        <div class="btn-group-vertical ">
+                                            <div class="btn-group-vertical ">
+                                                <div class="form-group has-feedback">
+                                                    <select id="ddlBuildinglb" name="ddlBuildinglb" class="form-control select2">
+                                                        <option value="0">---Select Building---</option>
+                                                        @if (ViewBag.Building != null)
+                                                        {
+                                                            foreach (System.Data.DataRow drBuildingName in ViewBag.Building.Rows)
+                                                            {
+                                                                <option value="@drBuildingName["Id"]">@drBuildingName["BuildingName"]-@drBuildingName["BlockNo"]</option>
+                                                            }
+                                                        }
+                                                    </select>
+                                                    @if (ViewBag.BuildingId != null)
+                                                    {
+                                                        <script>
+                                                            document.getElementById('ddlBuildinglb').value = '@ViewBag.BuildingId';
+                                                        </script>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="btn-group-vertical">
+                                            <div class="form-group has-feedback">
+                                                <input type="submit" id="btnlow" class="btn btn-primary" onclick="return getLowBal();" />
+                                            </div>
+                                        </div>
+                                        <div class="btn-group-vertical">
+                                            <div class="form-group has-feedback">
+                                                <input type="submit" id="btnlbprint" value="Print" class="btn btn-success btn-block" onclick="pdflb()" />
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                @*}*@
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <div id="lbal">
+                                <div class="box-body table-responsive no-padding">
+                                    <table id="example" class="table table-bordered table-striped">
+                                        @{int rowNo1 = 0;}
+                                        <thead>
+                                            <tr>
+                                                <th>No</th>
+                                                <th>Customer</th>
+                                                <th>Sector</th>
+                                                <th>Address</th>
+                                                <th>Wallet Balance</th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (System.Data.DataRow drclient in ViewBag.WalletList.Rows)
+                                            {
+                                                <tr>
+                                                    <td>@(rowNo1 += 1)</td>
+                                                    <td>@drclient["Customer"]</td>
+                                                    <td>@drclient["Sector"]</td>
+                                                    <td>@drclient["BlockNo"] @drclient["flatno"] @drclient["BuildingName"]</td>
+                                                    <td style="color:red">@drclient["FinalAmt"]</td>
+
+
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="box-header with-border">
+            <h3 class="box-title">DeliveryBoy Status</h3>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box box-info">
+                    <div class="box">
+                        <div class="box-header with-border">
+                            <div class="btn-group-vertical ">
+                                @*@using (Html.BeginForm())
+                                    {*@
+                                <div class="box-header with-border">
+                                    <div class="btn-group-vertical ">
+                                        <div class="btn-group-vertical ">
+                                            <div class="form-group has-feedback">
+                                                <select id="ddlStaff" name="ddlStaff" class="form-control select2">
+                                                    <option value="0">---Staff---</option>
+                                                    @if (ViewBag.Staff != null)
+                                                    {
+                                                        foreach (System.Data.DataRow drStaffName in ViewBag.Staff.Rows)
+                                                        {
+                                                            <option value="@drStaffName["Id"]">@drStaffName["FirstName"] @drStaffName["LastName"]</option>
+                                                        }
+                                                    }
+                                                </select>
+                                                @if (ViewBag.DeliveryBoyId != null)
+                                                {
+                                                    <script>
+                                                        document.getElementById('ddlStaff').value = '@ViewBag.DeliveryBoyId';
+                                                    </script>
+                                                }
+                                            </div>
+                                        </div>
+
+                                        <div class="btn-group-vertical ">
+                                            <div class="btn-group-vertical ">
+                                                <div class="form-group has-feedback">
+                                                    <select id="ddlStatus" name="ddlStatus" class="form-control">
+                                                        <option value="0">---Status---</option>
+                                                        <option value="Complete">Complete</option>
+                                                        <option value="InComplete">InComplete</option>
+                                                        <option value="Pending">Pending</option>
+                                                    </select>
+                                                    @if (ViewBag.StatusId != null)
+                                                    {
+                                                        <script>
+                                                            document.getElementById('ddlStatus').value = '@ViewBag.StatusId';
+                                                        </script>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="btn-group-vertical">
+                                            <div class="form-group has-feedback">
+                                                <input type="submit" id="btndel" class="btn btn-primary" onclick="return getDelStatus();" />
+                                            </div>
+                                        </div>
+                                        <div class="btn-group-vertical">
+                                            <div class="form-group has-feedback">
+                                                <input type="submit" value="Report" class="btn btn-success btn-block" onclick="deliveryboyreport()" />
+                                            </div>
+                                        </div>
+                                        <div class="btn-group-vertical">
+                                            <div class="form-group has-feedback">
+                                                <input type="submit" id="btn" value="Print" class="btn btn-success btn-block" onclick="pdf()" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                @*}*@
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <div id="dboy">
+                                <div class="box-body table-responsive no-padding">
+                                    <table id="delex" class="table table-bordered table-striped">
+                                        @{int rowNo2 = 0;}
+                                        <thead>
+                                            <tr>
+                                                <th>No</th>
+                                                <th>DeliveryBoy</th>
+                                                <th>Customer</th>
+                                                <th>Date</th>
+                                                <th>Address</th>
+                                                <th>OrderNo</th>
+                                                <th>Product</th>
+                                                <th>Qty</th>
+                                                <th>Amount</th>
+                                                <td>Status</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (System.Data.DataRow drclient in ViewBag.PorderList.Rows)
+                                            {
+                                                <tr>
+                                                    <td>@(rowNo2 += 1)</td>
+                                                    <td>@drclient["DeliveryBoy"]</td>
+                                                    <td>@drclient["Customer"]</td>
+                                                    <td>@drclient["OrderDate"]</td>
+                                                    <td>@drclient["BlockNo"] @drclient["FlatNo"] @drclient["BuildingName"]</td>
+                                                    <td>@drclient["OrderNo"]</td>
+                                                    <td>@drclient["ProductName"]</td>
+                                                    <td>@drclient["Qty"]</td>
+                                                    <td>@drclient["Amount"]</td>
+                                                    <td>@drclient["Status"]</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="box-header with-border">
+            <h3 class="box-title">Vendor Product</h3>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box box-info">
+                    <div class="box">
+                        <div class="box-header with-border">
+                            <div class="btn-group-vertical ">
+
+                                <div class="box-header with-border">
+                                    <div class="btn-group-vertical ">
+                                        <div class="btn-group-vertical ">
+                                            <div class="form-group has-feedback">
+                                                <select id="ddlSectorvp" name="ddlSectorvp" class="form-control select2">
+                                                    <option value="0">---Select---</option>
+                                                    @if (ViewBag.Sector != null)
+                                                    {
+                                                        foreach (System.Data.DataRow drSectorName in ViewBag.Sector.Rows)
+                                                        {
+                                                            <option value="@drSectorName["Id"]">@drSectorName["SectorName"] </option>
+                                                        }
+                                                    }
+                                                </select>
+                                                @if (ViewBag.SectorId != null)
+                                                {
+                                                    <script>
+                                                        document.getElementById('ddlSectorvp').value = '@ViewBag.SectorId';
+                                                    </script>
+                                                }
+                                            </div>
+                                        </div>
+
+                                        <div class="btn-group-vertical ">
+                                            <div class="btn-group-vertical ">
+                                                <div class="form-group has-feedback">
+                                                    <select id="ddlVendorvp" name="ddlVendorvp" class="form-control select2">
+                                                        <option value="0">---Vendor---</option>
+                                                        @if (ViewBag.Vendor != null)
+                                                        {
+                                                            foreach (System.Data.DataRow drStaffName in ViewBag.Vendor.Rows)
+                                                            {
+                                                                <option value="@drStaffName["Id"]">@drStaffName["FirstName"] @drStaffName["LastName"]</option>
+                                                            }
+                                                        }
+                                                    </select>
+                                                    @if (ViewBag.VendorId != null)
+                                                    {
+                                                        <script>
+                                                            document.getElementById('ddlVendorvp').value = '@ViewBag.VendorId';
+                                                        </script>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="btn-group-vertical ">
+                                            <div class="btn-group-vertical ">
+                                                <div class="form-group has-feedback">
+                                                    <select id="ddlStatus1" name="ddlStatus1" class="form-control">
+                                                        <option value="0">---Status---</option>
+                                                        <option value="Complete">Complete</option>
+                                                        <option value="Pending">Pending</option>
+                                                    </select>
+                                                    @if (ViewBag.StatusId != null)
+                                                    {
+                                                        <script>
+                                                            document.getElementById('ddlStatus1').value = '@ViewBag.StatusId';
+                                                        </script>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="btn-group-vertical">
+                                            <div class="form-group has-feedback">
+                                                <input type="submit" id="btndel" class="btn btn-primary" onclick="return getvenp();" />
+                                            </div>
+                                        </div>
+                                        <div class="btn-group-vertical">
+                                            <div class="form-group has-feedback">
+                                                <input type="submit" value="Report" class="btn btn-success btn-block" onclick="vendorreport()" />
+                                            </div>
+                                        </div>
+                                        <div class="btn-group-vertical">
+                                            <div class="form-group has-feedback">
+                                                <input type="submit" id="btn" value="Print" class="btn btn-success btn-block" onclick="pdf1()" />
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <div id="ven">
+                                <div class="box-body table-responsive no-padding">
+                                    <table id="vendor" class="table table-bordered table-striped">
+                                        @{int rowNo3 = 0;}
+                                        <thead>
+                                            <tr>
+                                                <th>No</th>
+                                                <th>Date</th>
+                                                <th>Sector</th>
+                                                <th>Vendor</th>
+                                                <th>Product</th>
+                                                <th>Qty</th>
+                                                <th>Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (System.Data.DataRow drclient in ViewBag.vendorpList.Rows)
+                                            {
+                                                <tr>
+                                                    <td>@(rowNo3 += 1)</td>
+                                                    <td>@drclient["OrderDate"]</td>
+                                                    <td>@drclient["Sector"]</td>
+                                                    <td>@drclient["Vendor"]</td>
+                                                    <td>@drclient["ProductName"]</td>
+                                                    <td>@drclient["Qty"]</td>
+                                                    <td>@drclient["statuss"]</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+    <script>
+        $('#datepicker').datepicker({
+            "setDate": new Date(),
+            "autoclose": true,
+            format: 'dd/mm/yyyy',
+            todayHighlight: true,
+            defaultDate: new Date(),
+        });
+        $("#datepicker").datepicker('setDate', new Date());
+        $('#datepicker1').datepicker({
+            "setDate": new Date(),
+            "autoclose": true,
+            format: 'dd/mm/yyyy',
+            todayHighlight: true,
+            defaultDate: new Date(),
+        });
+        $("#datepicker1").datepicker('setDate', new Date());
+    </script>
+
+    <!-- jQuery 2.2.3 -->
+    <script src="~/Content/plugins/jQuery/jquery-2.2.3.min.js"></script>
+
+    <script src="~/Content/bootstrap/js/bootstrap.min.js"></script>
+    <!-- DataTables -->
+    <!-- DataTables -->
+    <script src="~/Content/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="~/Content/plugins/datatables/dataTables.bootstrap.min.js"></script>
+    <script>
+        $(function () {
+            $('#example1').DataTable({
+                "pageLength": 5,
+                "lengthMenu": [[5, 10, 20, -1], [5, 10, 20, 'All']],
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false
+            });
+        });
+        $(function () {
+            $('#example').DataTable({
+                "pageLength": 5,
+                "lengthMenu": [[5, 10, 20, -1], [5, 10, 20, 'All']],
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false
+            });
+        });
+
+        $(function () {
+            $('#delex').DataTable({
+                "pageLength": 5,
+                "lengthMenu": [[5, 10, 20, -1], [5, 10, 20, 'All']],
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false
+            });
+        });
+
+        $(function () {
+            $('#vendor').DataTable({
+                "pageLength": 5,
+                "lengthMenu": [[5, 10, 20, -1], [5, 10, 20, 'All']],
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false
+            });
+        });
+    </script>
+
+    <script>
+        function getDelStatus() {
+
+            var ddl = document.getElementById("ddlStaff");
+            var ddl1 = document.getElementById("ddlStatus");
+            var sid = ddl.value;
+            var status = ddl1.value;
+            var test = "";
+
+
+            $.ajax({
+                url: '/Admin/DeliveryStatus?StaffId=' + sid + '&Status=' + status,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                datatype: "json",
+                success: function (response) {
+                    Data = response;
+                    var dataRows = JSON.parse(Data);
+                    console.log(dataRows);
+                    var i = 1;
+                    $('#dboy').empty();
+                    $('#delex').DataTable().destroy();
+                    test += '<div class="box-body table-responsive no-padding"><table id="delex" class="table table-bordered table-striped">' +
+                        '<thead><tr><th>No</th><th>DeliveryBoy</th><th>Customer</th><th>Date</th><th>Address</th><th>OrderNo</th><th>Product</th><th>Qty</th><th>Amount</th><th>Status</th></tr></thead>' +
+                        '<tbody>';
+                    $.each(dataRows, function (index, item) {
+                        test += ("<tr>" +
+                            "<td>" + i + "</td>" +
+                            "<td>" + dataRows[index].DeliveryBoy + "</td>" +
+                            "<td>" + dataRows[index].Customer + "</td>" +
+                            "<td>" + dataRows[index].OrderDate + "</td>" +
+                            "<td>" + dataRows[index].BlockNo + " " + dataRows[index].FlatNo + " " + dataRows[index].BuildingName + "</td>" +
+                            "<td>" + dataRows[index].OrderNo + "</td>" +
+                            "<td>" + dataRows[index].ProductName + "</td>" +
+                            "<td>" + dataRows[index].Qty + "</td>" +
+                            "<td>" + dataRows[index].Amount + "</td>" +
+                            "<td>" + dataRows[index].Status + "</td>" +
+                            "</tr>"
+                        )
+                        i++;
+                    });
+
+                },
+                complete: function () {
+                    test += '</tbody></table></div>';
+                    $('#dboy').html(test).show();
+                    $(function () {
+                        $('#delex').DataTable({
+                            "pageLength": 5,
+                            "lengthMenu": [[5, 10, 20, -1], [5, 10, 20, 'All']],
+                            "paging": true,
+                            "lengthChange": true,
+                            "searching": true,
+                            "ordering": true,
+                            "info": true,
+                            "autoWidth": false
+                        });
+                    });
+
+                }
+            });
+        }
+
+        function getvenp() {
+
+            var ddl = document.getElementById("ddlSectorvp");
+            var ddl1 = document.getElementById("ddlVendorvp");
+            var ddl2 = document.getElementById("ddlStatus1");
+            var sid = ddl.value;
+            var vid = ddl1.value;
+            var status = ddl2.value;
+            var tbl = "";
+
+
+
+            $.ajax({
+                url: '/Admin/VendorProduct?secId=' + sid + '&venId=' + vid + '&Status=' + status,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                datatype: "json",
+                success: function (response) {
+                    Data = response;
+                    var dataRows = JSON.parse(Data);
+                    console.log(dataRows);
+                    var i = 1;
+                    $('#ven').empty();
+                    $('#vendor').DataTable().destroy();
+                    tbl += '<div class="box-body table-responsive no-padding"><table id="vendor" class="table table-bordered table-striped">' +
+                        '<thead><tr><th>No</th><th>Date</th><th>Sector</th><th>Vendor</th><th>Product</th><th>Qty</th><th>Status</th></tr></thead>' +
+                        '<tbody>';
+                    $.each(dataRows, function (index, item) {
+                        tbl += ("<tr>" +
+                            "<td>" + i + "</td>" +
+                            "<td>" + dataRows[index].OrderDate + "</td>" +
+                            "<td>" + dataRows[index].Sector + "</td>" +
+                            "<td>" + dataRows[index].Vendor + "</td>" +
+                            "<td>" + dataRows[index].ProductName + "</td>" +
+                            "<td>" + dataRows[index].Qty + "</td>" +
+                            "<td>" + dataRows[index].statuss + "</td>"
+
+                        )
+                        i++;
+                    });
+
+                },
+                complete: function () {
+                    tbl += '</tbody></table></div>';
+                    $('#ven').html(tbl).show();
+                    $(function () {
+                        $('#vendor').DataTable({
+                            "pageLength": 5,
+                            "lengthMenu": [[5, 10, 20, -1], [5, 10, 20, 'All']],
+                            "paging": true,
+                            "lengthChange": true,
+                            "searching": true,
+                            "ordering": true,
+                            "info": true,
+                            "autoWidth": false
+                        });
+                    });
+                }
+            });
+        }
+
+        function getLowBal() {
+            var ddl1 = document.getElementById("ddlSectorlb");
+            var ddl = document.getElementById("ddlBuildinglb");
+            var sid = ddl1.value;
+            var buildingId = ddl.value;
+            var tbl = "";
+
+            $.ajax({
+                url: '/Admin/LowBalanceList?secId=' + sid + '&buildingId=' + buildingId,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                datatype: "json",
+                success: function (response) {
+                    Data = response;
+                    var dataRows = JSON.parse(Data);
+                    console.log(dataRows);
+                    var i = 1;
+                    $('#lbal').empty();
+                    $('#example').DataTable().destroy();
+                    tbl += '<div class="box-body table-responsive no-padding"><table id="example" class="table table-bordered table-striped">' +
+                        '<thead><tr><th>No</th><th>Customer</th><th>Sector</th><th>Address</th><th>Wallet Balance</th></tr></thead>' +
+                        '<tbody>';
+                    $.each(dataRows, function (index, item) {
+                        tbl += ("<tr>" +
+                            "<td>" + i + "</td>" +
+                            "<td>" + dataRows[index].Customer + "</td>" +
+                            "<td>" + dataRows[index].Sector + "</td>" +
+                            "<td>" + dataRows[index].BlockNo + " " + dataRows[index].flatno + " " + dataRows[index].BuildingName + "</td>" +
+                            "<td style='color: red' >" + dataRows[index].FinalAmt + "</td>"
+
+
+                        )
+                        i++;
+                    });
+
+                },
+                complete: function () {
+                    tbl += '</tbody></table></div>';
+                    $('#lbal').html(tbl).show();
+                    $(function () {
+                        $('#example').DataTable({
+                            "pageLength": 5,
+                            "lengthMenu": [[5, 10, 20, -1], [5, 10, 20, 'All']],
+                            "paging": true,
+                            "lengthChange": true,
+                            "searching": true,
+                            "ordering": true,
+                            "info": true,
+                            "autoWidth": false
+                        });
+                    });
+                }
+            });
+
+        }
+
+        function pdf() {
+            var DeliveryboyId = $('#ddlStaff').val();
+            var Status = $('#ddlStatus').val();
+            $.ajaxSetup({ async: false });
+            var urlInsert = '/Admin/DeliveryBoyDailyOrderPrint?StaffId=' + DeliveryboyId + '&Status=' + Status;
+            window.location = urlInsert;
+        }
+
+        function deliveryboyreport() {
+            var DeliveryboyId = $('#ddlStaff').val();
+            var Status = $('#ddlStatus').val();
+            $.ajaxSetup({ async: false });
+            var urlInsert = '/Admin/DeliveryBoyDailyOrderReport?StaffId=' + DeliveryboyId + '&Status=' + Status;
+            window.open(urlInsert);
+        }
+
+        function vendorreport() {
+            var SectorId = $('#ddlSectorvp').val();
+            var VendorId = $('#ddlVendorvp').val();
+            var status = $('#ddlStatus1').val();
+            $.ajaxSetup({ async: false });
+            var urlInsert = '/Admin/VendorProductOrderReport?SectorId=' + SectorId + '&VendorId=' + VendorId + '&status=' + status;
+            window.open(urlInsert);
+        }
+
+        function pdf1() {
+
+            var SectorId = $('#ddlSectorvp').val();
+            var VendorId = $('#ddlVendorvp').val();
+            var status = $('#ddlStatus1').val();
+            $.ajaxSetup({ async: false });
+            var urlInsert = '/Admin/VendorProductOrderPrint?SectorId=' + SectorId + '&VendorId=' + VendorId + '&status=' + status;
+            window.location = urlInsert;
+        }
+
+        function pdflb() {
+
+            var ddl1 = document.getElementById("ddlSectorlb");
+            var ddl = document.getElementById("ddlBuildinglb");
+            var sid = ddl1.value;
+            var buildingId = ddl.value;
+            $.ajaxSetup({ async: false });
+            var urlInsert = '/Admin/CustomerLowBalanceListPrint?secId=' + sid + '&BuildingId=' + buildingId;
+            window.location = urlInsert;
+        }
+
+    </script>
+
+}
+

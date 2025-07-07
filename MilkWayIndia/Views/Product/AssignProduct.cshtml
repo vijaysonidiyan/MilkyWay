@@ -1,0 +1,285 @@
+﻿@model MilkWayIndia.Models.ProductAssignVM
+@{
+    ViewBag.Title = "AssignProduct";
+    Layout = "~/Views/Shared/_MyLayout.cshtml";
+}
+
+@section contain
+{
+
+    <script src="~/Content/plugins/jQuery/jquery-2.2.3.min.js"></script>
+    <script src="~/scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/Content/toastr/toastr.min.js"></script>
+    <link href="~/Content/toastr/toastr.min.css" rel="stylesheet" />
+    <script>
+        $(document).ready(function () {
+            var MasterClass = document.getElementById("LiProduct");
+            if (MasterClass != null) {
+                MasterClass.className = MasterClass.className + " active";
+
+            }
+        });
+    </script>
+    <section class="content-header">
+        <h1>
+            Assign Product
+        </h1>
+        <ol class="breadcrumb">
+            <li><a href="@Url.Action("Index", "Admin")"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="active">Assign Product</li>
+        </ol>
+    </section>
+
+
+    <!-- Main content -->
+
+    <section class="content">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box box-primary">
+                    @using (Ajax.BeginForm("AssignProduct", "Attribute", null, new AjaxOptions { OnSuccess = "SuccessAssign" }, new { @id = "frmAssign" }))
+                    {
+                        @Html.HiddenFor(model => model.ProductID)
+                        <div class="box-body">
+                            <div class="row">
+                                <div class="col-md-4">
+
+                                    <div class="form-group has-feedback">
+                                        <label>State</label>
+                                        <select id="ddlState" name="ddlState" class="form-control select2">
+                                            <option value="0">---Select---</option>
+                                            @if (ViewBag.Vendor != null)
+                                            {
+                                                foreach (System.Data.DataRow drStaffName in ViewBag.Vendor.Rows)
+                                                {
+                                                    <option value="@drStaffName["Id"]">@drStaffName["FirstName"] @drStaffName["LastName"]</option>
+                                                }
+                                            }
+                                        </select>
+                                        @if (ViewBag.VendorId != null)
+                                        {
+                                            <script>
+                                                document.getElementById('ddlStae').value = '@ViewBag.VendorId';
+                                            </script>
+                                        }
+                                    </div>
+
+                                    <div class="form-group has-feedback">
+                                        <label>City</label>
+                                        <select id="ddlCity" name="ddlCity" class="form-control select2">
+                                            <option value="0">---Select---</option>
+                                            @if (ViewBag.Vendor != null)
+                                            {
+                                                foreach (System.Data.DataRow drStaffName in ViewBag.Vendor.Rows)
+                                                {
+                                                    <option value="@drStaffName["Id"]">@drStaffName["FirstName"] @drStaffName["LastName"]</option>
+                                                }
+                                            }
+                                        </select>
+                                        @if (ViewBag.VendorId != null)
+                                        {
+                                            <script>
+                                                document.getElementById('ddlCity').value = '@ViewBag.VendorId';
+                                            </script>
+                                        }
+                                    </div>
+
+                                    <div class="form-group has-feedback">
+                                        <label>Vendor</label>
+                                        <select id="ddlVendor" name="ddlVendor" class="form-control select2">
+                                            <option value="0">---Select---</option>
+                                            @if (ViewBag.Vendor != null)
+                                            {
+                                                foreach (System.Data.DataRow drStaffName in ViewBag.Vendor.Rows)
+                                                {
+                                                    <option value="@drStaffName["Id"]">@drStaffName["FirstName"] @drStaffName["LastName"]</option>
+                                                }
+                                            }
+                                        </select>
+                                        @if (ViewBag.VendorId != null)
+                                        {
+                                            <script>
+                                                document.getElementById('ddlVendor').value = '@ViewBag.VendorId';
+                                            </script>
+                                        }
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Sector</label>
+                                        <div id="div_sectors" class="scrollbox">
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Attribute</label>
+                                        @Html.DropDownListFor(model => model.AttributeID, ViewBag.lstAttribute as SelectList, new { @class = "form-control" })
+                                    </div>
+                                    <div class="form-group">
+                                        <label>MRP Price</label>
+                                        @Html.TextBoxFor(model => model.MRPPrice, new { @class = "form-control required", onchange = "CalculateSaleAmt();", onkeypress = "return ValidateNumber(event);" })
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Purchase Price</label>
+                                        @Html.TextBoxFor(model => model.PurchasePrice, new { @class = "form-control required", onchange = "CalculateSaleAmt();", onkeypress = "return ValidateNumber(event);" })
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Discount Price</label>
+                                        @Html.TextBoxFor(model => model.DiscountPrice, new { @class = "form-control required", onchange = "CalculateSaleAmt();", onkeypress = "return ValidateNumber(event);" })
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>CGST (%)</label>
+                                        @Html.TextBoxFor(model => model.CGST, new { @class = "form-control required", onchange = "CalculateSaleAmt();", onkeypress = "return ValidateNumber(event);" })
+                                    </div>
+                                    <div class="form-group">
+                                        <label>SGST (%)</label>
+                                        @Html.TextBoxFor(model => model.SGST, new { @class = "form-control required", onchange = "CalculateSaleAmt();", onkeypress = "return ValidateNumber(event);" })
+                                    </div>
+                                    <div class="form-group">
+                                        <label>IGST (%)</label>
+                                        @Html.TextBoxFor(model => model.IGST, new { @class = "form-control required", onchange = "CalculateSaleAmt();", onkeypress = "return ValidateNumber(event);" })
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Profit/Margin</label>
+                                        @Html.TextBoxFor(model => model.Profit, new { @class = "form-control required", onkeypress = "return ValidateNumber(event);" })
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Sell Price</label>
+                                        @Html.TextBoxFor(model => model.SellPrice, new { @class = "form-control required", onchange = "CalculateSaleAmt();", onkeypress = "return ValidateNumber(event);" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="box-footer text-right">
+                            <input type="submit" value="Save" class="btn btn-primary" onclick="return ValidProduct();">
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box-title">
+                    <h4> Product List</h4>
+                </div>
+                <div class="box box-primary">
+                    <div id="div_product" class="box-body table-responsive">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="loaderbody" id="loaderbody">
+        <div class="loader"></div>
+    </div>
+    <div class="modal fade" id="model_attribute" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    </div>
+
+
+    <script>
+        $(function () {
+            GetProductAttribute();
+            var url = '/report/FetchSectorList';
+            var div_sectors = $('#div_sectors');
+            $('#ddlVendor').change(function () {
+                var selectedVendor = $(this).val();
+                if (!selectedVendor) {
+                    div_sectors.empty();
+                    return;
+                }
+                if (selectedVendor > 0) {
+                    $.get(url, { id: selectedVendor }, function (data) {
+                        div_sectors.html(data);
+                    })
+                }
+                else {
+                    div_sectors.empty();
+                }
+            });
+        });
+
+        $("body").on("click", ".btn-bootstrap-dialog", function () {
+            var url = $(this).data('url');
+            $.get(url, function (data) {
+                $('#model_attribute').html(data);
+                $('#model_attribute').modal('show');
+            });
+            return false;
+        });
+
+        function CalculateSaleAmt() {
+            var MRP = document.getElementById("MRPPrice").value;
+            var Purchase = document.getElementById("PurchasePrice").value;
+            var discount = document.getElementById("DiscountPrice").value;
+            var price = (parseFloat(MRP) - parseFloat(Purchase)) - parseFloat(discount);
+            var TotalPrice = parseFloat(Purchase) + parseFloat(price);
+
+            var igst = document.getElementById("IGST").value;
+            var gstprice = (parseFloat(TotalPrice) * parseFloat(igst)) / 100;
+
+            var profit = parseFloat(price) - parseFloat(gstprice);
+            document.getElementById("Profit").value = profit;
+
+            var saleprice = parseFloat(profit) + parseFloat(gstprice) + parseFloat(Purchase);
+            document.getElementById("SellPrice").value = saleprice;
+        }
+
+        function ValidProduct() {
+            var status = true;
+            var hdsector = 0;
+            $('.scrollbox').removeClass('field-error');
+            $('div,select,span').removeClass('field-error');
+            $('#div_sectors').find('input[type="checkbox"]').each(function () {
+                if ($(this).is(":checked")) {
+                    hdsector = 1;
+                }
+                else {
+                    hdsector = 0;
+                }
+            });
+            if (hdsector == 0) {
+                $('.scrollbox').addClass('field-error');
+            }
+            var vendor = $('#frmAssign #ddlVendor').val();
+            if (vendor == "0" || vendor == null || vendor == "") {
+                $('#frmAssign #ddlVendor').parent().find('.select2').addClass('field-error');
+                status = false;
+            }
+            $('#frmAssign .required').each(function () {
+                var value = $(this).val();
+                if (value == null || value == "") {
+                    $(this).parent().parent().addClass('has-error');
+                    status = false;
+                }
+            });
+
+
+            return status;
+        }
+
+        function GetProductAttribute() {
+            var ProductID = $('#ProductID').val();
+            $.get("/Attribute/GetProductList?ProductID=" + ProductID, function (data) {
+                $('#div_product').html(data);
+            });
+        }
+
+        function SuccessAssign(data) {
+            if (data.status = "1") {
+                toastr["success"]("Product Add Successfully...");
+                var div_sectors = $('#div_sectors');
+                $("#ddlVendor").select2("val", "0");
+                div_sectors.empty();
+                GetProductAttribute();
+            }
+            else {
+                toastr["error"]("error");
+            }
+        }
+    </script>
+}
+

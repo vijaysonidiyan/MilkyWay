@@ -1,0 +1,648 @@
+﻿@model MilkWayIndia.Models.Subscription
+@{
+    Layout = "~/Views/Shared/_MyLayout.cshtml";
+}
+@section contain
+{
+    <script src="~/Content/plugins/jQuery/jquery-2.2.3.min.js"></script>
+    <link href="~/Content/plugins/datepicker/datepicker3.css" rel="stylesheet" />
+    <script src="~/Content/plugins/datepicker/bootstrap-datepicker.js"></script>
+    <script>
+        $(document).ready(function () {
+            var MasterClass = document.getElementById("LiOrder");
+            if (MasterClass != null) {
+                MasterClass.className = MasterClass.className + " active";
+            }
+        });
+    </script>
+    <style>
+        .select2-container--default .select2-selection--single {
+            border: 1px solid #d2d6de;
+            border-radius: 0px;
+        }
+
+        .select2-container {
+            width: 100% !important;
+            padding: 0;
+        }
+
+            .select2-container .select2-selection--single {
+                height: 33px;
+            }
+        /*.select2 .select2-container .select2-container--default .select2-container--focus{width:200px;}*/
+    </style>
+    <script>
+        $(function () {
+            $(".select2").select2();
+        });
+    </script>
+    <section class="content-header">
+        <h1>
+            Edit Customer Order
+        </h1>
+        <ol class="breadcrumb">
+            <li><a href="@Url.Action("Index", "Admin")"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="active">Customer Order</li>
+        </ol>
+    </section>
+    <!-- Main content -->
+    <section class="content">
+        <div class="col-md-12">
+            <div class="box box-info">
+                <div class="box-header with-border">
+                    <div class="btn-group-vertical">
+                        <button class="btn btn-success" type="button" onclick="location.href='@Url.Action("CustomerOrderList", "CustomerOrder")'">Back To Panel</button>
+                    </div>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
+                </div>
+                <div class="form-horizontal">
+                    @using (Ajax.BeginForm("EditCustomerOrder", "CustomerOrder", new AjaxOptions { OnSuccess = "onSuccessLogin", UpdateTargetId = "SuccessMsg" }))
+                    {
+                    <div class="box-body">
+                        <div class="col-sm-12">
+                            <div class="alert alert-success alert-dismissable" id="insertalert" style="position: absolute; top: -62px; left: 159px; right: 0px; z-index: 9999;width: 30%;display:none" data-auto-dismiss="1000">
+                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                            </div>
+
+                            @Html.HiddenFor(m => m.VendorCatId, new { placeholder = "", @id = "VendorCatId", @class = "form-control", @readonly = "readonly", @Value = ViewBag.VendorCatId })
+                            @Html.HiddenFor(m => m.AttributeId, new { placeholder = "", @id = "AttributeId", @class = "form-control", @readonly = "readonly", @Value = ViewBag.AttributeId })
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div id="SuccessMsg" style="color: red">@ViewBag.SuccessMsg</div>
+                                <div class="col-md-5">
+                                    <div class="form-group">
+                                        <label for="inputEmail3" class="col-sm-2 control-label">Customer</label>
+                                        <div class="col-sm-6">
+                                            <select id="ddlCustomer" name="ddlCustomer" class="form-control select2">
+                                                <option value="0">---Select---</option>
+                                                @if (ViewBag.Customer != null)
+                                                {
+                                                    foreach (System.Data.DataRow drCustomerName in ViewBag.Customer.Rows)
+                                                    {
+                                                        <option value="@drCustomerName["Id"]">@drCustomerName["FirstName"] @drCustomerName["LastName"] (@drCustomerName["Address"])</option>
+                                                    }
+                                                }
+
+                                            </select>
+
+                                            <script>
+                                                    document.getElementById('ddlCustomer').value = '@ViewBag.CustomerId';
+                                            </script>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Order No</label>
+                                        <div class="col-sm-6">
+                                            @Html.TextBoxFor(m => m.OrderNo, new { placeholder = "", @id = "OrderNo", @class = "form-control", @readonly = "readonly", @Value = ViewBag.OrderNo })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">Order Date</label>
+                                        <div class="col-sm-6">
+                                            @Html.TextBoxFor(m => m.OrderDate, new { placeholder = "", @id = "datepicker", @class = "form-control", @Value = ViewBag.OrderDate })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr />
+
+                    
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="inputEmail3" class="col-sm-3 control-label">Product Name</label>
+                                    <div class="col-sm-8">
+                                        <select id="ddlProduct" name="ddlProduct" class="form-control select2">
+                                            <option value="0">---Select---</option>
+                                            @if (ViewBag.Product != null)
+                                            {
+                                                foreach (System.Data.DataRow drProductName in ViewBag.Product.Rows)
+                                                {
+                                                    <option value="@drProductName["Id"]">@drProductName["ProductName"]</option>
+                                                }
+                                            }
+
+                                        </select>
+                                        <script>
+                                                document.getElementById('ddlProduct').value = '@ViewBag.ProductId';
+                                        </script>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="inputEmail3" class="col-sm-3 control-label">Attribute</label>
+                                    <div class="col-sm-8">
+                                        <select id="ddlattribute" name="ddlattribute" class="form-control select2">
+                                           
+
+                                        </select>
+                                        <script>
+                                            document.getElementById('ddlattribute').value = '@ViewBag.AttributeId';
+                                        </script>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Qty</label>
+                                    <div class="col-sm-8">
+                                        @Html.TextBoxFor(m => m.Qty, new { placeholder = "", @id = "Qty", @class = "form-control", onchange = "FillProductDetail();", @Value = ViewBag.Qty })
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Purchase Price</label>
+                                    <div class="col-sm-8">
+                                        @Html.TextBoxFor(m => m.PurchasePrice, new { placeholder = "", @id = "PurchasePrice", @class = "form-control", @readonly = "readonly", @Value = ViewBag.PurchasePrice })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">MRP Price</label>
+                                    <div class="col-sm-8">
+                                        @Html.TextBoxFor(m => m.MRPPrice, new { placeholder = "", @id = "MRPPrice", @class = "form-control", @readonly = "readonly", @Value = ViewBag.MRPPrice })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Discount Price</label>
+                                    <div class="col-sm-8">
+                                        @Html.TextBoxFor(m => m.Discount, new { placeholder = "", @id = "Discount", @class = "form-control", @readonly = "readonly", @Value = ViewBag.Discount })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Sale Price</label>
+                                    <div class="col-sm-8">
+                                        @Html.TextBoxFor(m => m.Amount, new { placeholder = "", @id = "Amount", @class = "form-control", @Value = ViewBag.SalePrice })
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">CGST Amount</label>
+                                    <div class="col-sm-8">
+                                        @Html.TextBoxFor(m => m.CGSTAmount, new { placeholder = "", @id = "CGSTAmount", @class = "form-control", @readonly = "readonly", @Value = ViewBag.CGSTAmount })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">SGST Amount</label>
+                                    <div class="col-sm-8">
+                                        @Html.TextBoxFor(m => m.SGSTAmount, new { placeholder = "", @id = "SGSTAmount", @class = "form-control", @readonly = "readonly", @Value = ViewBag.SGSTAmount })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">IGST Amount</label>
+                                    <div class="col-sm-8">
+                                        @Html.TextBoxFor(m => m.IGSTAmount, new { placeholder = "", @id = "IGSTAmount", @class = "form-control", @readonly = "readonly", @Value = ViewBag.IGSTAmount })
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Reward Point</label>
+                                    <div class="col-sm-8">
+                                        @Html.TextBoxFor(m => m.RewardPoint, new { placeholder = "", @id = "RewardPoint", @class = "form-control", @readonly = "readonly", @Value = ViewBag.RewardPoint })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Profit</label>
+                                    <div class="col-sm-8">
+                                        @Html.TextBoxFor(m => m.Profit, new { placeholder = "", @id = "Profit", @class = "form-control", @readonly = "readonly", @Value = ViewBag.Profit })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Status</label>
+                                    <div class="col-sm-8">
+                                        <select id="ddlStatus" name="ddlStatus" class="form-control" onchange="CancleOrder();">
+                                            <option value="0">---Select---</option>
+                                            <option value="Pending">Pending</option>
+                                            <option value="Complete">Complete</option>
+                                            <option value="Cancel">Cancel</option>
+                                        </select>
+                                        <script>
+                                            document.getElementById('ddlStatus').value = '@ViewBag.Status';
+                                        </script>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Tranaction Date</label>
+                                    <div class="col-sm-8">
+                                        @Html.TextBoxFor(m => m.TransactionDate, new { placeholder = "", @id = "TransactionDate", @class = "form-control", @Value = ViewBag.TransactionDate })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                        <div class="box-footer text-right">
+                            <input type="submit" id="btnSave" value="Save" class="btn btn-primary" onclick="return ValidOrder();" />
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        $('#datepicker').datepicker({
+            "autoclose": true,
+
+            todayHighlight: true
+        });
+
+    </script>
+    <script>
+        $('#TransactionDate').datepicker({
+            "autoclose": true,
+
+            todayHighlight: true
+        });
+
+    </script>
+    <script>
+        function CancleOrder() {
+            var id = $("#ddlStatus").val();
+            var qty = document.getElementById('Qty').value;
+            if (qty > 0) { }
+            else {
+                alert("Can not Update Status until Qty is greater than 0")
+            }
+        }
+        function FillProductDetail() {
+
+            var id = $("#ddlProduct").val();
+            var Atid = $("#ddlattribute").val();
+            var Vid = $("#VendorCatId").val()
+            var qty = $('#Qty').val();
+            $.ajax({
+                url: '/CustomerOrder/GetProductData?id=' + id + '&qty=' + qty + '&Atid=' + Atid + '&Vid=' + Vid,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",// Not to set any content header
+                datatype: "json",
+                processData: false,
+                success: function (data) {
+                    Data = data;
+                    var dataRows = JSON.parse(Data);
+                    console.log(dataRows);
+
+                    var amt = dataRows[0].SalePrice;
+                    document.getElementById('Amount').value = amt;
+
+                    var discount = dataRows[0].DiscountPrice;
+                    document.getElementById('Discount').value = discount;
+
+                    var cgst = dataRows[0].CGSTPrice;
+                    document.getElementById('CGSTAmount').value = cgst;
+
+                    var sgst = dataRows[0].SGSTPrice;
+                    document.getElementById('SGSTAmount').value = sgst;
+
+                    var igst = dataRows[0].IGSTPrice;
+                    document.getElementById('IGSTAmount').value = igst;
+
+                    var point = dataRows[0].Reward;
+                    document.getElementById('RewardPoint').value = point;
+
+                    var profit = dataRows[0].Profit;
+                    document.getElementById('Profit').value = profit;
+
+                    var mrpprice = dataRows[0].MRPPrice;
+                    document.getElementById('MRPPrice').value = mrpprice;
+
+                    var PurchasePrice = dataRows[0].PurchasePrice;
+                    document.getElementById('PurchasePrice').value = PurchasePrice;
+                }
+            });
+        }
+
+        function ValidOrder() {
+            if ($("#ddlCustomer").val() == null || $("#ddlCustomer").val() == "" || $("#ddlCustomer").val() == "0") {
+                document.getElementById("select2-ddlCustomer-container").style.border = "1px solid #ff0000";
+                document.getElementById("select2-ddlCustomer-container").style.color = "#ff0000";
+                document.getElementById("select2-ddlCustomer-container").value = "0";
+                return false;
+            }
+
+
+            var odate = document.getElementById("datepicker").value;
+            if (odate == null || odate == "" || odate == "Please Enter OrderDate") {
+                document.getElementById("datepicker").style.border = "1px solid #ff0000";
+                document.getElementById("datepicker").style.color = "#ff0000";
+                document.getElementById("datepicker").value = "Please Enter OrderDate";
+                status = false;
+                return false;
+            }
+
+           
+
+            if ($("#ddlProduct").val() == null || $("#ddlProduct").val() == "" || $("#ddlProduct").val() == "0") {
+                document.getElementById("select2-ddlProduct-container").style.border = "1px solid #ff0000";
+                document.getElementById("select2-ddlProduct-container").style.color = "#ff0000";
+                document.getElementById("select2-ddlProduct-container").value = "0";
+                return false;
+            }
+
+
+            var qty = document.getElementById("Qty").value;
+            if (qty == null || qty == "" || qty == "Please Enter Qty") {
+                document.getElementById("Qty").style.border = "1px solid #ff0000";
+                document.getElementById("Qty").style.color = "#ff0000";
+                document.getElementById("Qty").value = "Please Enter Qty";
+                return false;
+            }
+            var amt = document.getElementById("Amount").value;
+            if (amt == null || amt == "" || amt == "Please Enter Sale Price") {
+                document.getElementById("Amount").style.border = "1px solid #ff0000";
+                document.getElementById("Amount").style.color = "#ff0000";
+                document.getElementById("Amount").value = "Please Enter Sale Price";
+                return false;
+            }
+            var status = document.getElementById("ddlStatus").value;
+            if (status == null || status == "" || status == "0") {
+                document.getElementById("ddlStatus").style.border = "1px solid #ff0000";
+                document.getElementById("ddlStatus").style.color = "#ff0000";
+                document.getElementById("ddlStatus").value = "0";
+                return false;
+            }
+
+            if (status == "Complete") {
+                var TransactionDate = document.getElementById("TransactionDate").value;
+                if (TransactionDate == null || TransactionDate == "" || TransactionDate == "Please Enter TransactionDate") {
+                    document.getElementById("TransactionDate").style.border = "1px solid #ff0000";
+                    document.getElementById("TransactionDate").style.color = "#ff0000";
+                    document.getElementById("TransactionDate").value = "Please Enter TransactionDate";
+                    status = false;
+                    return false;
+                }
+            }
+            
+        }
+
+            //$("#ddlCustomer").change(function () {
+            //    debugger;
+            //    //event.preventDefault();
+            //    var id = $(this).find('option:selected').val();
+
+            //    $.ajax({
+            //        url: '/CustomerOrder/GetSubscriptionDate?id=' + id,
+            //        type: "POST",
+            //        contentType: "application/json; charset=utf-8",// Not to set any content header
+            //        datatype: "json",
+            //        processData: false,
+            //        success: function (data) {
+            //            Data = data;
+            //            var dataRows = JSON.parse(Data);
+            //            console.log(dataRows);
+            //            var tdate = dataRows[0].Todate;
+            //            var date = new Date(tdate);
+            //            var month = date.getMonth() + 1;
+            //            var dt = date.getDate();
+            //            dt = parseInt(dt);
+            //            document.getElementById('datepicker1').value = (dt.toString().length > 1 ? dt : "0" + dt) + "/" + (month.toString().length > 1 ? month : "0" + month) + "/" + date.getFullYear();
+            //        }
+            //    });
+            //});
+
+            //$("#btnSave").click(function () {
+            //    var customer = document.getElementById("ddlCustomer").value;
+            //    if (customer == null || customer == "" || customer == "0") {
+            //        document.getElementById("ddlCustomer").style.border = "1px solid #ff0000";
+            //        document.getElementById("ddlCustomer").style.color = "#ff0000";
+            //        document.getElementById("ddlCustomer").value = "0";
+            //        return false;
+            //    }
+
+            //    var type = document.getElementById("ddlType").value;
+            //    if (type == null || type == "" || type == "0") {
+            //        document.getElementById("ddlType").style.border = "1px solid #ff0000";
+            //        document.getElementById("ddlType").style.color = "#ff0000";
+            //        document.getElementById("ddlType").value = "0";
+            //        return false;
+            //    }
+
+            //    var fdate = document.getElementById("datepicker").value;
+            //    if (fdate == null || fdate == "" || fdate == "Please Enter FromDate") {
+            //        document.getElementById("datepicker").style.border = "1px solid #ff0000";
+            //        document.getElementById("datepicker").style.color = "#ff0000";
+            //        document.getElementById("datepicker").value = "Please Enter FromDate";
+            //        status = false;
+            //        return false;
+            //    }
+
+            //    var tdate = document.getElementById("datepicker1").value;
+            //    if (tdate == null || tdate == "" || tdate == "Please Enter ToDate") {
+            //        document.getElementById("datepicker1").style.border = "1px solid #ff0000";
+            //        document.getElementById("datepicker1").style.color = "#ff0000";
+            //        document.getElementById("datepicker1").value = "Please Enter ToDate";
+            //        status = false;
+            //        return false;
+            //    }
+
+            //    if(fdate < tdate)
+            //    {}
+            //    else
+            //    {
+            //        document.getElementById("ToDate").style.border = "1px solid #ff0000";
+            //        document.getElementById("ToDate").style.color = "#ff0000";
+            //        document.getElementById("ToDate").value = "Please Enter Less Than FromDate";
+            //        status = false;
+            //        return false;
+            //    }
+
+            //    var product = document.getElementById("ddlProduct").value;
+            //    if (product == null || product == "" || product == "0") {
+            //        document.getElementById("ddlProduct").style.border = "1px solid #ff0000";
+            //        document.getElementById("ddlProduct").style.color = "#ff0000";
+            //        document.getElementById("ddlProduct").value = "0";
+            //        return false;
+            //    }
+
+            //    var qty = document.getElementById("Qty").value;
+            //    if (qty == null || qty == "" || qty == "Please Enter Qty") {
+            //        document.getElementById("Qty").style.border = "1px solid #ff0000";
+            //        document.getElementById("Qty").style.color = "#ff0000";
+            //        document.getElementById("Qty").value = "Please Enter Qty";
+            //        return false;
+            //    }
+            //    //$('#mytable').find('input[type="checkbox"]:checked');
+
+            //    var values = new Array();
+
+            //    $.each($("input[type='checkbox']:checked").closest("td").siblings("td"),
+            //           function () {
+            //               values.push($(this).text());
+            //           });
+
+            //    var str = values.join(", ");
+            //    var array = str.split(',');
+
+            //    var table = $('#tblExistingDetails2');
+            //    var row, cell;
+
+            //    for(var i=0; i<array.length; i++){
+            //        row = $( '<tr />' );
+            //        table.append( row );
+            //        //for(var j=0; j<array[i].length; j++){
+            //        cell = $('<td>'+array[i]+'</td>')
+            //        row.append( cell );
+            //        //  }
+            //    }
+
+            //    var $table = $("#tblExistingDetails2")
+            //    rows = [],
+            //    header = [];
+
+            //    $table.find("thead th").each(function () {
+            //        header.push($(this).html());
+            //    });
+
+            //    $table.find("tbody tr").each(function () {
+            //        var row = {};
+
+            //        $(this).find("td").each(function (i) {
+            //            var key = header[i],
+            //                value = $(this).html();
+
+            //            row[key] = value;
+            //        });
+
+            //        rows.push(row);
+            //    });
+
+            //    ////var input = $('#tblExistingDetails2').tableToJson();
+
+            //    jQuery.ajax({
+            //        url: '/CustomerOrder/AddCustomerOrder?CustomerId=' + customer + '&Type=' + type + '&fromDate=' + fdate + '&todate=' + tdate + '&ProductId=' + product + '&Qty=' + qty + '&json=' + JSON.stringify(rows),
+            //        type: "POST",
+            //        dataType: "json",
+            //        contentType: 'application/json; charset=utf-8',
+            //        ////  data: input,
+            //        async: true,
+            //        processData: false,
+            //        cache: false,
+            //        success: function (data) {
+            //            if (data == "0") {
+            //                $('#insertalert').html(" Please , Fill Correct Details  " + "<a href='#' class='close' data-dismiss='alert'>x</a>");
+            //                $('#insertalert').css("display", "block");
+
+            //                $("#insertalert").delay(5000).slideUp(5000, function () {
+
+            //                    window.location.reload();
+            //                });
+            //            } else {
+            //                $('#insertalert').html(" Success!! Inserted Successfully. " + "<a href='#' class='close' data-dismiss='alert'>x</a>");
+            //                $('#insertalert').css("display", "block");
+
+            //                $("#insertalert").delay(5000).slideUp(5000, function () {
+            //                });
+            //            }
+            //        },
+            //        error: function (xhr) {
+            //        }
+            //    });
+
+            //});
+
+
+
+
+             $(document).ready(function () {  
+            //$("#ddlState").prop("disabled", true);  
+            //$("#ddlState").change(function () {  
+                 var id = $("#ddlProduct").val();
+                 var vid = $("#VendorCatId").val();
+            $.ajax({  
+                cache: false,  
+                type: "GET",  
+                url: '@Url.Action("GetAttribute", "Report")',
+                data: { "ProductId": id, "Vid": vid },  
+                success: function (json, textStatus) {  
+                    $("#ddlattribute").empty();  
+                    json = json || {};  
+                    for (var i = 0; i < json.length; i++) {  
+                        $("#ddlattribute").append('<option value="' + json[i].ID + '">' + json[i].Name + '</option>');  
+                    }
+
+                    document.getElementById('ddlattribute').value = document.getElementById('AttributeId').value;
+                    $("#ddlattribute").prop("disabled", false);  
+                },  
+                error: function () {  
+                    alert("Data Not Found");  
+                }  
+        });  
+        //});  
+
+                 $("#ddlProduct").change(function () {
+
+                     $.ajax({  
+                cache: false,  
+                type: "GET",  
+                url: '@Url.Action("GetAttribute", "Report")',
+                data: { "ProductId": id, "Vid": vid },  
+                success: function (json, textStatus) {  
+                    $("#ddlattribute").empty();  
+                    json = json || {};  
+                    for (var i = 0; i < json.length; i++) {  
+                        $("#ddlattribute").append('<option value="' + json[i].ID + '">' + json[i].Name + '</option>');  
+                    }
+
+                    document.getElementById('ddlattribute').value = document.getElementById('AttributeId').value;
+                    $("#ddlattribute").prop("disabled", false);  
+                },  
+                error: function () {  
+                    alert("Data Not Found");  
+                }  
+        });  
+                 });
+    });
+     
+    </script>
+
+}
+

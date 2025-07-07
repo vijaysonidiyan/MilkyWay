@@ -1,0 +1,4 @@
+Sort Order,Category,Sub Category,Product Name,Product Image,MRP,Sale Price,Purchase Price,CGST,SGST,IGST,Profit Lumpsump,Profit,Details,Subcription,Youtube Title,Youtube URL,Status,IsDaily
+1,Vijay Dairy,V-Dairy Milk,VijayDairy - Milk - Sampoorna 500ml,VijayDairy-Milk-ampoorna500ml,30,30,27.83,,,,,,Vijaydairymilk,0,,,TRUE,TRUE
+2,Vijay Dairy,V-Dairy Milk,VijayDairy - Cow Milk 500ml,VijayDairy-Cow Milk500ml,24,24,21.83,,,,,,Vijaydairymilk,0,,,TRUE,TRUE
+3,Vijay Dairy,V-Dairy Chhash,VijayDairy - Taak 500ml,VijayDairy-Taak 500ml,15,14,10,,,,,,Vijaydairymilk,0,,,TRUE,TRUE

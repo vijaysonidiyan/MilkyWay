@@ -1,0 +1,436 @@
+﻿@model MilkWayIndia.Models.ProductAssignVM
+@{
+    ViewBag.Title = "EditAttribute";
+    Layout = "~/Views/Shared/_MyLayout.cshtml";
+}
+
+@section contain
+{
+    <script src="~/Content/plugins/jQuery/jquery-2.2.3.min.js"></script>
+    <script src="~/scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/Content/toastr/toastr.min.js"></script>
+    <link href="~/Content/toastr/toastr.min.css" rel="stylesheet" />
+    <script>
+        $(document).ready(function () {
+            var MasterClass = document.getElementById("LiProduct");
+            if (MasterClass != null) {
+                MasterClass.className = MasterClass.className + " active";
+            }
+        });
+    </script>
+    <script>
+        $(function () {
+            $(".select2").select2();
+        });
+    </script>
+    <section class="content-header">
+        <div class="box-header with-border">
+            <h3 class="box-title">Edit Attribute For <b>@ViewBag.ProductName</b></h3>
+        </div>
+    </section>
+
+    <section class="content">
+        <div class="row">
+            <div class="col-xs-12">
+                <div id="SuccessMsg" style="color: red">@ViewBag.SucMsg</div>
+
+                <div class="box box-primary">
+                    @using (Ajax.BeginForm("EditAttribute", "Attribute", FormMethod.Post, new AjaxOptions { OnSuccess = "SuccessAssign" }, new { @id = "frmAssign" }))
+                    {
+                        @Html.HiddenFor(model => model.AttributeID, new { @class = "form-control", @id = "AttributeID" })
+                        @Html.HiddenFor(model => model.ProductID, new { @class = "form-control", @id = "ProductID" })
+                        @Html.HiddenFor(model => model.SubcatId, new { @class = "form-control", @id = "SubCatCatId" })
+                        <div class="box-body">
+                            <div class="row">
+                                <div class="col-md-6">
+
+
+                                    <div class="form-group">
+                                        <label>Vendor List</label>
+                                        <div id="div_sectors" class="scrollbox" style="height:100px;overflow-y:auto; ">
+
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        @Html.TextBox("txtSectorid", "", new { @class = "form-control", @readonly = "readonly", style = "color:red; " })
+                                        <button type="button" id="btnSubmit" class="btn btn-primary btn1" value="">View Sector</button>
+                                    </div>
+                                    @*onclick="addcheckbox()"*@
+
+                                    <div class="form-group">
+                                        @Html.TextBox("txtSectorid1", "", new { @class = "form-control", @readonly = "readonly", style = "color:red; ", @Value = ViewBag.Sectorid1 })
+                                        <div id="div_products">
+
+                                        </div>
+                                        @*@Html.Partial("AssignVendorSectorPartial")*@
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Attribute</label>
+                                        @Html.DropDownListFor(model => model.AttributeID1, ViewBag.lstAttribute as SelectList, new { @class = "form-control" })
+
+                                        @* @Html.TextBoxFor(model => model.AttributeName, new { @class = "form-control required", onkeypress = "return ValidateNumber(event);" })*@
+                                    </div>
+                                    <div class="form-group">
+                                        <label>MRP Price</label>
+                                        @Html.TextBoxFor(model => model.MRPPrice, new { @class = "form-control required", onchange = "CalculateSaleAmt();", onkeypress = "return ValidateNumber(event);" })
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Purchase Price</label>
+                                        @Html.TextBoxFor(model => model.PurchasePrice, new { @class = "form-control required", onchange = "CalculateSaleAmt();", onkeypress = "return ValidateNumber(event);" })
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Discount Price</label>
+                                        @Html.TextBoxFor(model => model.DiscountPrice, new { @class = "form-control required", onchange = "CalculateSaleAmt();", onkeypress = "return ValidateNumber(event);" })
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>CGST (%)</label>
+                                        @Html.TextBoxFor(model => model.CGST, new { @class = "form-control required", onchange = "CalculateSaleAmt();", onkeypress = "return ValidateNumber(event);" })
+                                    </div>
+                                    <div class="form-group">
+                                        <label>SGST (%)</label>
+                                        @Html.TextBoxFor(model => model.SGST, new { @class = "form-control required", onchange = "CalculateSaleAmt();", onkeypress = "return ValidateNumber(event);" })
+                                    </div>
+                                    <div class="form-group">
+                                        <label>IGST (%)</label>
+                                        @Html.TextBoxFor(model => model.IGST, new { @class = "form-control required", onchange = "CalculateSaleAmt();", onkeypress = "return ValidateNumber(event);" })
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Profit/Margin</label>
+                                        @Html.TextBoxFor(model => model.Profit, new { @class = "form-control required", @id = "Profit", onkeypress = "return ValidateNumber(event);" })
+                                    </div>
+                                    <div class="form-group">
+                                        <label>B2C Sell Price</label>
+                                        @Html.TextBoxFor(model => model.SellPrice, new { @class = "form-control required", onchange = "CalculateSaleAmt();", onkeypress = "return ValidateNumber(event);" })
+                                    </div>
+                                    <div class="form-group">
+                                        <label>B2B Profit margin</label>
+                                        @Html.TextBoxFor(model => model.B2BProfit, new { @class = "form-control required", onchange = "CalculateSaleAmt();", onkeypress = "return ValidateNumber(event);" })
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>B2B Sale Price</label>
+                                        @Html.TextBoxFor(model => model.B2BSellPrice, new { @class = "form-control required", onchange = "CalculateSaleAmt();", onkeypress = "return ValidateNumber(event);" })
+                                    </div>
+
+
+                                    <div class="form-group">
+                                        <label>Is Active</label>
+
+                                        @if (Convert.ToBoolean(ViewBag.Active) == true)
+                                        {<input type="checkbox" class="Checked" id="IsActive" name="IsActive" checked />
+                                        }
+                                        else
+                                        {
+                                            @Html.CheckBox("IsActive", new { @class = "Checked" })
+                                        }
+
+                                    </div>
+
+
+                                    <div class="form-group">
+                                        <label>Effective Date</label>
+                                       
+                                            @Html.TextBox("datepicker", "", new
+                                   {
+                                       placeholder = "From Date",
+                                       @class = "form-control",
+                                       @Value = ViewBag.EffectiveDate,
+                                       autocomplete = "off"
+                                   })
+                                        
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="box-footer text-right">
+                            @*onclick="return ValidProduct();"*@
+                            <input type="submit" value="Save" class="btn btn-primary" onclick="return ValidProduct();">
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="loaderbody" id="loaderbody">
+        <div class="loader"></div>
+    </div>
+    <div class="modal fade" id="model_attribute" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    </div>
+
+
+    <script>
+
+        $(document).ready(function () {
+            $('#datepicker').datepicker({
+                "setDate": new Date(),
+                "autoclose": true,
+                format: 'dd/mm/yyyy',
+                todayHighlight: true,
+                defaultDate: new Date(),
+            });
+
+        });
+
+
+    </script>
+    <script>
+
+        function ValidProduct() {
+            var status = true;
+            var sector = document.getElementById("txtSectorid1").value;
+            if (sector == "") {
+                alert("Enable Sector First");
+                status = false;
+            }
+            return status;
+        }
+
+
+        $(function () {
+            //GetProductAttribute();
+            var url = '/report/FetchVendorListAttribute';
+            var div_sectors = $('#div_sectors');
+            /*$('#ddlVendor').change(function ()*/
+            $(document).ready(function () {
+
+                var AttributeId = document.getElementById("AttributeID").value;
+                var ProductID = document.getElementById("ProductID").value;
+
+
+                var Profit = document.getElementById("Profit").value;
+
+                if (!AttributeId) {
+                    div_sectors.empty();
+                    return;
+                }
+                var str = AttributeId + "," + ProductID + "," + Profit;
+
+
+                if (AttributeId > 0) {
+
+
+                    $.get(url, { id: str }, function (data) {
+                        div_sectors.html(data);
+                    })
+                }
+                else {
+                    div_sectors.empty();
+                }
+
+
+
+
+
+
+                $(document).on("click", ".btn1", function () {
+
+                    var c = this.value;
+
+
+                    var d = document.getElementById("txtSectorid").value;
+                    //alert(d);
+                    var checkboxes = document.querySelectorAll('input[name="chkVendor[]"]:checked');
+                    let count = 0;
+                    //alert("c");
+                    var ch = "";
+                    for (var checkbox of checkboxes) {
+                        //document.getElementById("txtproid").append(checkbox.value + ' ');
+
+
+
+
+                        count = count + 1;
+
+                        if (ch == "") {
+                            ch = checkbox.value;
+
+                        }
+                        else {
+                            ch = ch + "," + checkbox.value;
+                        }
+
+
+
+
+                    }
+
+                    // alert(ch);
+                    document.getElementById("txtSectorid").value = ch;
+                    // alert(AttributeId);
+                    //alert(ProductID);
+
+                    $.get('/Attribute/GetSectorListVendorWise', { cH: ch, AttributeId1: AttributeId, ProductID1: ProductID }, function (data) {
+                        $('#div_products').html(data);
+
+                        //
+
+
+                        var checkboxes = document.querySelectorAll('input[name="chkpro"]:checked');
+                        let count = 0;
+
+                        var ch1 = "";
+                        for (var checkbox of checkboxes) {
+
+
+
+                            count = count + 1;
+
+                            if (ch1 == "") {
+                                ch1 = checkbox.value;
+
+                            }
+                            else {
+                                ch1 = ch1 + "," + checkbox.value;
+                            }
+
+                            var arr = $.unique(ch1.split(','));
+                            ch1 = arr.join(",");
+
+                        }
+
+
+
+
+                        //alert(ch);
+
+
+                        var arr = ch1.split(",");
+                        var unique = [];
+                        $.each(arr, function (index, word) {
+                            if ($.inArray(word, unique) === -1)
+                                unique.push(word);
+
+                        });
+
+                        // alert(unique);
+
+                        document.getElementById("txtSectorid1").value = unique;
+
+                        //
+
+                    })
+                });
+            });
+        });
+
+
+
+
+
+
+
+
+
+
+        //
+
+
+
+        function SuccessAssign(data) {
+            if (data.status = "1") {
+                toastr["success"]("Attribute Edited Successfully...");
+
+                var url = '/report/FetchVendorListAttribute';
+                var div_sectors = $('#div_sectors');
+
+
+
+                var AttributeId = document.getElementById("AttributeID").value;
+                var ProductID = document.getElementById("ProductID").value;
+
+
+                var Profit = document.getElementById("Profit").value;
+
+                if (!AttributeId) {
+                    div_sectors.empty();
+                    return;
+                }
+                var str = AttributeId + "," + ProductID + "," + Profit;
+
+
+                if (AttributeId > 0) {
+
+
+                    $.get(url, { id: str }, function (data) {
+                        div_sectors.html(data);
+                    })
+                }
+                else {
+                    div_sectors.empty();
+                }
+            }
+            else {
+                toastr["error"]("error");
+            }
+        }
+
+    </script>
+
+
+
+    <script>
+
+
+        function addcheckbox1(a) {
+
+
+
+            var b = a;
+            var c = b;
+            //alert("yes");
+            //  var d = document.getElementById("txtproid").value;
+            var mystring, myNewString;
+            var checkboxes = document.querySelectorAll('input[name="chkpro"]:checked');
+            let count = 0;
+
+            var ch = "";
+            for (var checkbox of checkboxes) {
+
+
+
+                count = count + 1;
+
+                if (ch == "") {
+                    ch = checkbox.value;
+
+                }
+                else {
+                    ch = ch + "," + checkbox.value;
+                }
+
+                var arr = $.unique(ch.split(','));
+                ch = arr.join(",");
+
+            }
+
+
+
+
+            //alert(ch);
+
+
+            var arr = ch.split(",");
+            var unique = [];
+            $.each(arr, function (index, word) {
+                if ($.inArray(word, unique) === -1)
+                    unique.push(word);
+
+            });
+
+            // alert(unique);
+
+            document.getElementById("txtSectorid1").value = unique;
+
+        }
+    </script>
+
+}
+
+
+

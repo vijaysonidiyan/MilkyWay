@@ -1,0 +1,108 @@
+﻿@model MilkWayIndia.Models.Sector
+@{
+    ViewBag.Title = "AddState";
+    Layout = "~/Views/Shared/_MyLayout.cshtml";
+}
+
+@section contain
+{
+
+
+    <script src="~/Content/plugins/jQuery/jquery-2.2.3.min.js"></script>
+    <link href="~/Content/plugins/datepicker/datepicker3.css" rel="stylesheet" />
+    <script src="~/Content/plugins/datepicker/bootstrap-datepicker.js"></script>
+    <script>
+        $(document).ready(function () {
+            var MasterClass = document.getElementById("LiMst");
+            if (MasterClass != null) {
+                MasterClass.className = MasterClass.className + " active";
+            }
+        });
+    </script>
+    <script>
+        $(function () {
+            $(".select2").select2();
+        });
+    </script>
+
+
+    <section class="content-header">
+        <h1>
+            Add State
+        </h1>
+        <ol class="breadcrumb">
+            <li><a href="@Url.Action("Index", "Admin")"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="active">State</li>
+        </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="col-md-6">
+            <div class="box box-info">
+                <div class="box-header with-border">
+                    <div class="btn-group-vertical">
+                        <button class="btn btn-success" type="button" onclick="location.href='@Url.Action("StateList", "Sector")'">Back To List</button>
+                    </div>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
+                </div>
+                <div class="form-horizontal">
+                    @using (Ajax.BeginForm("AddState", "Sector", new AjaxOptions { OnSuccess = "onSuccessLogin", UpdateTargetId = "SuccessMsg" }))
+                    {
+                        <div class="box-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div id="SuccessMsg" style="color: red">@ViewBag.SuccessMsg</div>
+                                    <div class="form-group">
+                                        <label for="inputEmail3" class="col-sm-2 control-label">StateName</label>
+                                        <div class="col-sm-6">
+                                            @Html.TextBoxFor(m => m.Statename, new { @class = "form-control", @id = "Statename", onClick = "ClearTextbox('Statename')" })
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="box-footer text-right">
+                            <input type="submit" value="Save" class="btn btn-primary" onclick="return ValidState();" />
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        function onSuccessLogin(data) {
+            document.getElementById("Statename").value = "";
+
+            var ErrorMessage = data.ErrorMessage;
+        }
+
+        function ClearTextbox(a) {
+            if (document.getElementById(a).value == 'null' || document.getElementById(a).value == '' || document.getElementById(a).value == 'Please Enter ProductName') {
+                document.getElementById(a).value = "";
+                document.getElementById(a).style.border = " 1px solid #d5d5d5";
+                document.getElementById(a).style.color = "#2e414e";
+            }
+        }
+
+        function ValidState() {
+            var status = true;
+            var sector = document.getElementById("Statename").value;
+            if (sector == null || sector == "" || sector == "Please Enter State Name") {
+                document.getElementById("Statename").style.border = "1px solid #ff0000";
+                document.getElementById("Statename").style.color = "#ff0000";
+                document.getElementById("Statename").value = "Please Enter SectorName";
+                status = false;
+                return false;
+            }
+
+
+
+    </script>
+
+
+}

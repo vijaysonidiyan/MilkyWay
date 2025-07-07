@@ -1,0 +1,111 @@
+﻿@model IEnumerable<MilkWayIndia.Models.BillPayProviderVM>
+@{
+    Layout = "~/Views/Shared/_MyLayout.cshtml";
+}
+@section contain
+{
+    <script src="~/Content/plugins/jQuery/jquery-2.2.3.min.js"></script>
+    <script src="~/scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var MasterClass = document.getElementById("LiBilpay");
+            if (MasterClass != null) {
+                MasterClass.className = MasterClass.className + " active";
+            }
+        });
+    </script>
+    <section class="content-header">
+        <div class="box-header with-border">
+            <h3 class="box-title">Billpay Operator List</h3>
+            <div class="box-tools">
+                <div class="input-group input-group-sm pull-right">
+                    <a href="/billpay/addprovider" class="btn btn-primary pull-right btn-add">Add</a>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box">
+                    <div class="box-body">
+                        @Html.Raw(ViewBag.Message)
+                        <div class="table-responsive">
+                            <table id="example1" class="table table-bordered table-striped">
+                                @{int rowNo = 0;}
+                                <thead>
+                                    <tr>
+                                        <th>No</th>                                        
+                                        <th>Operator Name</th>
+                                        <th>State</th>
+                                        <th>City</th>
+                                        <th>Partial</th>
+                                        <th>Operator Code</th>
+                                        <th>Service Name</th>
+                                        <th>Number Tag</th>
+                                        <th>Field Tag1</th>
+                                        <th>Field Tag2</th>
+                                        <th>Field Tag3</th>
+                                        <th width="50px">Active</th>
+                                        <td width="20px"></td>
+                                        <td width="20px"></td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model != null)
+                                    {
+                                        foreach (var item in Model)
+                                        {
+                                            <tr>
+                                                <td>@(rowNo += 1)</td>
+                                                <td>@item.OperatorName</td>
+                                                <td>@item.CircleName</td>
+                                                <td>@item.CityName</td>
+                                                <td>@item.IsPartial</td>
+                                                <td>@item.OperatorCode</td>
+                                                <td>@item.ServiceName</td>
+                                                <td>@item.NumberTag</td>
+                                                <td>@item.FieldTag1</td>
+                                                <td>@item.FieldTag2</td>
+                                                <td>@item.FieldTag3</td>
+                                                @if (item.IsActive == true)
+                                                {
+                                                    <td><a class="btn label label-success" href="/billpay/updateprovider?ID=@item.ID">Active</a></td>
+                                                }
+                                                else
+                                                {
+                                                    <td><a class="btn label label-danger" href="/billpay/updateprovider?ID=@item.ID">InActive</a></td>
+                                                }
+                                                <td><a href="/billpay/editprovider/@item.ID"><i class="fa fa-edit"></i></a></td>
+                                                <td><a href="/billpay/deleteprovider/@item.ID" , onclick="return confirm('Are you sure you want to delete this Data?');"><i class="fa fa-trash-o"></i></a></td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <script>
+        $(function () {
+            $('#example1').DataTable({
+                "paging": true,
+                "pageLength": 25,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false
+            });
+        });
+    </script>
+
+}
+
+
+
+

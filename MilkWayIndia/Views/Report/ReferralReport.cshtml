@@ -1,0 +1,204 @@
+﻿@{
+    ViewBag.Title = "VendorProductOrder";
+    Layout = "~/Views/Shared/_MyLayout.cshtml";
+}
+@section contain
+{
+    <script src="~/Content/plugins/jQuery/jquery-2.2.3.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var MasterClass = document.getElementById("ReportLi");
+            if (MasterClass != null) {
+                MasterClass.className = MasterClass.className + " active";
+
+            }
+        });
+    </script>
+    <link href="~/Content/plugins/datepicker/datepicker3.css" rel="stylesheet" />
+    <script src="~/Content/plugins/datepicker/bootstrap-datepicker.js"></script>
+    <section class="content-header">
+        @if (@TempData["error"] != null)
+    {
+            <script type="text/javascript">
+                alert("@TempData["error"]");
+            </script>
+        }
+    </section>
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box box-info">
+                    <div class="box">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">Customer Referral Reports</h3>
+
+                            @using (Ajax.BeginForm("ReferralReport", "Report", new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "upddiv" }))
+                            {
+                                <div class="box-header with-border">
+                                    <div class="btn-group-vertical ">
+                                        <div class="btn-group-vertical ">
+                                            <div class="form-group has-feedback">
+                                                <select id="ddlCustomer" name="ddlCustomer" class="form-control select2">
+                                                    <option value="0">---Select Customer---</option>
+                                                    @if (ViewBag.lstCustomer != null)
+                                                    {
+                                                        foreach (System.Data.DataRow drCustomer in ViewBag.lstCustomer.Rows)
+                                                        {
+                                                            <option value="@drCustomer["Id"]">@drCustomer["FirstName"] @drCustomer["LastName"] </option>
+                                                        }
+                                                    }
+                                                </select>
+                                                @if (ViewBag.CustomerId != null)
+                                                {
+                                                    <script>
+                                                        document.getElementById('ddlCustomer').value = '@ViewBag.CustomerId';
+                                                    </script>
+                                                }
+                                            </div>
+                                        </div>
+                                        @*<div class="btn-group-vertical">
+                                                <div class="form-group has-feedback">
+                                                    @Html.TextBox("ReferralCode", "", new { placeholder = "Referral Code", @class = "form-control", @Value = ViewBag.ReferralCode, autocomplete = "off" })
+                                                </div>
+                                            </div>*@
+                                        <div class="btn-group-vertical ">
+                                            <div class="input-group date form-group has-feedback">
+                                                @Html.TextBox("datepicker", "", new
+                                           {
+
+                                               placeholder = "From Date",
+                                               @class = "form-control",
+                                               @Value = ViewBag.FromDate,
+                                               autocomplete = "off"
+                                           })
+                                            </div>
+                                        </div>
+                                        <div class="btn-group-vertical ">
+                                            <div class="input-group date form-group has-feedback">
+                                                @Html.TextBox("datepicker1", "", new
+                                           {
+
+                                               placeholder = "To Date",
+                                               @class = "form-control",
+                                               @Value = ViewBag.ToDate,
+                                               autocomplete = "off"
+                                           })
+                                            </div>
+                                        </div>
+                                        <div class="btn-group-vertical">
+                                            <div class="form-group has-feedback">
+                                                <input type="submit" id="btn" value="submit" name="submit" class="btn btn-primary" onclick="return validate();" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box">
+                    <div class="box-body">
+                        <div class="box-body table-responsive no-padding">
+                            <table id="example1" class="table table-bordered table-striped">
+                                @{int rowNo = 0;}
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Customer Name</th>
+                                        <th>Mobile</th>
+                                        <th>Order Amount</th>
+                                        <th>Deposit</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (ViewBag.lstCustomerReferral != null)
+                                    {
+                                        foreach (System.Data.DataRow drclient in ViewBag.lstCustomerReferral.Rows)
+                                        {
+                                            <tr>
+                                                <td>@(rowNo += 1)</td>
+                                                <td>@drclient["FirstName"] @drclient["LastName"]</td>
+                                                <td>@drclient["UserName"]</td>
+                                                <td>@drclient["OrderAmt"]</td>
+                                                <td>@drclient["Deposit"]</td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+    <script>
+        $('#datepicker').datepicker({
+            "setDate": new Date(),
+            "autoclose": true,
+            format: 'dd-mm-yyyy',
+            todayHighlight: true,
+            defaultDate: new Date(),
+        });
+        $('#datepicker1').datepicker({
+            "setDate": new Date(),
+            "autoclose": true,
+            format: 'dd-mm-yyyy',
+            todayHighlight: true,
+            defaultDate: new Date(),
+        });
+    </script>
+    <script>
+        $(function () {
+            $('#example1').DataTable({
+                "paging": true,
+                "pageLength": 25,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false
+            });
+        });
+    </script>
+    <script>
+        function validate() {
+            var status = true;
+
+            var fd = document.getElementById('datepicker').value;
+            if (fd == '' || fd == null) {
+                document.getElementById('datepicker').style.border = "1px solid #ff0000";
+                status = false;
+            }
+            else {
+                document.getElementById('datepicker').style.border = "";
+            }
+            var Td = document.getElementById('datepicker1').value;
+            if (Td == '' || Td == null) {
+                document.getElementById('datepicker1').style.border = "1px solid #ff0000";
+                status = false;
+            }
+            else {
+                document.getElementById('datepicker1').style.border = "";
+            }
+            var customer = document.getElementById('ddlCustomer').value;
+            if (customer == '' || customer == null || customer == "0") {
+                document.getElementById('ddlCustomer').style.border = "1px solid #ff0000";
+                status = false;
+            }
+            else {
+                document.getElementById('ddlCustomer').style.border = "";
+            }
+            return status;
+        }
+    </script>
+}
+
+

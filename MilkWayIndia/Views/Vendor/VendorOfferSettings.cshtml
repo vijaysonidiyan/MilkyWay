@@ -1,0 +1,474 @@
+﻿@model MilkWayIndia.Models.Vendor
+@{
+    ViewBag.Title = "VendorOfferSettings";
+    Layout = "~/Views/Shared/_MyLayout.cshtml";
+}
+
+@section contain
+{
+    <script src="~/js/jquery.js"></script>
+    <script src="~/Content/plugins/jQuery/jquery-2.2.3.min.js"></script>
+    <script src="~/scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <link href="~/Content/plugins/datepicker/datepicker3.css" rel="stylesheet" />
+    <script src="~/Content/plugins/datepicker/bootstrap-datepicker.js"></script>
+    <script>
+        $(document).ready(function () {
+            var MasterClass = document.getElementById("LiMst");
+            if (MasterClass != null) {
+                MasterClass.className = MasterClass.className + " active";
+            }
+        });
+    </script>
+
+    <style>
+        .select2-container--default .select2-selection--single {
+            border: 1px solid #d2d6de;
+            border-radius: 0px;
+        }
+
+        .select2-container .select2-selection--single {
+            height: 34px;
+        }
+    </style>
+    <script>
+        $(function () {
+            $(".select2").select2();
+        });
+    </script>
+    <script language="javascript" type="text/javascript">
+        $(document).ready(function () {
+            //$("#ddlState").prop("disabled", true);
+            var city = $("#City").val();
+            var id = $("#State").val();
+            $.ajax({
+                cache: false,
+                type: "GET",
+                url: '@Url.Action("GetCity", "Sector")',
+                data: { "Statecode": id },
+                success: function (json, textStatus) {
+                    $("#ddlCity").empty();
+                    json = json || {};
+                    $("#ddlCity").append('<option value=0>--Select--</option>');
+                    for (var i = 0; i < json.length; i++) {
+                        $("#ddlCity").append('<option value="' + json[i].Citycode + '">' + json[i].CityName + '</option>');
+                    }
+                    $('#ddlCity').val(city).trigger('change');
+                    $("#ddlCity").prop("disabled", false);
+                },
+                error: function () {
+                    alert("Data Not Found");
+                }
+        });
+
+            var url = '/Vendor/FetchSectorListByOfferVendorcat';
+            var div_sectors = $('#div_sectors');
+
+            var id = $("#VendorId").val();
+            var selectedCity = $("#City").val();
+                if (!selectedCity) {
+                    div_sectors.empty();
+                    return;
+                }
+                if (selectedCity > 0) {
+                    $.get(url, { id: selectedCity, VendorCatid: id }, function (data) {
+                        div_sectors.html(data);
+                    })
+                }
+                else {
+                    div_sectors.empty();
+                }
+
+    });
+    </script>
+    <section class="content">
+        <div class="col-md-12">
+            <div class="box box-info">
+                <div class="box-header with-border">
+                    <div class="btn-group-vertical">
+                        <button class="btn btn-success" type="button" onclick="location.href='@Url.Action("AssignVendorCatSubcatList", "Vendor")'">Back To List</button>
+                    </div>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
+                </div>
+                <div class="form-horizontal">
+                    @using (Ajax.BeginForm("VendorOfferSettings", "Vendor", new AjaxOptions { OnSuccess = "SuccessAssign" }, new { @id = "frmAssign", enctype = "multipart/form-data" }))
+                    {
+                        <div class="box-body" id="product">
+                            @Html.TextBox("txtproid", "", new { @class = "form-control", @readonly = "readonly", style = "color:red; ", @type = "hidden" })
+                            <table id="example1" class="table table-bordered table-striped" name="example1">
+                                @{int rowNo = 0;}
+                                <thead>
+                                    <tr>
+                                        <th><input type="checkbox" id="selectall" name="selectall" value="selectall"></th>
+                                        <th>Sort Order</th>
+
+                                        <th>Product</th>
+
+
+
+                                        <th>SalePrice</th>
+                                        <th>CGST</th>
+                                        <th>SGST</th>
+                                        <th>IGST</th>
+
+                                        <th>Image</th>
+                                        <th>Detail</th>
+
+
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (System.Data.DataRow drclient in ViewBag.ProductList.Rows)
+                                    {
+
+                                        <tr>
+                                            <td>
+                                                <input type="checkbox" id="@drclient["Id"].ToString()" name="chkpro[]" value="@drclient["Id"].ToString()" onclick="addcheckbox('@drclient["Id"].ToString()');">
+                                                @* <label for="@drclient["Id"].ToString()">  @drclient["Id"].ToString()</label>*@
+                                            </td>
+                                            <td>
+
+                                                @drclient["OrderBy"]
+                                            </td>
+
+                                            <td>
+
+                                                @drclient["ProductName"].ToString()
+
+                                            </td>
+
+
+
+
+
+
+                                            <td>
+                                                @drclient["SalePrice"]
+
+                                            </td>
+                                            <td>
+
+                                                @drclient["CGST"]
+
+
+                                            </td>
+                                            <td>
+                                                @drclient["SGST"]
+                                            </td>
+
+                                            <td>
+                                                @drclient["IGST"]
+                                            </td>
+
+                                            <td>
+                                                <img src='~/image/product/@drclient["Image"]' width="80" height="70" />
+
+
+
+
+
+                                            </td>
+
+                                            <td>
+                                                @drclient["Detail"]
+                                            </td>
+
+
+
+                                            @* <td><a href="/Product/DeleteProduct/@drclient["Id"]" , onclick="return confirm('Are you sure you want to delete this Data?');"><i class="fa fa-trash-o"></i></a></td>*@
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                            <input type="button" class="btn btn-warning" value="Add Offer" />
+                        </div>
+
+
+
+                        <div class="box-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div id="SuccessMsg" style="color: red">@ViewBag.SuccessMsg</div>
+                                    <div class="form-group">
+                                        <label for="inputEmail3" class="col-sm-3 control-label">Vendor</label>
+                                        <div class="col-sm-6">
+                                            @Html.HiddenFor(m => m.VendorId, new { @class = "form-control", @id = "VendorId", @Value = ViewBag.VendorId })
+                                            @Html.HiddenFor(m => m.City, new { @class = "form-control", @id = "City", @Value = ViewBag.CityId })
+                                            @Html.HiddenFor(m => m.State, new { @class = "form-control", @id = "State", @Value = ViewBag.StateId })
+                                            @*<select id="ddlVendor" name="ddlVendor" class="form-control select2">
+                                                    <option value="0">---Select---</option>
+                                                    @if (ViewBag.VendorList != null)
+                                                    {
+                                                        foreach (System.Data.DataRow drStateName in ViewBag.VendorList.Rows)
+                                                        {
+                                                            <option value="@drStateName["Id"]">@drStateName["FirstName"] @drStateName["LastName"]</option>
+                                                        }
+                                                    }
+                                                </select>*@
+                                            @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control", @id = "FirstName", @Value = ViewBag.VendorName })
+
+                                        </div>
+                                    </div>
+
+
+
+
+
+
+
+
+                                    <div class="form-group">
+                                        <label for="inputEmail3" class="col-sm-3 control-label">Vendor Store</label>
+                                        <div class="col-sm-6">
+                                            @*<select id="ddlVendorCat" name="ddlVendorCat" class="form-control select2"></select>*@
+                                            @Html.TextBoxFor(m => m.VendorCatName, new { @class = "form-control", @id = "VendorCatName", @Value = ViewBag.VendorStore })
+
+                                        </div>
+                                    </div>
+
+
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">StateName</label>
+                                        <div class="col-sm-6">
+                                            <select id="ddlState" name="ddlState" class="form-control select2">
+                                                <option value="0">---Select---</option>
+                                                @if (ViewBag.StateList != null)
+                                                {
+                                                    foreach (System.Data.DataRow drStateName in ViewBag.StateList.Rows)
+                                                    {
+                                                        <option value="@drStateName["id"]">@drStateName["statename"]</option>
+                                                    }
+                                                }
+                                            </select>
+
+                                            @if (ViewBag.StateId != null)
+                                            {
+                                                <script>
+                                                    document.getElementById('ddlState').value = '@ViewBag.StateId';
+                                                </script>
+                                            }
+                                        </div>
+                                    </div>
+
+
+
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">CityName</label>
+                                        <div class="col-sm-6">
+                                            <select id="ddlCity" name="ddlCity" class="form-control select2"></select>
+
+                                            @if (ViewBag.CityName != null)
+                                            {
+                                                <script>
+                                                document.getElementById('ddlCity').value = '@ViewBag.CityName';
+                                                </script>
+                                            }
+                                        </div>
+                                    </div>
+
+
+                                    <div class="form-group">
+                                        <label for="inputEmail3" class="col-sm-3 control-label">SectorName</label>
+                                        <div class="col-sm-6">
+
+                                            <div id="div_sectors" class="scrollbox">
+
+                                            </div>
+
+                                            @* @Html.TextBoxFor(m => m.SectorName, new { @class = "form-control", @id = "SectorName", onClick = "ClearTextbox('SectorName')" })*@
+                                        </div>
+                                    </div>
+
+                                </div>
+
+
+
+                                <div class="col-md-6">
+
+
+                                    <div class="form-group">
+                                        <label for="FLedgerCode" class="col-sm-3 control-label">Validity From</label>
+                                        <div class="col-sm-6">
+                                            @Html.TextBoxFor(m => m.FromDate, new { @class = "form-control", @id = "FromDate", @Value = ViewBag.FromDate, type = "text", @autocomplete = "off" })
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="FLedgerCode" class="col-sm-3 control-label">Validity To</label>
+                                        <div class="col-sm-6">
+                                            @Html.TextBoxFor(m => m.ToDate, new { @class = "form-control", @id = "ToDate", @Value = ViewBag.ToDate, type = "text", @autocomplete = "off" })
+                                        </div>
+                                    </div>
+
+
+                                    <div class="form-group">
+                                        <label for="FLedgerCode" class="col-sm-3 control-label">Offer Type</label>
+                                        <div class="col-sm-6">
+                                            <select id="ddlOffercat" name="ddlOffercat" class="form-control select2">
+                                                <option value="0">---Select---</option>
+                                                <option value="Voucher">Voucher</option>
+                                                <option value="Offer">Offer</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="FLedgerCode" class="col-sm-3 control-label">Offer Amount</label>
+                                        <div class="col-sm-6">
+                                            @Html.TextBoxFor(m => m.Offeramount, new { @class = "form-control", @id = "Offeramount", @Value = ViewBag.Offeramount, onkeypress = "return ValidateNumber(event);", type = "text" })
+                                        </div>
+                                    </div>
+
+
+                                    <div class="form-group">
+                                        <label for="FLedgerCode" class="col-sm-3 control-label">Offer Days</label>
+                                        <div class="col-sm-6">
+                                            <select id="ddlofferday" name="ddlofferday" class="form-control select2">
+                                                <option value="0">---Select---</option>
+                                                <option value="From-To Date">From-To Date</option>
+                                                <option value="Week Day">Week Day</option>
+
+                                                <option value="Multiple Day">Multiple Day</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group" id="weekday" style="display:none;">
+                                        <label for="FLedgerCode" class="col-sm-3 control-label">Week Day</label>
+                                        <div class="col-sm-6">
+                                            <input type="checkbox" name="chkWeekday[]" value="0" />Sunday
+                                            <input type="checkbox" name="chkWeekday[]" value="1" />Monday
+                                            <input type="checkbox" name="chkWeekday[]" value="2" />Tuesday
+                                            <input type="checkbox" name="chkWeekday[]" value="3" />Wednesday
+                                            <input type="checkbox" name="chkWeekday[]" value="4" />Thursday
+                                            <input type="checkbox" name="chkWeekday[]" value="5" />Friday
+                                            <input type="checkbox" name="chkWeekday[]" value="6" />Saturday
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group" id="multipleday" style="display:none">
+                                        <label for="FLedgerCode" class="col-sm-3 control-label">Multipleday</label>
+                                        <div class="col-sm-6">
+                                            @Html.TextBoxFor(m => m.MultipleDay, new { @class = "form-control", @id = "MultipleDay", @Value = ViewBag.MultipleDay, type = "text", @autocomplete = "off" })
+                                        </div>
+                                    </div>
+
+
+
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="box-footer text-right">
+                            <input type="submit" value="Save" class="btn btn-primary" onclick="return ValidSector();" />
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </section>
+    <script>
+        $('#FromDate').datepicker({
+            "setDate": new Date(),
+            "autoclose": true,
+            format: 'dd/mm/yyyy',
+            todayHighlight: true,
+            defaultDate: new Date(),
+        });
+        // $("#datepicker").datepicker('setDate', new Date());
+        $('#ToDate').datepicker({
+            "setDate": new Date(),
+            "autoclose": true,
+            format: 'dd/mm/yyyy',
+            todayHighlight: true,
+            defaultDate: new Date(),
+
+        });
+
+        $('#MultipleDay').datepicker({
+            "setDate": new Date(),
+            "autoclose": true,
+            format: 'dd/mm/yyyy',
+            todayHighlight: true,
+            defaultDate: new Date(),
+            multidate: true,
+        });
+
+        // $("#datepicker1").datepicker('setDate', new Date());
+    </script>
+
+    <script language="javascript" type="text/javascript">
+        $(document).ready(function () {
+            //$("#ddlState").prop("disabled", true);
+
+
+
+
+
+
+            //
+
+
+            //
+
+
+
+            //
+
+
+
+
+        });
+    </script>
+
+    <script>
+        $(function () {
+            //GetProductAttribute();
+
+        });
+
+
+
+
+    </script>
+    <script>
+        $('#selectall').click(function () {
+            if ($(this).is(":checked")) {
+                $('#example1').find('input[type="checkbox"]').each(function () {
+                    $(this).prop("checked", true);
+                });
+            }
+            else {
+                $('[id *= example1]').find('input[type="checkbox"]').each(function () {
+                    $(this).prop("checked", false);
+                });
+            }
+        });
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            $('#ddlofferday').change(function () {
+
+                var cat = $("#ddlofferday").val();
+                if (cat == "Week Day") {
+                    $("#weekday").slideDown();
+                    $("#multipleday").slideUp();
+                }
+                if (cat == "Multiple Day") {
+                    $("#multipleday").slideDown();
+                    $("#weekday").slideUp();
+                }
+
+                if (cat == "From-To Date" || cat == "0") {
+                    $("#multipleday").slideUp();
+                    $("#weekday").slideUp();
+                }
+            });
+        });
+    </script>
+
+}
+

@@ -1,0 +1,149 @@
+﻿@using PagedList.Mvc
+@model  PagedList.IPagedList<MilkWayIndia.Models.CustomerWalletModel>
+
+@{
+    ViewBag.Title = "CustomerWalletList";
+    Layout = "~/Views/Shared/_MyLayout.cshtml";
+}
+
+@section contain
+{
+    <style>
+        .select2-container--default .select2-selection--single {
+            border: 1px solid #d2d6de;
+            border-radius: 0px;
+        }
+
+        .select2-container .select2-selection--single {
+            height: 33px;
+        }
+    </style>
+    <script src="~/Content/plugins/jQuery/jquery-2.2.3.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var MasterClass = document.getElementById("LiMst");
+            if (MasterClass != null) {
+                MasterClass.className = MasterClass.className + " active";
+
+            }
+        });
+    </script>
+    <section class="content-header">
+        <div class="box-header with-border">
+            <h3 class="box-title">Customer Sort Order</h3>
+        </div>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box">
+                    <div class="box-header with-border">
+
+                        @using (Html.BeginForm("CustomerSortOrder", "Customer", FormMethod.Get))
+                        {
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group has-feedback">
+                                        <select id="ddlSector" name="SectorId" class="form-control select2">
+                                            <option value="0">---Select Sector---</option>
+                                            @if (ViewBag.lstSector != null)
+                                            {
+                                                foreach (System.Data.DataRow item in ViewBag.lstSector.Rows)
+                                                {
+                                                    <option value="@item["Id"]">@item["SectorName"]</option>
+                                                }
+                                            }
+                                        </select>
+                                        @if (ViewBag.SectorId != null)
+                                        {
+                                            <script>
+                                                document.getElementById('ddlSector').value = '@ViewBag.SectorId';
+                                            </script>
+                                        }
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group has-feedback">
+                                        <select id="ddlStaff" name="StaffId" class="form-control select2">
+                                            <option value="0">---Select Delivery Boy---</option>
+                                            @if (ViewBag.lstStaff != null)
+                                            {
+                                                foreach (System.Data.DataRow item in ViewBag.lstStaff.Rows)
+                                                {
+                                                    <option value="@item["Id"]">@item["FirstName"] @item["LastName"]</option>
+                                                }
+                                            }
+                                        </select>
+                                        @if (ViewBag.StaffId != null)
+                                        {
+                                            <script>
+                                                document.getElementById('ddlStaff').value = '@ViewBag.StaffId';
+                                            </script>
+                                        }
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group has-feedback">
+                                                <button type="submit" id="clkbtncomp" class="btn btn-primary" onclick="return ValidForm()">Submit</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        <div class="box-body">
+                            <div id="div_customer" class="box-body table-responsive no-padding">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="loaderbody" id="loaderbody">
+            <div class="loader"></div>
+        </div>
+    </section>
+    <input type="hidden" id="sectorid" value="@ViewBag.SectorId" />
+    <input type="hidden" id="staffId" value="@ViewBag.StaffId" />
+    <script>
+        $(function () {
+            $(".select2").select2();
+            GetCustomerList();          
+        });
+
+        function ValidForm() {
+            var status = true;
+            $('span.select2').removeClass('field-error');
+            //var ddlSector = document.getElementById("ddlSector").value;
+            //if (ddlSector == null || ddlSector == "0") {
+            //    $('#ddlSector').parent().find('span.select2').addClass('field-error');
+            //    status = false;
+            //}
+            var ddlStaff = document.getElementById("ddlStaff").value;
+            if (ddlStaff == null || ddlStaff == "0") {
+                $('#ddlStaff').parent().find('span.select2').addClass('field-error');
+                status = false;
+            }
+            return status;
+        }
+
+        function GetCustomerList() {
+            var sectorid = $('#sectorid').val();
+            var staffId = $('#staffId').val();
+            //if (sectorid == "") {
+            //    return;
+            //}
+            if (staffId == "") {
+                return;
+            }
+            $.get("/Customer/GetCustomerSortOrder", { sectorid: sectorid, staffId: staffId }, function (data) {
+                $('#div_customer').html(data);
+            });
+        }
+    </script>
+}

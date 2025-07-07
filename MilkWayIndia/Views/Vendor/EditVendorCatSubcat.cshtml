@@ -1,0 +1,330 @@
+﻿@model MilkWayIndia.Models.Vendor
+@{
+    ViewBag.Title = "EditVendorCatSubcat";
+    Layout = "~/Views/Shared/_MyLayout.cshtml";
+}
+
+@section contain
+{
+
+
+    <script src="~/Content/plugins/jQuery/jquery-2.2.3.min.js"></script>
+    <link href="~/Content/plugins/datepicker/datepicker3.css" rel="stylesheet" />
+    <script src="~/Content/plugins/datepicker/bootstrap-datepicker.js"></script>
+    <script>
+        $(document).ready(function () {
+            var MasterClass = document.getElementById("LiMst");
+            if (MasterClass != null) {
+                MasterClass.className = MasterClass.className + " active";
+            }
+        });
+    </script>
+
+    <style>
+        .select2-container--default .select2-selection--single {
+            border: 1px solid #d2d6de;
+            border-radius: 0px;
+        }
+
+        .select2-container .select2-selection--single {
+            height: 34px;
+        }
+    </style>
+    <script>
+        $(function () {
+            $(".select2").select2();
+        });
+    </script>
+
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="col-md-12">
+            <div class="box box-info">
+                <div class="box-header with-border">
+                    <div class="btn-group-vertical">
+                        <button class="btn btn-success" type="button" onclick="location.href='@Url.Action("AssignVendorCatSubcatList", "Vendor")'">Back To List</button>
+                    </div>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
+                </div>
+                <div class="form-horizontal">
+                    @using (Ajax.BeginForm("EditVendorCatSubcat", "Vendor", new AjaxOptions { OnSuccess = "SuccessAssign" }, new { @id = "frmAssign", enctype = "multipart/form-data" }))
+                    {
+
+                        @Html.HiddenFor(model => model.VendorCatId, new { @class = "form-control", @id = "VendorCatId", @Value = ViewBag.VendorCatId })
+
+                        <div class="box-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div id="SuccessMsg" style="color: red">@ViewBag.SuccessMsg</div>
+                                    <div class="form-group">
+                                        <label for="inputEmail3" class="col-sm-3 control-label">Vendor</label>
+                                        <div class="col-sm-6">
+                                            <select id="ddlVendor" name="ddlVendor" class="form-control select2">
+                                                <option value="0">---Select---</option>
+                                                @if (ViewBag.VendorList != null)
+                                                {
+                                                    foreach (System.Data.DataRow drStateName in ViewBag.VendorList.Rows)
+                                                    {
+                                                        <option value="@drStateName["Id"]">@drStateName["FirstName"] @drStateName["LastName"]</option>
+                                                    }
+                                                }
+                                            </select>
+
+
+                                            @if (ViewBag.VendorId != null)
+                                            {
+                                                <script>
+                                                    document.getElementById('ddlVendor').value = '@ViewBag.VendorId';
+                                                </script>
+                                            }
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Parent Category</label>
+                                        <div class="col-sm-6">
+                                            <select id="ddlCategory" name="ddlCategory" class="form-control select2">
+                                                <option value="0">---Select---</option>
+                                                @if (ViewBag.lstCategory != null)
+                                                {
+                                                    foreach (System.Data.DataRow drCategoryName in ViewBag.lstCategory.Rows)
+                                                    {
+                                                        <option value="@drCategoryName["Id"]">@drCategoryName["ParentCategory"]</option>
+                                                    }
+                                                }
+                                            </select>
+
+
+                                            @if (ViewBag.Parentcat != null)
+                                            {
+                                                <script>
+                                                    document.getElementById('ddlCategory').value = '@ViewBag.Parentcat';
+                                                </script>
+                                            }
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputEmail3" class="col-sm-3 control-label">Sub Category</label>
+                                        <div class="col-sm-6">
+
+                                            <div id="div_subcat" class="scrollbox">
+
+                                            </div>
+
+                                            @* @Html.TextBoxFor(m => m.SectorName, new { @class = "form-control", @id = "SectorName", onClick = "ClearTextbox('SectorName')" })*@
+                                        </div>
+                                    </div>
+
+
+
+
+
+                                    <div class="form-group">
+                                        <label for="inputEmail3" class="col-sm-3 control-label">Vendor Cat Name</label>
+                                        <div class="col-sm-6">
+                                            @Html.TextBoxFor(m => m.VendorCatName, new { @class = "form-control", @id = "VendorCatName", @Value = ViewBag.VendorCatName })
+                                        </div>
+                                    </div>
+
+
+
+                                </div>
+
+
+
+
+                                <div id="cat_setting" class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="inputEmail3" class="col-sm-3 control-label">Min. Amount</label>
+                                        <div class="col-sm-6">
+                                            @Html.TextBoxFor(m => m.VendorMinAmount, new { @class = "form-control", @id = "VendorMinAmount", @Value = ViewBag.MinAmount })
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputEmail3" class="col-sm-3 control-label">Max. Amount</label>
+                                        <div class="col-sm-6">
+                                            @Html.TextBoxFor(m => m.VendorMaxAmount, new { @class = "form-control", @id = "VendorMaxAmount", @Value = ViewBag.MaxAmount })
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="FLedgerCode" class="col-sm-3 control-label">From Time</label>
+                                        <div class="col-sm-4">
+                                            @Html.TextBoxFor(m => m.FromTime, new { @class = "form-control", @id = "FromTime", @Value = ViewBag.FromTime, onkeypress = "return ValidateNumber(event);", type = "time" })
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputEmail3" class="col-sm-3 control-label">To Time</label>
+                                        <div class="col-sm-4">
+                                            @Html.TextBoxFor(m => m.ToTime, new { @class = "form-control", @id = "ToTime", @Value = ViewBag.ToTime, onkeypress = "return ValidateNumber(event);", type = "time" })
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="FLedgerCode" class="col-sm-3 control-label">Delivery From</label>
+                                        <div class="col-sm-4">
+                                            @Html.TextBoxFor(m => m.DeliveryFrom, new { @class = "form-control", @id = "DeliveryFrom", @Value = ViewBag.DeliveryFrom, onkeypress = "return ValidateNumber(event);", type = "time" })
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputEmail3" class="col-sm-3 control-label">Delivery To</label>
+                                        <div class="col-sm-4">
+                                            @Html.TextBoxFor(m => m.DeliveryTo, new { @class = "form-control", @id = "DeliveryTo", @Value = ViewBag.DeliveryTo, onkeypress = "return ValidateNumber(event);", type = "time" })
+                                        </div>
+                                    </div>
+
+
+                                    <div class="form-group">
+                                        <label for="FLedgerCode" class="col-sm-3 control-label">Image</label>
+                                        <div class="col-sm-4">
+                                            <input type="file" name="Document1" id="Document1" /><br />
+                                        </div>
+                                        <span>Size : 200px * 200px</span>
+
+                                        @if (ViewBag.Image != null && ViewBag.Image != "")
+                                        {
+                                            <div class="form-group has-feedback" id="imgicon">
+                                                <img src="~/image/VendorCatImage/@ViewBag.Image" height="100" width="100" onClick="window.open(this.src);" />
+                                            </div>
+                                        }
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="inputEmail3" class="col-sm-3 control-label">Is Notification</label>
+                                        <div class="col-sm-6">
+
+                                            @if (Convert.ToBoolean(ViewBag.Notification) == true)
+                                            {
+                                                <input type="checkbox" class="Checked" id="IsNotification" name="IsNotification" checked />
+                                            }
+                                            else
+                                            {
+                                                <input type="checkbox" class="Checked" id="IsNotification" name="IsNotification" />
+                                            }
+
+                                            @*@Html.CheckBox("IsNotification", new { @checked = "checked" })*@
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="box-footer text-right">
+                            <input type="submit" value="Save" class="btn btn-primary" onclick="return ValidSector();" />
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </section>
+    <div class="loaderbody" id="loaderbody">
+        <div class="loader"></div>
+    </div>
+    <script>
+        function onSuccessLogin(data) {
+            document.getElementById("SectorName").value = "";
+            document.getElementById("Landmark").value = "";
+            document.getElementById("PinCode").value = "";
+            var ErrorMessage = data.ErrorMessage;
+        }
+
+        function ClearTextbox(a) {
+            if (document.getElementById(a).value == 'null' || document.getElementById(a).value == '' || document.getElementById(a).value == 'Please Enter ProductName') {
+                document.getElementById(a).value = "";
+                document.getElementById(a).style.border = " 1px solid #d5d5d5";
+                document.getElementById(a).style.color = "#2e414e";
+            }
+        }
+
+        function ValidSector() {
+            var status = true;
+            var sector = document.getElementById("SectorName").value;
+            if (sector == null || sector == "" || sector == "Please Enter SectorName") {
+                document.getElementById("SectorName").style.border = "1px solid #ff0000";
+                document.getElementById("SectorName").style.color = "#ff0000";
+                document.getElementById("SectorName").value = "Please Enter SectorName";
+                status = false;
+                return false;
+            }
+
+            var pincode = document.getElementById("PinCode").value;
+            if (pincode == null || pincode == "" || pincode == "Please Enter PinCode") {
+                document.getElementById("PinCode").style.border = "1px solid #ff0000";
+                document.getElementById("PinCode").style.color = "#ff0000";
+                document.getElementById("PinCode").value = "Please Enter PinCode";
+                status = false;
+                return false;
+            }
+
+        }
+        function ValidateNumber(e) {
+
+            var keycode = (e.which) ? e.which : e.keyCode;
+            //console.log(keycode);
+            var phn = document.getElementById('PinCode');
+            //comparing pressed keycodes
+            if (!(keycode == 8 || keycode == 46) && (keycode < 48 || keycode > 57)) {
+                return false;
+            }
+            return true;
+        };
+
+    </script>
+
+    <script>
+        $(document).ready(function () {
+
+            var catname = document.getElementById("ddlCategory").value;
+            var vendorid = document.getElementById("ddlVendor").value;
+
+
+
+            //GetProductAttribute();
+            var url = '/Vendor/FetchSubcatListVendorWise';
+            var div_subcat = $('#div_subcat');
+            //$('#ddlCategory').change(function () {
+
+
+            //var catname = $("#ddlCategory option:selected").html();
+
+
+            //var vendor = $("#ddlVendor option:selected").html();
+
+            //document.getElementById("VendorCatName").value = vendor + "-" + catname;, vendorid: vendorid
+
+
+            var selectedCat = catname;
+            if (!selectedCat) {
+                div_subcat.empty();
+                return;
+            }
+            if (selectedCat > 0) {
+                $.get(url, { id: selectedCat, vendorid: vendorid }, function (data) {
+
+
+                    div_subcat.html(data);
+                })
+            }
+            else {
+                div_subcat.empty();
+            }
+            //});
+        });
+
+
+
+                        //function SuccessAssign(data) {
+                        //    if (data.status = "1") {
+                        //        toastr["success"]("Product Add Successfully...");
+                        //        var div_sectors = $('#div_sectors');
+                        //        $("#ddlVendor").select2("val", "0");
+                        //        div_sectors.empty();
+                        //        GetProductAttribute();
+                        //    }
+                        //    else {
+                        //        toastr["error"]("error");
+                        //    }
+                        //}
+    </script>
+}

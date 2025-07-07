@@ -1,0 +1,53 @@
+﻿@model MilkWayIndia.Entity.AdvertisementModel
+@{
+    Layout = "~/Views/Shared/_MyLayout.cshtml";
+}
+@section contain
+{
+    <script src="~/Content/plugins/jQuery/jquery-2.2.3.min.js"></script>
+    <link href="~/Content/plugins/datepicker/datepicker3.css" rel="stylesheet" />
+    <script src="~/Content/plugins/datepicker/bootstrap-datepicker.js"></script>
+    <script>
+        $(document).ready(function () {
+            var MasterClass = document.getElementById("LiMst");
+            if (MasterClass != null) {
+                MasterClass.className = MasterClass.className + " active";
+            }
+        });
+    </script>
+    <section class="content-header">
+        <h1>
+            Edit Advertisement
+        </h1>
+        <ol class="breadcrumb">
+            <li><a href="@Url.Action("Index", "Admin")"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="active">Edit Advertisement</li>
+        </ol>
+    </section>
+    <section class="content">
+        <div class="col-md-12">
+            <div class="box box-info">
+                <div class="box-header with-border">
+                    <div class="btn-group-vertical">
+                        <a href="/Advertisement/index" class="btn btn-success">Back To Panel</a>
+                    </div>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
+                </div>
+                <div class="form-horizontal">
+                    @using (Html.BeginForm("Edit", "Advertisement", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                    {
+                        @Html.Partial("_CreateOrUpdate")
+                    }
+                </div>
+            </div>
+        </div>
+    </section>
+}
+
+
+
+
+
+

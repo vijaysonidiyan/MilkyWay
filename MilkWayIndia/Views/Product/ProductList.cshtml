@@ -1,0 +1,635 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_MyLayout.cshtml";
+}
+@model MilkWayIndia.Models.Product
+
+@section contain
+{
+    <script src="~/Content/plugins/jQuery/jquery-2.2.3.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var MasterClass = document.getElementById("LiProduct");
+            if (MasterClass != null) {
+                MasterClass.className = MasterClass.className + " active";
+
+            }
+        });
+    </script>
+    <section class="content-header">
+        @if (@TempData["error"] != null)
+        {
+            <script type="text/javascript">
+                alert("@TempData["error"]");
+            </script>
+        }
+        <div class="box-header with-border">
+            <h3 class="box-title">Product List</h3>
+            <div class="box-tools">
+                <div class="input-group input-group-sm pull-right">
+                    @*<asp:LinkButton runat="server" ID="lbtnAdd" class="btn btn-default pull-right btn-add" PostBackUrl="~/.aspx">Back</asp:LinkButton>*@
+
+                    @* <input type="submit" value="Delete" class="btn btn-primary"  />*@
+
+                    <input type="button" class="btn btn-primary pull-right btn-add" value="Add" onclick="location.href='@Url.Action("AddProduct", "Product")'" />
+
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box">
+                    <div class="box-body">
+
+                        @if (@ViewBag.SuccessMsg == "Product Updated Successfully!!!")
+                        {
+                            <div id="SuccessMsg" style="color: green">@ViewBag.SuccessMsg</div>
+                        }
+
+
+
+                        else
+                        {
+                            <div id="SuccessMsg" style="color: red">@ViewBag.SuccessMsg</div>
+                        }
+                        <div class="form-horizontal">
+                            @using (Html.BeginForm("ProductList", "Product", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                            {
+                                @Html.TextBox("txtproid", "", new { @class = "form-control", @readonly = "readonly", style = "color:red; " })
+                                <br />
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="inputEmail3" class="col-sm-3 control-label">Category</label>
+                                            <div class="col-sm-6">
+                                                @*@Html.TextBoxFor(m => m.CategoryId, new { @class = "form-control", @id = "CategoryId" })*@
+                                                <select id="ddlCategory" name="ddlCategory" class="form-control">
+                                                    <option value="0">---Select---</option>
+                                                    @if (ViewBag.Category != null)
+                                                    {
+                                                        foreach (System.Data.DataRow drCategoryName in ViewBag.Category.Rows)
+                                                        {
+                                                            <option value="@drCategoryName["Id"]">@drCategoryName["CategoryName"]</option>
+                                                        }
+                                                    }
+                                                </select>
+
+                                                @if (ViewBag.ProductCatselect != null)
+                                                {
+                                                    <script>
+                                                    document.getElementById('ddlCategory').value = '@ViewBag.ProductCatselect';
+                                                    </script>
+                                                }
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button type="submit" id="clkbtnsearch" name="submit" value="Search" class="btn btn-primary" onclick="return Valid()">Search</button>
+                                    </div>
+                                </div>
+
+
+
+                                <div class="row">
+                                    <div class="col-md-2" style="text-align:right">
+
+                                        <div class="input-group input-group-sm pull-right">
+
+
+                                            @Html.TextBoxFor(m => m.startpoint, new { @class = "form-control", @id = "startpoint", onkeypress = "return ValidateNumber(event);", @Value = ViewBag.startpoint, style = "width:100px;text-align: center;font-size: 18px;font-weight:bold;padding:2px;border-radius:2px; ", @readonly = "readonly" })
+
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-1">
+                                        <span>To</span>
+                                    </div>
+
+                                    <div class="col-md-2" style="text-align:left">
+                                        <div class="input-group input-group-sm pull-left">
+                                            @Html.TextBoxFor(m => m.endpoint, new { @class = "form-control", @id = "endpoint", onkeypress = "return ValidateNumber(event);", @Value = ViewBag.endpoint, style = "width:100px;text-align: center;font-size: 18px;font-weight:bold;padding:2px;border-radius:2px;", @readonly = "readonly" })
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-5">
+                                        <div class="input-group input-group-sm pull-left">
+                                            <button type="submit" id="clkbtncomp2" name="submit" value="First" class="btn btn-warning" onclick="return Valid()">First</button>
+                                            &nbsp;
+                                            <button type="submit" id="clkbtncomp" name="submit" value="Previous" class="btn btn-warning" onclick="return Valid()">Previous</button>
+                                            &nbsp;
+                                            <button type="submit" id="clkbtncomp1" name="submit" value="Next" class="btn btn-warning" onclick="return Valid()">Next</button>
+                                            &nbsp;
+                                            <button type="submit" id="clkbtncomp3" name="submit" value="Last" class="btn btn-warning" onclick="return Valid()">Last</button>
+
+                                            @Html.TextBoxFor(m => m.previous1, new { @class = "form-control", @id = "previous", onkeypress = "return ValidateNumber(event);", @Value = ViewBag.previousid, style = "display:none" })
+
+                                            @Html.TextBoxFor(m => m.next1, new { @class = "form-control", @id = "next", onkeypress = "return ValidateNumber(event);", @Value = ViewBag.nextid, style = "display:none" })
+
+
+
+
+                                        </div>
+                                    </div>
+
+
+
+                                    <div class="col-md-2">
+
+                                        Select All:
+                                        <input type="checkbox" id="selectall" name="selectall" value="selectall">
+
+
+                                        <button type="submit" id="submit" name="submit" value="Delete" class="btn btn-warning" onclick="return confirm('Are you sure you want to Delete this Data?');">Delete</button>
+
+                                    </div>
+                                </div>
+
+
+
+
+
+
+                                <div class="box-body table-responsive no-padding">
+
+                                    <table id="example1" class="table table-bordered table-striped" name="example1">
+                                        @{int rowNo = 0;}
+                                        <thead>
+                                            <tr>
+                                                <th>Sort Order</th>
+                                                <th>Category</th>
+                                                <th>Sub Cat</th>
+                                                <th>Product</th>
+                                                <th>MRP Price</th>
+                                                <th>Purchase Price</th>
+
+                                                <th>Discount Price</th>
+
+                                                <th>Profit Margin</th>
+                                                <th>SalePrice</th>
+                                                <th>CGST</th>
+                                                <th>SGST</th>
+                                                <th>IGST</th>
+
+                                                @*<th>RewardPoint</th>
+        <th>OrderBy</th>*@
+                                                @*<th>Active</th>*@
+                                                <th>Image</th>
+                                                @* <th>Other Image</th>*@
+                                                @if (ViewBag.IsAttribute == true)
+                                                {
+                                                    <th></th>
+                                                }
+                                                @*<th>Assign Product</th>*@
+                                                <th>
+                                                </th>
+                                                <th></th>
+                                                <th></th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (System.Data.DataRow drclient in ViewBag.ProductList.Rows)
+                                            {
+
+                                                string maincat = "";
+                                                maincat = drclient["Subcat"].ToString();
+                                                if (drclient["Maincat"] != null && drclient["Maincat"].ToString() != "")
+                                                {
+                                                    maincat = drclient["Maincat"].ToString();
+                                                }
+                                                //if (drclient["Maincat"] == null)
+                                                //{
+
+                                                //}
+                                            <tr>
+                                                <td>
+
+
+
+                                                    @Html.TextBox(@drclient["Id"] + "sortorder", "", new
+                                               {
+
+                                                   placeholder = "Order By",
+                                                   @class = "form-control",
+                                                   @Value = @drclient["OrderBy"],
+                                                   autocomplete = "off",
+                                                   @style = "width:100px;",
+                                                   type = "number"
+
+
+
+
+                                               })
+
+
+                                                </td>
+
+
+
+
+                                                <td>
+                                                    @maincat
+                                                </td>
+
+
+
+
+
+                                                <td>@drclient["Subcat"]</td>
+                                                <td>
+
+
+
+                                                    @Html.TextArea(@drclient["Id"] + "proname", @drclient["ProductName"].ToString(), new
+                                               {
+                                                   //@item.Status
+                                                   placeholder = "ProductName",
+                                                   @class = "form-control",
+                                                   //@Value = @drclient["ProductName"]
+
+                                                   @style = "width:90px;"
+
+
+
+
+
+
+                                               })
+
+
+                                                </td>
+                                                <td>
+
+
+
+                                                    @Html.TextBox(@drclient["Id"] + "mrp", "", new
+                                         {
+                                             //@item.Status
+                                             placeholder = "MRP",
+                                             @class = "form-control",
+                                             @Value = @drclient["Price"],
+                                             autocomplete = "off",
+                                             @style = "width:50px;"
+
+
+
+
+                                         })
+                                                </td>
+
+                                                <td>
+
+
+                                                    @Html.TextBox(@drclient["Id"] + "purchase", "", new
+                                                                                         {
+                                                                                             //@item.Status
+                                                                                             placeholder = "Purchase Price",
+                                                                                             @class = "form-control",
+                                                                                             @Value = @drclient["PurchasePrice"],
+                                                                                             autocomplete = "off",
+                                                                                             @style = "width:50px;"
+
+
+
+
+                                                                                         })
+                                                </td>
+                                                <td>
+
+
+                                                    @Html.TextBox(@drclient["Id"] + "discount", "", new
+                                                      {
+                                                                                   //@item.Status
+                                                               placeholder = "Discount",
+                                                               @class = "form-control",
+                                                              @Value = @drclient["DiscountAmount"],
+                                                            autocomplete = "off",
+                                                           @style = "width:50px;"
+                                                                 })
+
+
+                                                <td>
+                                                    @Html.TextBox(@drclient["Id"] + "profitmargin", "", new
+                                                  {
+
+                                                           placeholder = "Profit",
+                                                           @class = "form-control",
+                                                          @Value = @drclient["Profit"],
+                                                        autocomplete = "off",
+                                                       @style = "width:50px;"
+                                                             })
+                                                </td>
+                                                <td>
+
+                                                    @Html.TextBox(@drclient["Id"] + "saleprice", "", new
+                                                      {
+
+                                                               placeholder = "Profit",
+                                                               @class = "form-control",
+                                                              @Value = @drclient["SalePrice"],
+                                                            autocomplete = "off",
+                                                           @style = "width:50px;"
+                                                                 })
+
+
+
+
+
+                                                </td>
+                                                <td>
+
+                                                    @Html.TextBox(@drclient["Id"] + "cgst", "", new
+                                                                                                     {
+
+                                                                                                              placeholder = "CGST",
+                                                                                                              @class = "form-control",
+                                                                                                             @Value = @drclient["CGST"],
+                                                                                                           autocomplete = "off",
+                                                                                                          @style = "width:50px;"
+                                                                                                                })
+
+
+
+                                                </td>
+                                                <td>
+                                                    @Html.TextBox(@drclient["Id"] + "sgst", "", new
+                                                                                                     {
+
+                                                                                                              placeholder = "SGST",
+                                                                                                              @class = "form-control",
+                                                                                                             @Value = @drclient["SGST"],
+                                                                                                           autocomplete = "off",
+                                                                                                          @style = "width:50px;"
+                                                                                                                })
+                                                </td>
+                                                <td>
+
+                                                    @Html.TextBox(@drclient["Id"] + "igst", "", new
+                                                                                                   {
+
+                                                                                                            placeholder = "IGST",
+                                                                                                            @class = "form-control",
+                                                                                                           @Value = @drclient["IGST"],
+                                                                                                         autocomplete = "off",
+                                                                                                        @style = "width:50px;"
+                                                                                                              })
+
+
+                                                </td>
+
+                                                @*@if (Convert.ToBoolean(@drclient["IsActive"]) == true)
+        {
+            <td><a href="@Url.Action("InActiveProduct", "Product", new { pid = @drclient["Id"] })">Active</a></td>
+        }
+        else
+        {
+            <td><a href="@Url.Action("ActiveProduct", "Product", new { pid = @drclient["Id"] })">InActive</a></td>
+        }*@
+                                                <td>
+                                                    <img src='~/image/product/@drclient["Image"]' width="80" height="70" />
+
+                                                    <input type="file" name="@drclient["Id"]Document1" id="@drclient["Id"]Document1" /><span>Size : 300px * 300px</span><br />
+                                                </td>
+                                                @*<td>
+            <img src='~/image/product/@drclient["Image"]' width="80" height="70" />
+
+            <input type="file" name="@drclient["Id"]photos" id="@drclient["Id"]photos" multiple/><span>Size : 300px * 300px</span><br />
+        </td>*@
+                                                @if (ViewBag.IsAttribute == true)
+                                                {
+                                                    <td><a href="/Attribute/AssignProduct?ProductID=@drclient["Id"]"><i class="fa fa-filter"></i></a></td>
+                                                }
+                                                @*<td><a href="/Product/AssignProduct/@drclient["Id"]">Assign Product</a></td>*@
+                                                <td>
+                                                    <input type="checkbox" id="@drclient["Id"].ToString()" name="chkpro" value="@drclient["Id"].ToString()" onclick="addcheckbox('@drclient["Id"].ToString()');">
+                                                    @* <label for="@drclient["Id"].ToString()">  @drclient["Id"].ToString()</label>*@
+                                                </td>
+
+                                                <td>
+
+                                                    <button type="submit" id="submit" name="submit" value=@drclient["Id"].ToString() class="btn btn-warning" onclick="return confirm('Are you sure you want to Update?');">Update</button>
+                                                </td>
+                                                @* <td>@Html.CheckBox("chk"+ drclient["Id"].ToString())</td>*@
+                                                <td><a href="/Product/EditProduct/@drclient["Id"]"><i class="fa fa-edit"></i></a></td>
+                                                <td><a href="/Product/DeleteProduct/@drclient["Id"]" , onclick="return confirm('Are you sure you want to delete this Data?');"><i class="fa fa-trash-o"></i></a></td>
+                                            </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+
+
+
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    @*@Html.Partial("_PagingSortingSearchingJSPartial")*@
+    <script>
+        $(function () {
+
+            $('#example1').DataTable({
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false
+            });
+        });
+    </script>
+
+
+    <script>
+
+        //function addchknew() {
+        //    var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        //    for (var checkbox of checkboxes) {
+        //        alert(checkbox.value);
+        //        checkbox.checked = this.checked;
+
+        //    }
+
+        //    alert("a");
+        //}
+
+        document.getElementById('selectall').onclick = function () {
+            var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            var ch = "";
+            if (this.checked == true) {
+                for (var checkbox of checkboxes) {
+                    checkbox.checked = this.checked;
+                    if (checkbox.value != "selectall") {
+
+
+                        if (ch == "") {
+                            ch = checkbox.value;
+
+                        }
+                        else {
+                            ch = ch + "," + checkbox.value;
+                        }
+                    }
+
+                }
+            }
+            else {
+
+                for (var checkbox of checkboxes) {
+                    checkbox.checked = false;
+
+
+                }
+
+
+
+                document.getElementById("txtproid").value = "";
+
+            }
+
+
+            document.getElementById("txtproid").value = ch;
+        }
+
+        function addcheckbox(a) {
+            var b = a;
+            var c = b;
+            // document.getElementById("txtproid").value = "";
+            var d = document.getElementById("txtproid").value;
+            var mystring, myNewString;
+            var checkboxes = document.querySelectorAll('input[name="chkpro"]:checked');
+            let count = 0;
+
+            var ch = "";
+            for (var checkbox of checkboxes) {
+                //document.getElementById("txtproid").append(checkbox.value + ' ');
+
+                let text = document.getElementById("txtproid").value;
+                let result = text.includes(checkbox.value);
+
+                //alert(result);
+                count = count + 1;
+                //alert(checkbox.value);
+                //if (result == false) {
+                if (ch == "") {
+                    ch = checkbox.value;
+
+                }
+                else {
+                    ch = ch + "," + checkbox.value;
+                }
+
+                //if (document.getElementById("txtproid").value=="") {
+                //        document.getElementById("txtproid").value = checkbox.value;
+                //    }
+                //    else {
+                //    document.getElementById("txtproid").value = document.getElementById("txtproid").value + "," + checkbox.value;
+                //    }
+                //}
+
+
+            }
+
+            // alert(ch);
+            document.getElementById("txtproid").value = ch;
+            // alert(count);
+
+            //var checkboxes1 = document.querySelectorAll('input[name="chkpro"]:not(:checked)');
+            //let count1 = 0;
+
+
+            //for (var checkbox of checkboxes1) {
+
+
+            //    let text = document.getElementById("txtproid").value;
+            //    let result = text.includes(checkbox.value);
+
+            //    //alert(result);
+            //    count1 = count1 + 1;
+            //    if (result == true) {
+
+            //        //alert(checkbox.value);
+            //        var myString = document.getElementById("txtproid").value;
+            //        myNewString = myString.replace(checkbox.value, "0");
+            //        document.getElementById("txtproid").value = myNewString;
+            //    }
+
+
+            //}
+            // alert("a:"+count1);
+
+
+
+            // alert(d);
+            // var checkBox1 = document.getElementsByName("chkpro");
+
+            //if (checkBox1.checked == true) {
+
+            //    document.getElementById("txtproid").value = d + b;
+
+            //    //text.style.display = "block";
+            //} else {
+            //    //text.style.display = "none";
+            //}
+            //alert("a");
+            //alert(b);
+        }
+    </script>
+
+
+    @*<script>
+        $(document).ready(function () {
+            $("#ddlCategory").change(function () {
+                var Platform = $(this).find('option:selected').val();
+                //var sectorid = document.getElementById('SectorId').value;
+                $.ajax({
+                    url: '/Staff/GetPlatformWiseModule?Platform=' + Platform,
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",// Not to set any content header
+                    datatype: "json",
+                    processData: false,
+                    success: function (data) {
+                        Data = data;
+                        var dataRows = JSON.parse(Data);
+                        console.log(dataRows);
+
+                        var ddlmodule = $("[id*=ddlmodule]");
+                        //ddlBuilding.empty().append();
+                        ddlmodule.empty().append('<option selected="selected" value="0">---Select---</option>');
+                        for (var i = 0; i < dataRows.length; i++) {
+                            var row = new Array();
+                            var id = dataRows[i].Id;
+                            var name = dataRows[i].Modulename;
+                            // var block = dataRows[i].BlockNo;
+
+                            var opt = new Option(dataRows[i].Modulename);
+                            console.log(id + "," + name);
+
+                            $('#ddlmodule').append('<option value="' + id + '">' + name + '</option>');
+
+                        }
+
+                    }
+                });
+            });
+        });
+    </script>*@
+
+}
+
+
+
+
+
+

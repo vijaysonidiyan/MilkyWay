@@ -1,0 +1,90 @@
+﻿@model MilkWayIndia.Models.Customer
+@{
+
+
+    ViewBag.Title = "TestSms";
+    Layout = "~/Views/Shared/_MyLayout.cshtml";
+}
+
+
+@section contain
+{
+    <script src="~/Content/plugins/jQuery/jquery-2.2.3.min.js"></script>
+    <link href="~/Content/plugins/datepicker/datepicker3.css" rel="stylesheet" />
+    <script src="~/Content/plugins/datepicker/bootstrap-datepicker.js"></script>
+    <script>
+        $(document).ready(function () {
+            var MasterClass = document.getElementById("LiMst");
+            if (MasterClass != null) {
+                MasterClass.className = MasterClass.className + " active";
+            }
+        });
+    </script>
+    <style>
+        .select2-container--default .select2-selection--single {
+            border: 1px solid #d2d6de;
+            border-radius: 0px;
+        }
+
+        .select2-container .select2-selection--single {
+            height: 33px;
+        }
+    </style>
+    <script>
+        $(function () {
+            $(".select2").select2();
+        });
+    </script>
+    <section class="content-header">
+        <h1>
+            Test SMS
+        </h1>
+        <ol class="breadcrumb">
+            <li><a href="@Url.Action("Index", "Admin")"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="active">Test SMS</li>
+        </ol>
+    </section>
+
+    <section class="content">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="box box-info">
+                    <div class="box-header with-border">
+
+                        <div class="box-tools pull-right">
+                            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                        </div>
+                    </div>
+                    <div class="form-horizontal">
+                        @using (Html.BeginForm("TestSms", "Customer", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                        {
+
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+
+                                        <div id="SuccessMsg" style="color: red">@ViewBag.SuccessMsg</div>
+                                        <div class="form-group">
+                                            <label for="inputEmail3" class="col-sm-2 control-label">FirstName</label>
+                                            <div class="col-sm-6">
+                                                @Html.TextBoxFor(m => m.testsms, new { @class = "form-control", @id = "testsms" })
+                                            </div>
+                                        </div>
+
+                                        <div class="box-footer text-right">
+                                            @*<input type="button" class="btn btn-orange" value="Cancel" />*@
+                                            <input type="submit" value="Save" class="btn btn-primary"  />
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+}
+

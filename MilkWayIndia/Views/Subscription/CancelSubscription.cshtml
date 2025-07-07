@@ -1,0 +1,426 @@
+﻿@model MilkWayIndia.Models.Subscription
+@{
+    ViewBag.Title = "CancelSubscription";
+    Layout = "~/Views/Shared/_MyLayout.cshtml";
+}
+
+@section contain
+{
+    <script src="~/Content/plugins/jQuery/jquery-2.2.3.min.js"></script>
+    <link href="~/Content/plugins/datepicker/datepicker3.css" rel="stylesheet" />
+    <script src="~/Content/plugins/datepicker/bootstrap-datepicker.js"></script>
+    <script>
+        $(document).ready(function () {
+            var MasterClass = document.getElementById("LiSubscri");
+            if (MasterClass != null) {
+                MasterClass.className = MasterClass.className + " active";
+
+            }
+        });
+    </script>
+    <style>
+        .select2-container--default .select2-selection--single {
+            border: 1px solid #d2d6de;
+            border-radius: 0px;
+        }
+
+        .select2-container .select2-selection--single {
+            height: 33px;
+        }
+    </style>
+    <script>
+        $(function () {
+            $(".select2").select2();
+        });
+    </script>
+    <section class="content-header">
+        <h1>
+            Cancel Subscription
+        </h1>
+        <ol class="breadcrumb">
+            <li>
+                <a href="@Url.Action("Index", "Admin")"><i class="fa fa-dashboard"></i> Home</a>
+            </li>
+            <li class="active">Cancel Subscription</li>
+        </ol>
+    </section>
+
+    <section class="content">
+        <div class="col-md-12">
+            <div class="box box-info">
+                <div class="box-header with-border">
+                    <div class="btn-group-vertical">
+                            <button class="btn btn-success" type="button" onclick="location.href='@Url.Action("CanceledSubscriptionList", "Subscription")'">Cancel Subscription List</button>
+                        </div>
+
+                </div>
+                <div class="form-horizontal">
+                    @using (Html.BeginForm("CancelSubscription", "Subscription",FormMethod.Post, new { enctype = "multipart/form-data" }))
+                    {
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-md-12">
+
+                                <div id="SuccessMsg" style="color: red">@ViewBag.SuccessMsg</div>
+                                <div class="form-group">
+                                    <label for="inputEmail3" class="col-md-1 control-label">Customer</label>
+                                    <div class="col-md-5">
+                                        <select id="ddlCustomer" name="ddlCustomer" class="form-control select2">
+                                            <option value="0">---Select---</option>
+                                            @if (ViewBag.Customer != null)
+                                            {
+                                                foreach (System.Data.DataRow drCustomerName in ViewBag.Customer.Rows)
+                                                {
+                                                    <option value="@drCustomerName["Id"]">@drCustomerName["FirstName"] @drCustomerName["LastName"] (@drCustomerName["FlatNo"] , @drCustomerName["blockno"] , @drCustomerName["BuildingName"])</option>
+                                                }
+                                            }
+                                        </select>
+
+                                    </div>
+                                    <label for="input" class="col-sm-2 control-label" id="lblWallet" name="lblWallet" style="color:red"></label>
+                                </div>
+
+
+
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group" id="canceldate">
+                                    <label for="inputEmail3" class="col-sm-4 control-label">Subscription Cancel From :</label>
+                                    <div class="col-sm-3">
+                                        @*@Html.TextBoxFor(Model => Model.cancelFD, new {@class="form-control",@id= "datepickerfd" })*@
+                                        @Html.TextBoxFor(m => m.cancelFD, new { @class = "form-control", @id = "datepickerfd" })
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group" id="canceldate">
+                                    <label for="inputEmail3" class="col-sm-4 control-label">Subscription End Date:</label>
+                                    <div class="col-sm-3">
+                                        @*@Html.TextBoxFor(Model => Model.cancelFD, new {@class="form-control",@id= "datepickerfd" })*@
+                                        @Html.TextBoxFor(m => m.cancelTD, new { @class = "form-control", @id = "txttdate", @readonly = true })
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group" id="canceldate">
+                                    <label for="inputEmail3" class="col-sm-4 control-label">Wallet Balance :</label>
+                                    <div class="col-sm-3">
+                                        @*@Html.TextBoxFor(Model => Model.cancelFD, new {@class="form-control",@id= "datepickerfd" })*@
+                                        @Html.TextBoxFor(m => m.Amount, new { @class = "form-control", @id = "txtamount", @readonly = true })
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group" id="canceldate">
+                                    <label for="inputEmail3" class="col-sm-4 control-label">Total Reward Amount:</label>
+                                    <div class="col-sm-3">
+                                        @*@Html.TextBoxFor(Model => Model.cancelFD, new {@class="form-control",@id= "datepickerfd" })*@
+                                        @Html.TextBoxFor(m => m.RewardPoint, new { @class = "form-control", @id = "txtrp", @readonly = true })
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group" id="canceldate">
+                                    <label for="inputEmail3" class="col-sm-2 control-label">Remark:</label>
+                                    <div class="col-sm-6">
+                                        @*@Html.TextBoxFor(Model => Model.cancelFD, new {@class="form-control",@id= "datepickerfd" })*@
+                                        @Html.TextAreaFor(m => m.remark, new { @class = "form-control", @id = "txtrmk" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+
+                                <div class="form-group">
+                                    <label for="inputEmail3" class="col-sm-4 control-label">
+                                        Do you want to cancel subscription with Reward Points?
+                                        @*@Html.CheckBox("Yes", new { @checked = "checked", @classs = "checkbox icheck" })*@
+                                        <input type="checkbox" id="chkyes" name="chkyes" class="checkedd" />
+                                    </label>
+
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group" id="canceldate">
+                                    <label for="inputEmail3" class="col-sm-4 control-label">Total Refund Amount:</label>
+                                    <div class="col-sm-3">
+
+                                        @Html.TextBoxFor(m => m.Refund, new { @class = "form-control", @id = "txtref", @readonly = true })
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group" id="canceldate">
+                                    <label for="inputEmail3" class="col-sm-4 control-label"></label>
+                                    <div class="col-sm-3">
+
+                                        <input type="submit" class="btn btn-danger" value="Cancel Subscription" onclick="return validate();" />
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <!--<div class="box-footer text-right" id="btncansub">
+                            <input type="submit" class="btn btn-danger" value="Cancel Subscription" onclick="return validate();" />-->
+                            @*<input type="submit" value="Save" class="btn btn-primary" onclick="return ValidCustSub();" />*@
+
+                        <!--</div>-->
+                        <div class="=row">
+                            <div class="col-md-12">
+                                <div id="tblSub">
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+
+                            </div>
+                        </div>
+                    </div>
+
+                       
+                    }
+                </div>
+            </div>
+        </div>
+    </section>
+    <script>
+        $('#datepickerfd').datepicker({
+            "autoclose": true,
+
+            todayHighlight: true
+        });
+
+    </script>
+    <script>
+
+        $checkbox = $('.checkedd');
+        $checkbox.click(yes);
+        function yes() {
+            var bal = document.getElementById("txtamount").value;
+            var rpoint = document.getElementById("txtrp").value;
+            if (parseInt(rpoint) > 0) {
+                var result = parseInt(bal) + (parseInt(rpoint))
+                if (!isNaN(result)) {
+                    document.getElementById('txtref').value = result;
+                }
+            }
+            else {
+                document.getElementById('txtref').value = parseInt(bal) ;
+            }
+         
+           
+        }
+
+    </script>
+    <script>
+        $(document).ready(function () {
+
+
+
+            $("#ddlCustomer").change(function () {
+
+                var id = $(this).find('option:selected').val();
+                var tbl = "";
+                $.ajax({
+                    url: '/Subscription/getSingleCustomerSubscriptionList?cId=' + id,
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    datatype: "json",
+                    success: function (response) {
+                        Data = response;
+                        var dataRows = JSON.parse(Data.sublist);
+                        console.log(dataRows);
+                        var i = 1;
+                        $('#tblSub').empty();
+
+                        tbl += '<div class="box-body table-responsive no-padding"><table id="sublist" class="table table-bordered table-striped">' +
+                            '<thead><tr><th>No</th><th>CustomerName</th><th>FromDate</th><th>ToDate</th></tr></thead>' +
+                            '<tbody>';
+                        $.each(dataRows, function (index, item) {
+                            //if (dataRows[index].SubscriptionStatus == "Open") {
+                            //    var td = "<td style='color:green'>" + dataRows[index].SubscriptionStatus + "</td>";
+                            //}
+                            //else {
+                            //    var td = "<td style='color:red'>" + dataRows[index].SubscriptionStatus + "</td>";
+                            //}
+                            tbl += ("<tr>" +
+                                "<td>" + i + "</td>" +
+                                "<td>" + dataRows[index].CustomerName + "</td>" +
+                                /* "<td>" + dataRows[index].Subscription + "</td>" +*/
+                                "<td>" + dataRows[index].FDate + "</td>" +
+                                "<td>" + dataRows[index].TDate + "</td>"
+                                /*"<td>" + dataRows[index].Amount + "</td>" +*/
+                                /*td +*/
+                                /*"<td><a onclick='canSub(" + dataRows[index].Id + ',' + id + "," + dataRows[index].Days + ")'><i class='fa fa-close'></i></a></td>"*/
+
+
+
+                            )
+                            i++;
+                        });
+
+                        var dataRows1 = JSON.parse(Data.rp);
+                        console.log(dataRows1);
+                        document.getElementById('txtrp').value = dataRows1;
+
+                        var dataRows2 = JSON.parse(Data.td);
+                        console.log(dataRows1);
+                        document.getElementById('txttdate').value = dataRows2;
+
+                        var dataRows3 = JSON.parse(Data.wb);
+                        console.log(dataRows1);
+                        document.getElementById('txtamount').value = dataRows3;
+
+                    },
+                    complete: function () {
+                        tbl += '</tbody></table></div>';
+                        $('#tblSub').html(tbl).show();
+                        document.getElementById("canceldate").style.display = "block";
+                        document.getElementById("btncansub").style.display = "block";
+                        $(function () {
+                            $('#sublist').DataTable({
+                                "pageLength": 5,
+                                "lengthMenu": [[5, 10, 20, -1], [5, 10, 20, 'All']],
+                                "paging": true,
+                                "lengthChange": true,
+                                "searching": true,
+                                "ordering": true,
+                                "info": true,
+                                "autoWidth": false
+                            });
+                        });
+                    }
+                });
+
+
+            });
+
+        });
+
+
+    </script>
+    <script>
+        function validate() {
+            var status = true;
+
+            var c = document.getElementById("ddlCustomer").value;
+            if (c == "0" || c == null) {
+                document.getElementById("ddlCustomer").style.border = "1px solid #ff0000";
+                status = false;
+            }
+            else {
+                document.getElementById("ddlCustomer").style.border = "";
+            }
+
+
+            var cd = document.getElementById("datepickerfd").value;
+            if (cd == "" || cd == null) {
+                document.getElementById("datepickerfd").style.border = "1px solid #ff0000";
+                status = false;
+            }
+            else {
+                document.getElementById("datepickerfd").style.border = "";
+            }
+
+            if (status == true)
+                return true;
+            else
+                return false;
+        }
+
+        function canSub(subId, CustId, Sdays) {
+
+            var id = subId;
+            var cid = CustId;
+            var sdays = Sdays
+            var tbl = "";
+            $.ajax({
+                url: '/Subscription/CancelSubscription?subId=' + id + '&cid=' + cid + '&sdays=' + sdays,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                datatype: "json",
+                success: function (response) {
+                    Data = response;
+                    var dataRows = JSON.parse(Data);
+                    console.log(dataRows);
+                    var i = 1;
+                    $('#tblSub').empty();
+                    /*$('#sublist').DataTable.destroy();*/
+                    tbl += '<div class="box-body table-responsive no-padding"><table id="sublist" class="table table-bordered table-striped">' +
+                        '<thead><tr><th>No</th><th>CustomerName</th><th>Subscription</th><th>FromDate</th><th>ToDate</th><th>Amount</th><th>Status</th><th></th></tr></thead>' +
+                        '<tbody>';
+                    $.each(dataRows, function (index, item) {
+                        if (dataRows[index].SubscriptionStatus == "Open") {
+                            var td = "<td style='color:green'>" + dataRows[index].SubscriptionStatus + "</td>";
+                        }
+                        else {
+                            var td = "<td style='color:red'>" + dataRows[index].SubscriptionStatus + "</td>";
+                        }
+                        tbl += ("<tr>" +
+                            "<td>" + i + "</td>" +
+                            "<td>" + dataRows[index].CustomerName + "</td>" +
+                            "<td>" + dataRows[index].Subscription + "</td>" +
+                            "<td>" + dataRows[index].FDate + "</td>" +
+                            "<td>" + dataRows[index].TDate + "</td>" +
+                            "<td>" + dataRows[index].Amount + "</td>" +
+                            td +
+                            "<td><a onclick='canSub(" + dataRows[index].Id + ',' + id + "," + dataRows[index].Days + ")'><i class='fa fa-close'></i></a></td>"
+
+
+
+                        )
+                        i++;
+                    });
+
+                },
+                complete: function () {
+                    tbl += '</tbody></table></div>';
+                    $('#tblSub').html(tbl).show();
+                    $(function () {
+                        $('#sublist').DataTable({
+                            "pageLength": 5,
+                            "lengthMenu": [[5, 10, 20, -1], [5, 10, 20, 'All']],
+                            "paging": true,
+                            "lengthChange": true,
+                            "searching": true,
+                            "ordering": true,
+                            "info": true,
+                            "autoWidth": false
+                        });
+                    });
+                }
+            });
+
+
+
+        }
+    </script>
+
+
+
+}
+

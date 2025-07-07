@@ -1,0 +1,77 @@
+﻿@model MilkWayIndia.Models.BillPayOperatorVM
+
+<div id="ModalPopUp" class="modal-dialog" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+            <h4 class="modal-title">@ViewBag.ModelTitle</h4>
+        </div>
+        @using (Ajax.BeginForm("AddOperator", "billpay", null, new AjaxOptions { OnSuccess = "SuccessOperator" }, new { @id = "frmOperator" }))
+        {
+            @Html.HiddenFor(s => s.ID)
+        <div class="modal-body">
+            <div class="form-group">
+                <label>Operator Name <span class="text-danger">@Html.ValidationMessageFor(x => x.Name)</span></label>
+                @Html.TextBoxFor(m => m.Name, new { @class = "form-control", placeholder = "Operator Name", @required = "required" })
+            </div>
+
+
+            <div class="form-group">
+                <label>Operator Code </label>
+                @Html.TextBoxFor(m => m.OperatorCode, new { @class = "form-control", placeholder = "Operator Code", @required = "required" })
+            </div>
+
+
+
+            <div class="form-group">
+                <label>Operator Type </label>
+                <select id="ddloperator" name="ddloperator" class="form-control">
+
+                    <option value="0">---Select---</option>
+                    @if (ViewBag.ServiceList != null)
+                    {
+                        foreach (System.Data.DataRow drService in ViewBag.ServiceList.Rows)
+                        {
+                            <option value="@drService["Name"]">@drService["Name"]</option>
+                        }
+                    }
+                    @*<option value="0">---Select---</option>
+            <option value="Mobile">Mobile</option>
+            <option value="DTH">DTH</option>
+            <option value="Electricity">Electricity</option>
+            <option value="Gas">Gas</option>
+            <option value="Insurance">Insurance</option>
+            <option value="Landline">Landline</option>
+            <option value="LPG">LPG</option>
+
+            <option value="Municipal Tax">Municipal Tax</option>
+            <option value="PostPaid">PostPaid</option>
+            <option value="Water">Water</option>*@
+                </select>
+
+                @if (ViewBag.Servicename != null)
+                {
+                    <script>
+                        document.getElementById('ddloperator').value = '@ViewBag.Servicename';
+                    </script>
+                }
+            </div>
+        </div>
+            <div class="modal-footer">
+                <button type="submit" name="state" value="Save" class="btn btn-success btn-sm pull-left" onclick="return ValidateOperatorName();"> Save </button>
+                <button type="button" class="btn btn-secondary btn-sm pull-left" data-dismiss="modal"> Close </button>
+            </div>
+        }
+    </div>
+</div>
+<script>
+    function ValidateOperatorName() {
+        var Name = $('#Name').val();
+        $('input').removeClass('field-error');
+        $('#frmOperator span').text('');
+        if (Name == null || Name == "") {
+            $('#Name').addClass('field-error');
+            return false;
+        }
+    }
+</script>

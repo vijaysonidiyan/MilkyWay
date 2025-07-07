@@ -1,0 +1,3 @@
+Sort Order,Category,Sub Category,Product Name,Product Image,MRP,Sale Price,Purchase Price,CGST,SGST,IGST,Profit Lumpsump,Profit,Details,Subcription,Youtube Title,Youtube URL,Status,IsDaily
+1,FARM FRESH,MILK,Sample Milk,https://admin.milkywayindia.com/image/product/gold%20milk%20500ml_20201231-032922484.png,100,98,94,,,,,,XYZ MILK,1,DAIRY MILK DEMO,YOUTUBE.COM/XYZDAIRY.COM,TRUE,TRUE
+2,MILK CITY,MILK,Sample Grocery,https://admin.milkywayindia.com/image/product/gold%20milk%20500ml_20201231-032922484.png,100,100,,2.5,2.5,,,5,GROCERY,0,GROCERY LOCAL,YOUTUBE.COM/LOCALGROCERY,TRUE,FALSE

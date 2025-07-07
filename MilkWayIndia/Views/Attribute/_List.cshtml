@@ -1,0 +1,42 @@
+﻿@model IEnumerable<MilkWayIndia.Entity.tbl_Attributes>
+<table id="example1" class="table table-bordered table-striped">
+    @{int rowNo = 0;}
+    <thead>
+        <tr>
+            <th width="100px">No</th>
+            <th>Name</th>
+            <td width="20px"></td>
+            <td width="20px"></td>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null)
+            {
+                foreach (var item in Model)
+                {
+                <tr>
+                    <td>@(rowNo += 1)</td>
+                    <td>@item.Name</td>
+                    <td>
+                        <a href="#" class="btn-bootstrap-dialog" data-url="/Attribute/Edit/@item.ID"><i class="fa fa-edit"></i></a>
+                    </td>
+                    <td>
+                        <a href="/Attribute/Delete/@item.ID" onclick="return confirm('Are you sure you want to delete this Data?');"><i class="fa fa-trash-o"></i></a>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+<script>
+    $(function () {
+        $('#example1').DataTable({
+            "paging": true,
+            "lengthChange": true,
+            "searching": true,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false
+        });
+    });
+</script>

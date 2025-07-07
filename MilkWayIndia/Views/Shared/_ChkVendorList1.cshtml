@@ -1,0 +1,33 @@
+﻿@model List<MilkWayIndia.Models.SectorViewModel>
+@{
+    Layout = null;
+}
+
+@if (Model != null)
+{
+
+    <input id="myCheckbox" type="checkbox" checked="checked" /><label>&nbsp; Select All</label>
+    foreach (var item in Model)
+    {
+        <div>
+            @*@Html.HiddenFor(m => item.ID)
+                @Html.HiddenFor(m => item.Name)*@
+            <input type="checkbox" name="chkVendor[]" checked="checked"  value="@item.ID" @item.IsSelected />
+            @item.Name  
+        </div>
+    }
+}
+<script>
+    $('#myCheckbox').click(function () {
+        if ($(this).is(":checked")) {
+            $('#div_sectors').find('input[type="checkbox"]').each(function () {
+                $(this).prop("checked", true);
+            });
+        }
+        else {
+            $('[id *= div_sectors]').find('input[type="checkbox"]').each(function () {
+                $(this).prop("checked", false);
+            });
+        }
+    });
+</script>

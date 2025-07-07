@@ -1,0 +1,191 @@
+﻿@model MilkWayIndia.Models.Offer
+@{
+    ViewBag.Title = "AddOfferSectorWise";
+    Layout = "~/Views/Shared/_MyLayout.cshtml";
+}
+
+@section contain
+{
+    <script src="~/Content/plugins/jQuery/jquery-2.2.3.min.js"></script>
+    <link href="~/Content/plugins/datepicker/datepicker3.css" rel="stylesheet" />
+    <script src="~/Content/plugins/datepicker/bootstrap-datepicker.js"></script>
+    <script>
+        $(document).ready(function () {
+            var MasterClass = document.getElementById("LiMst");
+            if (MasterClass != null) {
+                MasterClass.className = MasterClass.className + " active";
+            }
+        });
+    </script>
+
+
+    <script language="javascript" type="text/javascript">
+        $(document).ready(function () {
+            //$("#ddlState").prop("disabled", true);
+            $("#ddlState").change(function () {
+            var id = $("#ddlState").val();
+            $.ajax({
+                cache: false,
+                type: "GET",
+                url: '@Url.Action("GetCity", "Sector")',
+                data: { "Statecode": id },
+                success: function (json, textStatus) {
+                    $("#ddlCity").empty();
+                    json = json || {};
+                    $("#ddlCity").append('<option value="0">--Select--</option>');
+                    for (var i = 0; i < json.length; i++) {
+                        $("#ddlCity").append('<option value="' + json[i].Citycode + '">' + json[i].CityName + '</option>');
+                    }
+                    $("#ddlCity").prop("disabled", false);
+                },
+                error: function () {
+                    alert("Data Not Found");
+                }
+        });
+        });
+    });
+    </script>
+    <section class="content-header">
+        <h1>
+            New Customer Message
+        </h1>
+        <ol class="breadcrumb">
+            <li><a href="@Url.Action("Index", "Admin")"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="active">New Customer Message</li>
+        </ol>
+    </section>
+    <section class="content">
+        <div class="col-md-12">
+            <div class="box box-info">
+                <div class="box-header with-border">
+                    <div class="btn-group-vertical">
+                        <a href="/Offer/SectorWiseMsgList" class="btn btn-success">Back To Panel</a>
+                    </div>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
+                </div>
+                <div class="form-horizontal">
+                    @using (Html.BeginForm("AddOfferSectorWise", "Offer", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                    {
+                       // @Html.AntiForgeryToken()
+                        <div class="box-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div id="SuccessMsg" style="color: red">@ViewBag.SuccessMsg</div>
+                                    <div class="form-group">
+                                        <label for="inputEmail3" class="col-sm-3 control-label">State</label>
+                                        <div class="col-sm-6">
+                                            @*@Html.TextBoxFor(m => m.CategoryId, new { @class = "form-control", @id = "CategoryId" })*@
+                                            <select id="ddlState" name="ddlState" class="form-control">
+                                                <option value="0">---Select---</option>
+                                                @if (ViewBag.State != null)
+                                                {
+                                                    foreach (System.Data.DataRow drCategoryName in ViewBag.State.Rows)
+                                                    {
+                                                        <option value="@drCategoryName["id"]">@drCategoryName["statename"]</option>
+                                                    }
+                                                }
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">CityName</label>
+                                        <div class="col-sm-6">
+                                            <select id="ddlCity" name="ddlCity" class="form-control select2"></select>
+                                            @*<option value="0">---Select---</option>*@
+                                            @if (ViewBag.CityName != null)
+                                            {
+                                                <script>
+                                                document.getElementById('ddlCity').value = '@ViewBag.CityName';
+                                                </script>
+                                            }
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="inputEmail3" class="col-sm-3 control-label">SectorName</label>
+                                        <div class="col-sm-6">
+
+                                            <div id="div_sectors" class="scrollbox">
+
+                                            </div>
+
+                                            @* @Html.TextBoxFor(m => m.SectorName, new { @class = "form-control", @id = "SectorName", onClick = "ClearTextbox('SectorName')" })*@
+                                        </div>
+                                    </div>
+
+
+
+
+                                    <div class="form-group">
+                                        <label for="inputEmail3" class="col-sm-3 control-label">Message</label>
+                                        <div class="col-sm-6">
+                                            @Html.TextAreaFor(m => m.NewCustomerMsg, new { @class = "form-control", @id = "Detail" })
+                                        </div>
+                                    </div>
+
+
+                                
+
+                                    <div class="box-footer text-right">
+                                        <input type="submit" value="Save" class="btn btn-primary" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <script src="~/Content/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js"></script>
+    <script>
+        $(function () {
+            $('.textarea').wysihtml5()
+        })
+    </script>
+
+    <script>
+        $(function () {
+            //GetProductAttribute();
+            var url = '/Vendor/FetchSectorList';
+            var div_sectors = $('#div_sectors');
+            $('#ddlCity').change(function () {
+                var selectedCity = $(this).val();
+                if (!selectedCity) {
+                    div_sectors.empty();
+                    return;
+                }
+                if (selectedCity > 0) {
+                    $.get(url, { id: selectedCity }, function (data) {
+                        div_sectors.html(data);
+                    })
+                }
+                else {
+                    div_sectors.empty();
+                }
+            });
+        });
+
+
+
+            //function SuccessAssign(data) {
+            //    if (data.status = "1") {
+            //        toastr["success"]("Product Add Successfully...");
+            //        var div_sectors = $('#div_sectors');
+            //        $("#ddlVendor").select2("val", "0");
+            //        div_sectors.empty();
+            //        GetProductAttribute();
+            //    }
+            //    else {
+            //        toastr["error"]("error");
+            //    }
+            //}
+    </script>
+}
+

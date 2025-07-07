@@ -1,0 +1,58 @@
+﻿@model List<MilkWayIndia.Models.SubcatVendorwiseViewModel>
+
+@if (Model != null)
+{
+
+    <input id="myCheckbox" type="checkbox" /><label>&nbsp; Select All</label>
+    foreach (var item in Model)
+    {
+
+
+
+                                             <div>
+                                                 
+                                                
+                                                 @if (item.VendorName.ToString() == "True")
+                                                 {
+                                                     string a = item.VendorName;
+                                                     <input type="checkbox" name="chkSubcat[]" value="@item.ID" checked />
+                                                     @item.Name
+                                                 }
+
+                                                 else
+                                                 {
+                                                     string a = item.VendorName;
+
+                                                     <input type="checkbox" name="chkSubcat[]" value="@item.ID" />
+                                                     @item.Name
+                                                 }
+
+
+                                             </div>
+            
+
+
+          
+                
+                
+                
+
+            
+
+       
+    }
+}
+<script>
+    $('#myCheckbox').click(function () {
+        if ($(this).is(":checked")) {
+            $('#div_subcat').find('input[type="checkbox"]').each(function () {
+                $(this).prop("checked", true);
+            });
+        }
+        else {
+            $('[id *= div_subcat]').find('input[type="checkbox"]').each(function () {
+                $(this).prop("checked", false);
+            });
+        }
+    });
+</script>

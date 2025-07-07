@@ -1,0 +1,141 @@
+﻿@model MilkWayIndia.Entity.AdvertisementModel
+
+<!-- bootstrap wysihtml5 - text editor -->
+<link href="~/Content/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css" rel="stylesheet" />
+
+@Html.HiddenFor(s => s.ID)
+<div class="box-body">
+    <div class="row">
+        <div class="col-md-8">
+            <div id="SuccessMsg" style="color: red">@ViewBag.SuccessMsg</div>
+            <div class="form-group">
+                <label for="inputEmail3" class="col-sm-3 control-label">Ads type</label>
+                <div class="col-sm-6">
+                    @Html.DropDownList("AdsType", new List<SelectListItem>
+                        {
+                            new SelectListItem{ Text="Offers", Value = "1" },
+                            new SelectListItem{ Text="Pop Up", Value = "2" }                            
+                         }, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="inputEmail3" class="col-sm-3 control-label">Title</label>
+                <div class="col-sm-6">
+                    @Html.TextBoxFor(m => m.Title, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="inputEmail3" class="col-sm-3 control-label">Website Link</label>
+                <div class="col-sm-6">
+                    @Html.TextBoxFor(m => m.WebsiteLink, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">App Link</label>
+                <div class="col-sm-6">
+                    @Html.TextBoxFor(m => m.AppLink, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Mobile</label>
+                <div class="col-sm-6">
+                    @Html.TextBoxFor(m => m.Mobile, new { @class = "form-control", onkeypress = "return ValidateNumber(event);" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Start Date</label>
+                <div class="col-sm-6">
+                    @Html.TextBoxFor(m => m.StartDate, new { @class = "form-control", type = "date", @value = ViewBag.StartDate })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Expired Date</label>
+                <div class="col-sm-6">
+                    @Html.TextBoxFor(m => m.ExpiredDate, new { @class = "form-control", type = "date", @value = ViewBag.ExpiredDate })
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Photo</label>
+                <div class="col-sm-4">
+                    @Html.HiddenFor(m => m.PhotoPath)
+                    <input type="file" name="photo" onchange="readURL(this)" />
+                    @*<span>Size : 200px * 200px</span>*@
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-4">
+                    <img id="photo" alt="" src="@ViewBag.PhotoPath" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Description</label>
+                <div class="col-sm-10">
+                    @Html.TextAreaFor(m => m.Description, new { @class = "form-control textarea", rows = "8" })
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="box-footer text-right">
+    <input type="submit" value="Save" class="btn btn-primary" onclick="return ValidAdvertisement();" />
+</div>
+
+<script>
+    function ValidateNumber(e) {
+        var keycode = (e.which) ? e.which : e.keyCode;
+        if (!(keycode == 8 || keycode == 46) && (keycode < 48 || keycode > 57)) {
+            return false;
+        }
+        return true;
+    };
+
+    function ValidAdvertisement() {
+        var status = true;
+        $('input').removeClass('field-error');
+        var Title = document.getElementById("Title").value;
+        if (Title == null || Title == "") {
+            $('#Title').addClass('field-error');
+            status = false;
+        }
+        var StartDate = document.getElementById("StartDate").value;
+        if (StartDate == null || StartDate == "") {
+            $('#StartDate').addClass('field-error');
+            status = false;
+        }
+        var ExpiredDate = document.getElementById("ExpiredDate").value;
+        if (ExpiredDate == null || ExpiredDate == "") {
+            $('#ExpiredDate').addClass('field-error');
+            status = false;
+        }
+        return status;
+    }
+
+    function readURL(input) {
+        var ext = $(input).val().split('.').pop().toLowerCase();
+        if ($.inArray(ext, ['jpg', 'jpeg', 'png']) == -1) {
+            alert('Invalid file format. Only jpg and png are allowed.');
+            $(input).val('');
+            return;
+        }
+
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $('#photo').attr('src', e.target.result);
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>
+<script src="~/Content/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js"></script>
+<script>
+    $(function () {
+        $('.textarea').wysihtml5()
+    })
+</script>

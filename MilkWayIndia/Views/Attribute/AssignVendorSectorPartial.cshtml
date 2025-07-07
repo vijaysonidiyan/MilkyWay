@@ -1,0 +1,66 @@
+﻿
+@model MilkWayIndia.Models.VendorSectorListVM
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-info">
+            <div class="box-body">
+                <div class="box-body table-responsive no-padding">
+                    <table id="example1" class="table table-bordered table-striped">
+                        @{int rowNo = 0;}
+                        <thead>
+                            <tr>
+                                
+                                <th>Vendor Name</th>
+                                <th>Vendor Cat Name</th>
+                                <th>Sector</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+
+                            @if (Model != null)
+                            {
+                                for (int i = 0; i < Model.VendorSector.Count; i++)
+                                {
+                                    if (!string.IsNullOrEmpty(Model.VendorSector[i].Text))
+                                    {
+                                        <tr>
+                                           
+                                            <td>
+                                                @Model.VendorSector[i].Text
+                                                
+                                            </td>
+                                            <td>@Model.VendorSector[i].Text1</td>
+                                            <td>@Model.VendorSector[i].Text2</td>
+
+                                            <td>
+                                                <input type="checkbox" id="@Model.VendorSector[i].Text3" name="chkpro" value="@Model.VendorSector[i].Text3" onclick="addcheckbox1('@Model.VendorSector[i].Text3');">
+
+
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    //  $(function () {
+    $('#example1').DataTable({
+        "paging": true,
+        "lengthChange": true,
+        "searching": true,
+        "ordering": true,
+        "info": true,
+        "autoWidth": false
+    });
+                //  });
+
+
+</script>

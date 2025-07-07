@@ -1,0 +1,253 @@
+﻿@{
+    ViewBag.Title = "CustomerWalletList";
+    Layout = "~/Views/Shared/_MyLayout.cshtml";
+}
+
+@section contain
+{
+    <script src="~/Content/plugins/jQuery/jquery-2.2.3.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var MasterClass = document.getElementById("LiSubscri");
+            if (MasterClass != null) {
+                MasterClass.className = MasterClass.className + " active";
+
+            }
+        });
+    </script>
+    <link href="~/Content/plugins/datepicker/datepicker3.css" rel="stylesheet" />
+    <script src="~/Content/plugins/datepicker/bootstrap-datepicker.js"></script>
+    <section class="content-header">
+        @if (@TempData["error"] != null)
+        {
+            <script type="text/javascript">
+               alert("@TempData["error"]");
+            </script>
+        }
+
+        <div class="box-header with-border">
+            <h3 class="box-title">Wallet List</h3>
+            <div class="box-tools">
+                <div class="input-group input-group-sm pull-right">
+                    <input type="button" class="btn btn-primary pull-right btn-add" value="Add" onclick="location.href='@Url.Action("AddCustomerWallet", "Customer")'" />
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box">
+                    <div class="box-header with-border">
+                        @*@using (Html.BeginForm("DeliveryBoyDailyOrderPrint", "CustomerOrder", FormMethod.Post))//new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "upddiv" }
+                            {*@
+
+                        <div class="btn-group-vertical ">
+                            @using (Html.BeginForm())
+                            {
+
+                                <div class="btn-group-vertical ">
+                                    <div class="input-group date form-group has-feedback">
+                                        @Html.TextBox("datepicker", "", new
+                                   {
+                                       placeholder = "From Date",
+                                       @class = "form-control",
+                                       @Value = ViewBag.FromDate
+
+
+                                   })
+                                    </div>
+                                </div>
+                                <div class="btn-group-vertical ">
+                                    <div class="input-group date form-group has-feedback">
+                                        @Html.TextBox("datepicker1", "", new
+                                   {
+                                       placeholder = "To Date",
+                                       @class = "form-control",
+                                       @Value = ViewBag.ToDate
+                                   })
+                                    </div>
+                                </div>
+                                <div class="btn-group-vertical ">
+                                    <div class="input-group date form-group has-feedback">
+                                        <select id="ddlCustomer" name="ddlCustomer" class="form-control select2">
+                                            @*onchange="GetBillNo();"*@
+                                            <option value="0">    Select Customer    </option>
+                                            @if (ViewBag.Customer != null)
+                                            {
+                                                foreach (System.Data.DataRow drCustomerName in ViewBag.Customer.Rows)
+                                                {
+                                                    <option value="@drCustomerName["Id"]">@drCustomerName["FirstName"] @drCustomerName["LastName"] (@drCustomerName["FlatNo"] , @drCustomerName["blockno"] , @drCustomerName["BuildingName"])</option>
+                                                }
+                                            }
+                                        </select>
+                                        @if (ViewBag.ct != null) { 
+                                            <script>
+                                            document.getElementById('ddlCustomer').value = '@ViewBag.ct';
+                                            </script>
+                                            }
+                                    </div>
+                                </div>
+
+                                <div class="btn-group-vertical">
+                                    <div class="form-group has-feedback">
+                                        @*<button type="submit" id="clkbtncomp" class="btn btn-primary">Submit</button>*@
+                                        <input type="submit" id="clkbtncomp" value="Submit" class="btn btn-primary btn-block" />
+                                    </div>
+                                </div>
+                                @*<div class="btn-group-vertical">
+                                    <div class="form-group has-feedback">
+                                        <input type="submit" id="btn" value="Print" class="btn btn-success btn-block" onclick="pdf()" />
+                                        <a href="/Customer/CustomerWalletTransactionPrint?cId=&fd=&td=" target="_blank" class="btn btn-primary" style="margin-top:20px;">Download_PDF</a>
+                                    </div>
+                                </div>*@
+                            }
+                            <div class="btn-group-vertical">
+                                <div class="form-group has-feedback">
+                                    <input type="submit" id="btn" value="Print" class="btn btn-success btn-block" onclick="pdf()" />
+                                                                    </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="box-body">
+
+                        <div class="box-body table-responsive no-padding">
+                            <table id="example1" class="table table-bordered table-striped">
+                                @{int rowNo = 0;}
+                                <thead>
+                                    <tr>
+                                        <th>SrNo</th>
+                                        <th>Date</th>
+                                        <th>Customer Name</th>
+                                        <th>Trans./Bill No</th>
+                                        <th>OrderNo</th>
+                                        <th>OrderDate</th>
+                                        <th>SubScription</th>
+                                        <th>Amount</th>
+                                        <th>Type</th>
+                                        <td>Description</td>
+                                        <td></td>
+                                        @*<td></td>*@
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (System.Data.DataRow drclient in ViewBag.CustomerWalletList.Rows)
+                                    {
+                                        <tr>
+                                            <td>@(rowNo += 1)</td>
+                                            <td>@drclient["Tdate"]</td>
+                                            <td>@drclient["Customer"]</td>
+
+                                            @if (drclient["BillNo"].ToString() == "" || drclient["BillNo"].ToString() == null)
+                                            {
+                                                <td>-</td>
+                                            }
+                                            else
+                                            {
+                                                <td>@drclient["BillNo"]</td>
+                                            }
+                                            @if (drclient["OrderNo"].ToString() == "" || drclient["OrderNo"].ToString() == null)
+                                            {
+                                                <td>-</td>
+                                            }
+                                            else
+                                            {
+                                                <td>@drclient["OrderNo"]</td>
+                                            }
+                                            @if (drclient["OrderDate"].ToString() == "" || drclient["OrderDate"].ToString() == null)
+                                            {
+                                                <td>-</td>
+                                            }
+                                            else
+                                            {
+                                                <td>@drclient["OrderDate"]</td>
+                                            }
+                                            @if (drclient["Subscription"].ToString() == "" || drclient["Subscription"].ToString() == null)
+                                            {
+                                                <td>-</td>
+                                            }
+                                            else
+                                            {
+                                                <td>@drclient["Subscription"]</td>
+                                            }
+
+
+
+                                            <td>@drclient["Amount"]</td>
+                                            <td>@drclient["Type"]</td>
+                                            <td>@drclient["Description"]</td>
+                                            @*<td><a href="/Customer/EditWallet/@drclient["Id"]"><i class="fa fa-edit"></i></a></td>*@
+                                            <td><a href="/Customer/DeleteWallet/@drclient["Id"]" , onclick="return confirm('Are you sure you want to delete this Data?');"><i class="fa fa-trash-o"></i></a></td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    @*@Html.Partial("_PagingSortingSearchingJSPartial")*@
+    <script>
+        $(function () {
+
+            $('#example1').DataTable({
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "order": [1, "DESC"]
+            });
+        });
+    </script>
+    <script>
+        $('#datepicker').datepicker({
+            "setDate": new Date(),
+            "autoclose": true,
+            format: 'dd/mm/yyyy',
+            todayHighlight: true,
+            defaultDate: new Date(),
+        });
+        // $("#datepicker").datepicker('setDate', new Date());
+        $('#datepicker1').datepicker({
+            "setDate": new Date(),
+            "autoclose": true,
+            format: 'dd/mm/yyyy',
+            todayHighlight: true,
+            defaultDate: new Date(),
+        });
+        //   $("#datepicker1").datepicker('setDate', new Date());
+
+
+
+
+    </script>
+    <script>
+        function pdf() {
+            debugger
+            var cid = $('#ddlCustomer').val();
+            var fd = $('#datepicker').val();
+            var td = $('#datepicker1').val();
+            var Status = $('#ddlStatus').val();
+            $.ajaxSetup({ async: false });
+            var urlInsert = '/Customer/CustomerWalletTransactionPrint?cId=' + cid + '&fd=' + fd + '&td=' + td;
+            window.location = urlInsert;
+
+        }
+    </script>
+
+}
+
+
+
+
+
+

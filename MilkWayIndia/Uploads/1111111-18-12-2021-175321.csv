@@ -1,0 +1,22 @@
+ProductId,CategoryName,ProductName,YoutubeTitle,YoutubeURL,Subscription,Price,CGST,SGST,IGST,PurchasePrice,SalePrice,Profit,IsDaily
+2,Milk,Amul Cow Milk - 500 ml,,,,23,0,0,0,22.62,23,0,FALSE
+9,Milk,Amul Shakti - 500 ml,,,1,27,0,0,0,26.6,27,0.4,FALSE
+11,Milk,Amul Slim & Trim - 500 ml,,,1,20,0,0,0,19.6,20,0.4,FALSE
+12,Milk,Amul Diamond,,,,0,0,0,0,0,0,0,FALSE
+13,Milk,Amul T-Special Milk,,,,100,0,0,0,90,0,0,FALSE
+14,Milk,Amul Buffalo Milk,,,,0,0,0,0,0,0,0,FALSE
+53,Milk,Sumul - Cow Milk - 500 ml,,,1,24,0,0,0,23.6,24,0.4,FALSE
+54,Milk,Sumul - Gir Amrutam - 500 ml,,,,40,0,0,0,38.75,40,1.02,FALSE
+64,Milk,Amul Super Gold,,,,0,0,0,0,0,0,0,FALSE
+9,Milk,Amul Shakti - 500 ml,,,1,27,0,0,0,26.6,27,0.4,FALSE
+71,Milk,Amul Taaza - 500 ml,,,1,23,0,0,0,22.6,23,0,FALSE
+89,Milk,Amul Gold - 6 Ltr,,,,336,0,0,0,331.5,335.9,2.52,FALSE
+54,Milk,Sumul - Gir Amrutam - 500 ml,,,,40,0,0,0,38.75,40,1.02,FALSE
+1,Milk,Amul Gold - 500 ML,,,0.5,30,0,0,0,29,30,0.4,FALSE
+151,Milk,Amul Kool - Badam - 180 ml,,,,20,0,0,0,18.75,20,0,FALSE
+152,Milk,Amul Kool - ilaichi - 180 ml,,,,20,0,0,0,18.75,20,0,FALSE
+153,Milk,Amul Kool - Rose - 180 ml,,,,20,0,0,0,18.75,20,0,FALSE
+156,Milk,Amul Mithai Mate - 400 gm,,,,106,0,0,0,102,106,0,FALSE
+154,Milk,Amul Tazza Tetra Pack - 1 ltr,,,1,66,0,0,0,63.5,65,0,FALSE
+155,Milk,Amul Fresh Cream - 250 ml,,,,63,0,0,0,60.5,63,0,FALSE
+2872,Milk,Amul Kool - Kesar - 180 ml,,,0,20,0,0,0,18.75,20,0,FALSE

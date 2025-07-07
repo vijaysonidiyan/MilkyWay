@@ -1,0 +1,308 @@
+﻿@model MilkWayIndia.Models.Vendor
+@{
+    ViewBag.Title = "AddVendorSwap";
+    Layout = "~/Views/Shared/_MyLayout.cshtml";
+}
+
+@section contain
+{
+    <script src="~/js/jquery.js"></script>
+    <script src="~/Content/plugins/jQuery/jquery-2.2.3.min.js"></script>
+
+   
+    <link href="~/Content/plugins/datepicker/datepicker3.css" rel="stylesheet" />
+    <script src="~/Content/plugins/datepicker/bootstrap-datepicker.js"></script>
+    <script>
+        $(document).ready(function () {
+            var MasterClass = document.getElementById("ReminderLi");
+            if (MasterClass != null) {
+                MasterClass.className = MasterClass.className + " active";
+            }
+        });
+    </script>
+    <script>
+        $(function () {
+            $(".select2").select2();
+        });
+    </script>
+
+
+
+    <section class="content-header">
+        <h1>
+            Add Vendor Order Swap
+        </h1>
+        <ol class="breadcrumb">
+            <li><a href="@Url.Action("Index", "Admin")"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="active">vendor</li>
+        </ol>
+    </section>
+
+    <section class="content">
+        <div class="col-md-12">
+            <div class="box box-info">
+                <div class="box-header with-border">
+                    <div class="btn-group-vertical">
+                        <button class="btn btn-success" type="button" onclick="location.href='@Url.Action("VendorReplacementList", "Vendor")'">Back To Panel</button>
+                    </div>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
+                </div>
+                <div class="form-horizontal">
+
+
+                    @using (Ajax.BeginForm("AddVendorSwap", "Vendor", new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "upddiv" }))
+                    {
+                        <div class="box-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div id="SuccessMsg" style="color: green">@ViewBag.SuccessMsg</div>
+                                    <div id="ErrorMsg" style="color: red">@ViewBag.ErrorMsg</div>
+                                    @Html.TextBox("txtproid", "", new { @class = "form-control", @readonly = "readonly", style = "color:red;",@type="hidden" })
+                                  
+
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Order Date</label>
+                                        <div class="col-sm-6">
+                                            @Html.TextBox("datepicker", "", new
+                                        {
+                                            placeholder = "From Date",
+                                            @class = "form-control",
+                                            @Value = ViewBag.FromDate,
+                                            autocomplete = "off"
+                                        })
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Existing Vendor</label>
+                                        <div class="col-sm-6">
+                                            <select id="ddlVendor" name="ddlVendor" class="form-control select2">
+                                                <option value="0">---Select---</option>
+                                                @if (ViewBag.Vendor != null)
+                                                {
+                                                    foreach (System.Data.DataRow drStaffName in ViewBag.Vendor.Rows)
+                                                    {
+                                                        <option value="@drStaffName["Id"]">@drStaffName["FirstName"] @drStaffName["LastName"]</option>
+                                                    }
+                                                }
+                                            </select>
+                                            @if (ViewBag.VendorId != null)
+                                            {
+                                                <script>
+                                                        document.getElementById('ddlVendor').value = '@ViewBag.VendorId';
+                                                </script>
+                                            }
+                                        </div>
+                                    </div>
+
+
+                                    <div class="box-tools pull-right">
+
+                                        <button type="submit" id="clkbtncomp" name="submit" value="submit" class="btn btn-primary">Submit</button>
+                                        @*<input type="submit" id="btndel" class="btn btn-primary" onclick="return getvenp();" />*@
+
+                                        <button type="submit" id="clkbtncomp" name="submit" value="Swap" class="btn btn-primary" onclick="return Valid()">Change Vendor</button>
+                                    </div>
+
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">New Vendor</label>
+                                        <div class="col-sm-6">
+                                            <select id="ddlVendornew" name="ddlVendornew" class="form-control select2">
+                                                <option value="0">---Select---</option>
+                                                @if (ViewBag.Vendor != null)
+                                                {
+                                                    foreach (System.Data.DataRow drStaffName in ViewBag.Vendor.Rows)
+                                                    {
+                                                        <option value="@drStaffName["Id"]">@drStaffName["FirstName"] @drStaffName["LastName"]</option>
+                                                    }
+                                                }
+                                            </select>
+                                           
+                                            @if (ViewBag.VendorIdnew != null)
+                                            {
+                                                <script>
+                                                    document.getElementById('ddlVendornew').value = '@ViewBag.VendorIdnew';
+                                                </script>
+                                            }
+                                        </div>
+                                    </div>
+         
+
+                                  
+                                    </div>
+
+                                </div>
+
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="box-body table-responsive no-padding">
+                                        <div id="ven">
+                                            <div class="box-body table-responsive no-padding">
+                                                <table id="vendor" class="table table-bordered table-striped">
+                                                    @{int rowNo3 = 0;}
+                                                    <thead>
+                                                        <tr>
+                                                            <th>
+                                                                <input type="checkbox" id="selectall" name="selectall" value="selectall">
+                                                            </th>
+                                                            <th>No</th>
+                                                            <th>Date</th>
+                                                            <th>Sector</th>
+                                                            <th>Vendor</th>
+                                                            <th>Product</th>
+                                                            <th>Attribute</th>
+                                                            <th>Qty</th>
+                                                            <th>Status</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach (System.Data.DataRow drclient in ViewBag.vendorpList.Rows)
+                        {
+                                                        <tr>
+                                                            <td>
+                                                                <input type="checkbox" id="@drclient["OrderId"].ToString()" name="chkpro" value="@drclient["OrderId"].ToString()" onclick="addcheckbox('@drclient["OrderId"].ToString()');">
+
+                                                            </td>
+                                                            <td>@(rowNo3 += 1)</td>
+                                                            <td>@drclient["OrderDate"]</td>
+                                                            <td>@drclient["Sector"]</td>
+                                                            <td>@drclient["Vendor"]</td>
+                                                            <td>@drclient["ProductName"]</td>
+                                                            <td>@drclient["Attribute"]</td>
+                                                            <td>@drclient["Qty"]</td>
+                                                            <td>@drclient["statuss"]</td>
+                                                        </tr>
+                        }
+                                                    </tbody>
+                                                </table>
+
+                                                </div>
+                                            </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                        </div>
+
+                    }
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <script>
+        function Valid() {
+            var status = true;
+            var orderid = document.getElementById("txtproid").value;
+            if (orderid == null || orderid == "" || orderid == "Please Enter Price") {
+                alert("Select Checkbox First");
+                status = false;
+            }
+            return status;
+        }
+
+        $('#datepicker').datepicker({
+            "autoclose": true,
+
+            todayHighlight: true
+        });
+        $(function () {
+            $('#vendor').DataTable({
+                "pageLength": 5,
+                "lengthMenu": [[5, 10, 20, -1], [5, 10, 20, 'All']],
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false
+            });
+        });
+
+
+        document.getElementById('selectall').onclick = function () {
+            var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            var ch = "";
+            if (this.checked == true) {
+                for (var checkbox of checkboxes) {
+                    checkbox.checked = this.checked;
+                    if (checkbox.value != "selectall") {
+
+
+                        if (ch == "") {
+                            ch = checkbox.value;
+
+                        }
+                        else {
+                            ch = ch + "," + checkbox.value;
+                        }
+                    }
+
+                }
+            }
+            else {
+
+                for (var checkbox of checkboxes) {
+                    checkbox.checked = false;
+
+
+                }
+
+
+
+                document.getElementById("txtproid").value = "";
+
+            }
+
+
+            document.getElementById("txtproid").value = ch;
+        }
+
+        function addcheckbox(a) {
+            var b = a;
+            var c = b;
+            // document.getElementById("txtproid").value = "";
+            var d = document.getElementById("txtproid").value;
+            var mystring, myNewString;
+            var checkboxes = document.querySelectorAll('input[name="chkpro"]:checked');
+            let count = 0;
+
+            var ch = "";
+            for (var checkbox of checkboxes) {
+                //document.getElementById("txtproid").append(checkbox.value + ' ');
+
+                let text = document.getElementById("txtproid").value;
+                let result = text.includes(checkbox.value);
+
+                //alert(result);
+                count = count + 1;
+                //alert(checkbox.value);
+                //if (result == false) {
+                if (ch == "") {
+                    ch = checkbox.value;
+
+                }
+                else {
+                    ch = ch + "," + checkbox.value;
+                }
+
+              
+
+            }
+
+            // alert(ch);
+            document.getElementById("txtproid").value = ch;
+            
+        }
+
+    </script>
+
+}
+

@@ -1,0 +1,83 @@
+﻿@model IEnumerable<MilkWayIndia.Entity.tbl_Advertisement>
+@{
+    Layout = "~/Views/Shared/_MyLayout.cshtml";
+}
+@section contain
+{
+    <script src="~/Content/plugins/jQuery/jquery-2.2.3.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var MasterClass = document.getElementById("LiMst");
+            if (MasterClass != null) {
+                MasterClass.className = MasterClass.className + " active";
+
+            }
+        });
+    </script>
+    <section class="content-header">
+        <div class="box-header with-border">
+            <h3 class="box-title">Advertisement List</h3>
+            <div class="box-tools">
+                <div class="input-group input-group-sm pull-right">
+                    <a href="/Advertisement/Create" class="btn btn-primary pull-right btn-add">Add</a>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="content">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box box-primary">
+                    <div class="box-body">
+                        <div class="box-body table-responsive no-padding">
+                            <table id="example1" class="table table-bordered table-striped">
+                                @{int rowNo = 0;}
+                                <thead>
+                                    <tr>
+                                        <th width="40px">No</th>
+                                        <th>Title</th>
+                                        <th width="80px">Start Date</th>
+                                        <th width="80px">Expired Date</th>
+                                        <th width="100px">Photo Path</th>
+                                        <td width="20px"></td>
+                                        <td width="20px"></td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model != null)
+                                    {
+                                        foreach (var item in Model)
+                                        {
+                                            <tr>
+                                                <td>@(rowNo += 1)</td>
+                                                <td>@item.Title</td>
+                                                <td>
+                                                    @item.StartDate
+                                                </td>
+                                                <td>@item.ExpiredDate</td>
+                                                <td><img src='@item.PhotoPath' height="80" /></td>
+                                                <td>
+                                                    <a href="/Advertisement/Edit/@item.ID"><i class="fa fa-edit"></i></a>
+                                                </td>
+                                                <td>
+                                                    <a href="/Advertisement/Delete/@item.ID" , onclick="return confirm('Are you sure you want to delete this Data?');"><i class="fa fa-trash-o"></i></a>
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+}
+
+
+
+
+
+

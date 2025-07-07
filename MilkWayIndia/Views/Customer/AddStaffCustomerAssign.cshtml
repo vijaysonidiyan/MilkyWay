@@ -1,0 +1,148 @@
+﻿@model MilkWayIndia.Models.Customer
+@{
+    ViewBag.Title = "AddStaffCustomerAssign";
+    Layout = "~/Views/Shared/_MyLayout.cshtml";
+}
+
+@section contain
+{
+    <script src="~/Content/plugins/jQuery/jquery-2.2.3.min.js"></script>
+    <link href="~/Content/plugins/datepicker/datepicker3.css" rel="stylesheet" />
+    <script src="~/Content/plugins/datepicker/bootstrap-datepicker.js"></script>
+    <script>
+        $(document).ready(function () {
+            var MasterClass = document.getElementById("LiMst");
+            if (MasterClass !=null) {
+                MasterClass.className = MasterClass.className + " active";
+            }
+        });
+    </script>
+
+<style>
+    .select2-container--default .select2-selection--single {
+        border: 1px solid #d2d6de;
+        border-radius: 0px;
+    }
+
+    .select2-container .select2-selection--single {
+        height: 33px;
+    }
+</style>
+    <script>
+  $(function () {
+    $(".select2").select2();
+  });
+    </script>
+    <section class="content-header">
+        <h1>
+            Assign DeliveryBoy To Customer
+        </h1>
+        <ol class="breadcrumb">
+            <li><a href="@Url.Action("Index", "Admin")"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="active">Assign DeliveryBoy To Customer</li>
+        </ol>
+    </section>
+    <!-- Main content -->
+    <section class="content">
+        <div class="col-md-6">
+            <div class="box box-info">
+                <div class="box-header with-border">
+                    <div class="btn-group-vertical">
+                        <button class="btn btn-success" type="button" onclick="location.href='@Url.Action("StaffCustomerAssignList", "Customer")'">Back To List</button>
+                    </div>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
+                </div>
+                <div class="form-horizontal">
+@using (Ajax.BeginForm("AddStaffCustomerAssign", "Customer", new AjaxOptions { OnSuccess = "onSuccessLogin", UpdateTargetId = "SuccessMsg" }))
+{
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                    <div id="SuccessMsg" style="color: red">@ViewBag.SuccessMsg</div>
+                                    <div class="form-group">
+                                        <label for="inputEmail3" class="col-sm-2 control-label">Staff Name</label>
+                                        <div class="col-sm-6">
+                                                <select id="ddlStaff" name="ddlStaff" class="form-control select2">
+                                                    <option value="0">---Select---</option>
+                                                    @if (ViewBag.Staff != null)
+                                                    {
+                                                        foreach (System.Data.DataRow drStaffName in ViewBag.Staff.Rows)
+                                                        {
+                                                            <option value="@drStaffName["Id"]">@drStaffName["FirstName"] @drStaffName["LastName"]</option>
+                                                        }
+                                                    }
+                                                </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputEmail3" class="col-sm-2 control-label">Customer Name</label>
+                                        <div class="col-sm-6">
+                                            <select id="ddlCustomer" name="ddlCustomer" class="form-control select2">
+                                                <option value="0">---Select---</option>
+                                                @if (ViewBag.Customer != null)
+                                                {
+                                                    foreach (System.Data.DataRow drCustomerName in ViewBag.Customer.Rows)
+                                                    {
+                                                        <option value="@drCustomerName["Id"]">@drCustomerName["FirstName"] @drCustomerName["LastName"] (@drCustomerName["Address"] )</option>
+                                                    }
+                                                }
+                                            </select>
+                                        </div>
+                                    </div>
+                               
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box-footer text-right">
+                       @* <input type="button" class="btn btn-orange" value="Cancel" />*@
+                        <input type="submit" value="Save" class="btn btn-primary" onclick="return ValidStaffCustAssign();" />
+                    </div>
+}
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        function ValidStaffCustAssign() {
+            var status = true;
+            if ($("#ddlStaff").val() == null || $("#ddlStaff").val() == "" || $("#ddlStaff").val() == "0") {
+                document.getElementById("select2-ddlStaff-container").style.border = "1px solid #ff0000";
+                document.getElementById("select2-ddlStaff-container").style.color = "#ff0000";
+                document.getElementById("select2-ddlStaff-container").value = "0";
+                return false;
+            }
+
+            if ($("#ddlCustomer").val() == null || $("#ddlCustomer").val() == "" || $("#ddlCustomer").val() == "0") {
+                document.getElementById("select2-ddlCustomer-container").style.border = "1px solid #ff0000";
+                document.getElementById("select2-ddlCustomer-container").style.color = "#ff0000";
+                document.getElementById("select2-ddlCustomer-container").value = "0";
+                return false;
+            }
+
+            //var staff = document.getElementById("ddlStaff").value;
+            //if (staff == null || staff == "" || staff == "0") {
+            //    document.getElementById("ddlStaff").style.border = "1px solid #ff0000";
+            //    document.getElementById("ddlStaff").style.color = "#ff0000";
+            //    document.getElementById("ddlStaff").value = "0";
+            //    status = false;
+            //    return false;
+            //}
+
+            //var customer = document.getElementById("ddlCustomer").value;
+            //if (customer == null || customer == "" || customer == "0") {
+            //    document.getElementById("ddlCustomer").style.border = "1px solid #ff0000";
+            //    document.getElementById("ddlCustomer").style.color = "#ff0000";
+            //    document.getElementById("ddlCustomer").value = "0";
+            //    status = false;
+            //    return false;
+            //}
+        }
+
+    </script>
+
+}
+
+

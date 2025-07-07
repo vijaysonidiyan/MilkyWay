@@ -1,0 +1,58 @@
+﻿@model MilkWayIndia.Entity.tblBillPayProvider
+@{
+    Layout = "~/Views/Shared/_MyLayout.cshtml";
+}
+@section contain
+{
+    <script src="~/Content/plugins/jQuery/jquery-2.2.3.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var MasterClass = document.getElementById("LiBilpay");
+            if (MasterClass != null) {
+                MasterClass.className = MasterClass.className + " active";
+            }
+        });
+    </script>
+    <script>
+        $(function () {
+            $(".select2").select2();
+        });
+    </script>
+    <section class="content-header">
+        <h1>
+            Edit Operator
+        </h1>
+        <ol class="breadcrumb">
+            <li><a href="@Url.Action("Index", "Admin")"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="active">Edit Operator</li>
+        </ol>
+    </section>
+    <section class="content">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box box-info">
+                    <div class="box-header with-border">
+                        <div class="btn-group-vertical">
+                            <a href="/billpay/providerlist" class="btn btn-success">Back To Panel</a>
+                        </div>
+                    </div>
+                    <div class="form-horizontal">
+                        @using (Html.BeginForm("EditProvider", "BillPay", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                        {
+                            @Html.Partial("_CreateOrUpdateProvider")
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </section>
+}
+
+
+
+
+
+
+
+

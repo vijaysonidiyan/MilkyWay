@@ -1,0 +1,132 @@
+﻿
+@{
+    ViewBag.Title = "OfferVendorList";
+    Layout = "~/Views/Shared/_MyLayout.cshtml";
+}
+
+@section contain
+{
+    <style>
+        .tags {
+            display: inline;
+            position: relative;
+        }
+
+            .tags:hover:after {
+                background: #333;
+                background: rgba(0, 0, 0, .8);
+                border-radius: 5px;
+                bottom: -34px;
+                color: #fff;
+                content: attr(gloss);
+                left: -100px;
+                padding: 5px 5px;
+                position: absolute;
+                z-index: 98;
+            }
+
+            .tags:hover:before {
+                border: solid;
+                border-color: #333 transparent;
+                border-width: 0 6px 6px 6px;
+                bottom: -4px;
+                content: "";
+                left: 0%;
+                position: absolute;
+                z-index: 99;
+            }
+    </style>
+    <script src="~/Content/plugins/jQuery/jquery-2.2.3.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script>
+        $(document).ready(function () {
+            var MasterClass = document.getElementById("LiMst");
+            if (MasterClass != null) {
+                MasterClass.className = MasterClass.className + " active";
+
+            }
+        });
+    </script>
+    <section class="content-header">
+        @if (@TempData["error"] != null)
+        {
+            <script type="text/javascript">
+                            alert("@TempData["error"]");
+            </script>
+        }
+        <div class="box-header with-border">
+            <h3 class="box-title">Offer Vendor List</h3>
+            <div class="box-tools">
+                <div class="input-group input-group-sm pull-right">
+                    @*<asp:LinkButton runat="server" ID="lbtnAdd" class="btn btn-default pull-right btn-add" PostBackUrl="~/.aspx">Back</asp:LinkButton>*@
+                    <input type="button" class="btn btn-primary pull-right btn-add" value="Add" onclick="location.href='@Url.Action("AddOfferVendor", "Vendor")'" />
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="content">
+
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box">
+                    <div class="box-body">
+                        <div class="box-body table-responsive no-padding">
+                            <table id="example1" class="table table-bordered table-striped">
+                                @{int rowNo = 0;}
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Master Cat</th>
+                                        <th>Name</th>
+                                        <th>Store</th>
+                                        <th>Mobile</th>
+                                        <th>Email</th>
+                                        <th>Vendor Type</th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (System.Data.DataRow drclient in ViewBag.StaffList.Rows)
+                                    {
+                                    <tr>
+                                        <td>@(rowNo += 1)</td>
+                                        <td>@drclient["MasterCat"]</td>
+                                        <td>@drclient["FirstName"] @drclient["LastName"]</td>
+                                        <td>@drclient["Vendorstore"]</td>
+                                        <td>@drclient["MobileNo"]</td>
+                                        <td>@drclient["Email"]</td>
+                                        <td>@drclient["VendorType"]</td>
+                                        <td><a href="/Vendor/EditVendorOffer/@drclient["Id"]"><i class="fa fa-edit"></i></a></td>
+                                        <td><a href="/Vendor/AddVendorProduct/@drclient["Id"]"><i class="fa fa-plus"></i></a></td>
+                                        <td><a href="/Vendor/VendorOfferSettings/@drclient["Id"]"><i class="glyphicon glyphicon-wrench"></i></a></td>
+                                        <td><a href="/Vendor/DeleteVendor/@drclient["Id"]" , onclick="return confirm('Are you sure you want to delete this Data?');"><i class="fa fa-trash-o"></i></a></td>
+                                    </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        $(function () {
+
+            $('#example1').DataTable({
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false
+            });
+        });
+    </script>
+}
+

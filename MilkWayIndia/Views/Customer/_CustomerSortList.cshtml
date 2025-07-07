@@ -1,0 +1,42 @@
+﻿<table id="tblCustomer" class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th width="120px">Sort Order</th>
+            <th>Customer Name</th>
+            <th>Address</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (ViewBag.lstCustomer != null)
+        {
+            foreach (var item in ViewBag.lstCustomer.Rows)
+            {
+                <tr>
+                    <td>
+                        <input type="number" name="sortorder" rel="@item["Id"]" class="txtid form-control" value="@item["OrderBy"]" />
+                    </td>
+                    <td>@item["FirstName"] @item["LastName"]</td>
+                    <td>@item["Address"]</td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+<script>
+    $("body").on("change", "#tblCustomer .txtid", function () {
+        var id = $(this).attr('rel');
+        var order = $(this).val();
+        //var sectorid = $('#sectorid').val();
+        var sectorid = 0;
+        var staffId = $('#staffId').val();
+
+        $.post("/Customer/UpdateCustomerSortOrder", { id: id, order: order, sectorid: sectorid, staffId: staffId }, function (data) {
+            if (data = "1") {
+                GetCustomerList();
+            }
+        });
+    });
+    $(function () {
+        $("#tblCustomer").DataTable();
+    });
+</script>

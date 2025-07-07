@@ -1,0 +1,817 @@
+﻿
+@{
+    ViewBag.Title = "BackTutorial";
+    Layout = "~/Views/Shared/_MyLayout.cshtml";
+}
+
+@section contain
+{
+    <script src="~/js/jquery.js"></script>
+    <script src="~/Content/plugins/jQuery/jquery-2.2.3.min.js"></script>
+    <link rel="stylesheet" href="~/Content/dist/css/skins/_all-skins.min.css">
+    <script>
+        $(document).ready(function () {
+            $(".myLink").click(function () {
+                var me = $(this),
+                    data = me.data('key');
+                //After I took the key i am using it to the following line to target the desire div with the id selector;
+                $("#" + data.Param).toggle("slow"); 
+            });
+        });
+    </script>
+    <section class="content-header">
+        <h1>
+            BackOffice Tutorial
+        </h1>
+    </section>
+
+    <section class="content">
+
+        @Html.Raw(ViewBag.htmlList)
+        @*<div class="row">
+            <div class="col-md-12">
+
+                <a href="#" data-key='{"Param":"Show_1"}' style="padding:5px;text-decoration:none;border-radius:5px;background-color:#fff;" class="myLink">How to add Modules?</a>
+
+                <div id="Show_1" style="display:none;">
+
+                    <div class="box box-info">
+                        <div class="box">
+                            <div class="box-header with-border">
+                                <ul>
+                                    <li>Click On Module List on Left Menu from Master menu.List Page Will Open.</li>
+                                    <li>Then Click on Add Button And Select Platform and Put Module Name and Save It.</li>
+
+                                </ul>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr />
+        <div class="row">
+            <div class="col-md-12">
+                <a href="#" data-key='{"Param":"Show_2"}' style="padding:5px;text-decoration:none;border-radius:5px;background-color:#fff;" class="myLink">How to Add Role/Designation</a>
+
+                <div id="Show_2" style="display:none;">
+
+                    <div class="box box-info">
+                        <div class="box">
+                            <div class="box-header with-border">
+                                <ul>
+
+                                    <li> Click On Role/Designation on Left Menu from Master menu.List Page Will Open.</li>
+                                    <li>Then Click on Add Button And Put Role/Designation and choose Module Name and Save It.</li>
+                                </ul>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+
+        <hr />
+        <div class="row">
+            <div class="col-md-12">
+                <a href="#" data-key='{"Param":"Show_3"}' style="padding:5px;text-decoration:none;border-radius:5px;background-color:#fff;" class="myLink">
+                    How to Add Staff?
+                </a>
+
+                <div id="Show_3" style="display:none;">
+
+                    <div class="box box-info">
+                        <div class="box">
+                            <div class="box-header with-border">
+                                <ul>
+
+                                    <li> Click On Staff Master on Left Menu from Master menu.List Page Will Open.</li>
+                                    <li>Then Click on Add Button And FillUp all fields and Save It.</li>
+                                    <li>To Edit Staff click on Edit Icon in the List Page.Then Edit Page Will Open.Modify the Record and Save it.</li>
+                                    <li>To Delete Staff click on Delete Icon in the List Page.</li>
+                                </ul>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <hr />
+        <div class="row">
+            <div class="col-md-12">
+                <a href="#" data-key='{"Param":"Show_4"}' style="padding:5px;text-decoration:none;border-radius:5px;background-color:#fff;" class="myLink">
+                    How to Set Staff Role Validation?
+                </a>
+
+                <div id="Show_4" style="display:none;">
+
+                    <div class="box box-info">
+                        <div class="box">
+                            <div class="box-header with-border">
+                                <ul>
+
+                                    <li> Click On Staff Role Validation on Left Menu from Master menu.Page Will Open.</li>
+                                    <li>FillUp all fields and choose Checkboxes according which permission you want to give to the Staff and Save It.</li>
+                                    <li>Added Record will display in the List below</li>
+                                    <li>To Edit  click on Edit Icon in the List Page.Then Edit Page Will Open.Modify the Record and Save it.</li>
+                                    <li>To Delete  click on Delete Icon in the List Page.</li>
+                                </ul>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <hr />
+        <div class="row">
+            <div class="col-md-12">
+                <a href="#" data-key='{"Param":"Show_5"}' style="padding:5px;text-decoration:none;border-radius:5px;background-color:#fff;" class="myLink">
+                    How to Access Customer?
+                </a>
+
+                <div id="Show_5" style="display:none;">
+
+                    <div class="box box-info">
+                        <div class="box">
+                            <div class="box-header with-border">
+                                <ul>
+
+                                    <li> Click On Customer Master on Left Menu from Master menu.List Page Will Open.You can Active InActive Customer from List.</li>
+                                    <li>To add Customer Click On Add Button fill up fields and Save It.</li>
+                                    <li>Added Record will display in the List Page</li>
+                                    <li>To Edit  click on Edit Icon in the List Page.Then Edit Page Will Open.Modify the Record and Save it.</li>
+                                    <li>To Delete  click on Delete Icon in the List Page.</li>
+                                </ul>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+
+        <hr />
+        <div class="row">
+            <div class="col-md-12">
+                <a href="#" data-key='{"Param":"Show_6"}' style="padding:5px;text-decoration:none;border-radius:5px;background-color:#fff;" class="myLink">
+                    How to Assign DM to Customer?
+                </a>
+
+                <div id="Show_6" style="display:none;">
+
+                    <div class="box box-info">
+                        <div class="box">
+                            <div class="box-header with-border">
+                                <ul>
+
+                                    <li> Click On Delivery Boy Customer Assign on Left Menu from Master menu.List Page Will Open.</li>
+                                    <li>To Assign Customer Click On Add Button fill up fields and Save It.</li>
+                                    <li>Added Record will display in the List Page</li>
+                                    <li>To Edit  click on Edit Icon in the List Page.Then Edit Page Will Open.Modify the Record and Save it.</li>
+                                    <li>To Delete  click on Delete Icon in the List Page.</li>
+                                </ul>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+        <hr />
+        <div class="row">
+            <div class="col-md-12">
+                <a href="#" data-key='{"Param":"Show_7"}' style="padding:5px;text-decoration:none;border-radius:5px;background-color:#fff;" class="myLink">
+                    How to Sort Customer?
+                </a>
+
+                <div id="Show_7" style="display:none;">
+
+                    <div class="box box-info">
+                        <div class="box">
+                            <div class="box-header with-border">
+                                <ul>
+
+                                    <li>Click On <b>Customer Sort Order</b> on Left Menu from Master menu. Page Will Open.</li>
+                                    <li>Now Choose Sector And DM and click on Submit."Don't Set 0 to any Customer"</li>
+                                    <li>"0" Appear for the customer who have not sorted yet.</li>
+                                    <li>Sort The Customer According to your Need</li>
+
+                                </ul>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <hr />
+        <div class="row">
+            <div class="col-md-12">
+                <a href="#" data-key='{"Param":"Show_8"}' style="padding:5px;text-decoration:none;border-radius:5px;background-color:#fff;" class="myLink">
+                    How to Access Vendor?
+                </a>
+
+                <div id="Show_8" style="display:none;">
+
+                    <div class="box box-info">
+                        <div class="box">
+                            <div class="box-header with-border">
+                                <ul>
+
+                                    <li>Click On <b>Vendor Master</b> on Left Menu from Master menu.List Page Will Open.</li>
+                                    <li>To Add Vendor Click On Add Button fill up fields and Save It.</li>
+                                    <li>Added Record will display in the List Page</li>
+                                    <li>To Edit  click on Edit Icon in the List Page.Then Edit Page Will Open.Modify the Record and Save it.</li>
+                                    <li>To Delete  click on Delete Icon in the List Page.</li>
+
+                                </ul>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <hr />
+        <div class="row">
+            <div class="col-md-12">
+                <a href="#" data-key='{"Param":"Show_9"}' style="padding:5px;text-decoration:none;border-radius:5px;background-color:#fff;" class="myLink">
+                    How to Access Slider Master?
+                </a>
+
+                <div id="Show_9" style="display:none;">
+
+                    <div class="box box-info">
+                        <div class="box">
+                            <div class="box-header with-border">
+                                <ul>
+
+                                    <li>Click On <b>Slider Master</b> on Left Menu from Master menu.List Page Will Open.</li>
+                                    <li>To Add Slider Click On Add Button fill up fields and Save It.</li>
+                                    <li>Added Record will display in the List Page</li>
+                                    <li>To Edit  click on Edit Icon in the List Page.Then Edit Page Will Open.Modify the Record and Save it.</li>
+                                    <li>To Delete  click on Delete Icon in the List Page.</li>
+
+                                </ul>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <hr />
+        <div class="row">
+            <div class="col-md-12">
+                <a href="#" data-key='{"Param":"Show_10"}' style="padding:5px;text-decoration:none;border-radius:5px;background-color:#fff;" class="myLink">
+                    How to Access Advertisement Master?
+                </a>
+
+                <div id="Show_10" style="display:none;">
+
+                    <div class="box box-info">
+                        <div class="box">
+                            <div class="box-header with-border">
+                                <ul>
+
+                                    <li>Click On <b>Advertisement Master</b> on Left Menu from Master menu.List Page Will Open.</li>
+                                    <li>To Add Advertisement Click On Add Button fill up fields and Save It.</li>
+                                    <li>Added Record will display in the List Page</li>
+                                    <li>To Edit  click on Edit Icon in the List Page.Then Edit Page Will Open.Modify the Record and Save it.</li>
+                                    <li>To Delete  click on Delete Icon in the List Page.</li>
+
+                                </ul>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <hr />
+
+        <div class="row">
+            <div class="col-md-12">
+                <a href="#" data-key='{"Param":"Show_11"}' style="padding:5px;text-decoration:none;border-radius:5px;background-color:#fff;" class="myLink">
+                    How to Access Chatboot Master?
+                </a>
+
+                <div id="Show_11" style="display:none;">
+
+                    <div class="box box-info">
+                        <div class="box">
+                            <div class="box-header with-border">
+                                <ul>
+
+                                    <li>Click On <b>Chatboot Master</b> on Left Menu from Master menu.List Page Will Open.</li>
+                                    <li>To Add Chatboot Click On Add Button .</li>
+                                    <li>
+                                        This a Two Level Chatboot Settings.First put Chatboot Query.Then Put Chatboot General Reply if Require.
+                                        Choose Display Yes/No if you want to display Yes Reply or No Reply Or want to display.
+                                        If You have next level Question for Yes/No follow the above instruction.
+                                    </li>
+                                    <li>Added Record will display in the List Page</li>
+                                    <li>To Edit  click on Edit Icon in the List Page.Then Edit Page Will Open.Modify the Record and Save it.</li>
+                                    <li>To Delete  click on Delete Icon in the List Page.</li>
+
+                                </ul>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+        <hr />
+
+        <div class="row">
+            <div class="col-md-12">
+                <a href="#" data-key='{"Param":"Show_12"}' style="padding:5px;text-decoration:none;border-radius:5px;background-color:#fff;" class="myLink">
+                    How to Add Product Parent Category?
+                </a>
+
+                <div id="Show_12" style="display:none;">
+
+                    <div class="box box-info">
+                        <div class="box">
+                            <div class="box-header with-border">
+                                <ul>
+
+                                    <li>Click On <b>Product Parent Category Master</b> on Left Menu from Product menu.List Page Will Open.</li>
+                                    <li>To Add Parent Category Click On Add Button .fill up fields and Save It</li>
+
+                                    <li>Added Record will display in the List Page</li>
+                                    <li>To Edit  click on Edit Icon in the List Page.Then Edit Page Will Open.Modify the Record and Save it.</li>
+                                    <li>To Delete  click on Delete Icon in the List Page.</li>
+
+                                </ul>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <hr />
+
+        <div class="row">
+            <div class="col-md-12">
+                <a href="#" data-key='{"Param":"Show_12"}' style="padding:5px;text-decoration:none;border-radius:5px;background-color:#fff;" class="myLink">
+                    How to Add Product Sub Category?
+                </a>
+
+                <div id="Show_12" style="display:none;">
+
+                    <div class="box box-info">
+                        <div class="box">
+                            <div class="box-header with-border">
+                                <ul>
+
+                                    <li>Click On <b>Product Sub Category Master</b> on Left Menu from Product menu.List Page Will Open.</li>
+                                    <li>To Add Sub Category Click On Add Button .fill up fields and Save It</li>
+
+                                    <li>Added Record will display in the List Page</li>
+                                    <li>To Edit  click on Edit Icon in the List Page.Then Edit Page Will Open.Modify the Record and Save it.</li>
+                                    <li>To Delete  click on Delete Icon in the List Page.</li>
+
+                                </ul>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <hr />
+        <div class="row">
+            <div class="col-md-12">
+                <a href="#" data-key='{"Param":"Show_12"}' style="padding:5px;text-decoration:none;border-radius:5px;background-color:#fff;" class="myLink">
+                    How to Add Product Attribute?
+                </a>
+
+                <div id="Show_12" style="display:none;">
+
+                    <div class="box box-info">
+                        <div class="box">
+                            <div class="box-header with-border">
+                                <ul>
+
+                                    <li>Click On <b>Product Attribute Master</b> on Left Menu from Product menu.List Page Will Open.</li>
+                                    <li>To Add Attribute Click On Add Button .fill up fields and Save It</li>
+
+                                    <li>Added Record will display in the List Page</li>
+                                    <li>To Edit  click on Edit Icon in the List Page.Then a Popup Will Open.Modify the Record and Save it.</li>
+                                    <li>To Delete  click on Delete Icon in the List Page.</li>
+
+                                </ul>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <hr />
+
+        <div class="row">
+            <div class="col-md-12">
+                <a href="#" data-key='{"Param":"Show_13"}' style="padding:5px;text-decoration:none;border-radius:5px;background-color:#fff;" class="myLink">
+                    How to Add Products?
+                </a>
+
+                <div id="Show_13" style="display:none;">
+
+                    <div class="box box-info">
+                        <div class="box">
+                            <div class="box-header with-border">
+                                <ul>
+
+                                    <li>Click On <b>Product Master New</b> on Left Menu from Master menu.List Page Will Open.</li>
+                                    <li>To Add Product Click On Add Button .fill up fields and Save It</li>
+
+                                    <li>Added Record will display in the List Page</li>
+                                    <li>To Edit  click on Edit Icon in the List Page.Then Edit Page Will Open.Modify the Record and Save it.</li>
+                                    <li>To Delete  click on Delete Icon in the List Page.</li>
+
+                                </ul>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+        <hr />
+        <div class="row">
+            <div class="col-md-12">
+                <a href="#" data-key='{"Param":"Show_14"}' style="padding:5px;text-decoration:none;border-radius:5px;background-color:#fff;" class="myLink">
+                    How Assign Vendor To Sector?
+                </a>
+
+                <div id="Show_14" style="display:none;">
+
+                    <div class="box box-info">
+                        <div class="box">
+                            <div class="box-header with-border">
+                                <ul>
+
+                                    <li>Click On <b>Vendor Sector Assign</b> on Left Menu from Vendor Section menu.List Page Will Open.</li>
+                                    <li>To Assign Vendor Click On Add Button .fill up fields and Save It</li>
+
+                                    <li>Added Record will display in the List Page</li>
+                                    <li>To Edit  click on Edit Icon in the List Page.Then Edit Page Will Open.Modify the Record and Save it.</li>
+                                    <li>To Delete  click on Delete Icon in the List Page.</li>
+
+                                </ul>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+        <hr />
+        <div class="row">
+            <div class="col-md-12">
+                <a href="#" data-key='{"Param":"Show_15"}' style="padding:5px;text-decoration:none;border-radius:5px;background-color:#fff;" class="myLink">
+                    How Add Vendor Payment?
+                </a>
+
+                <div id="Show_15" style="display:none;">
+
+                    <div class="box box-info">
+                        <div class="box">
+                            <div class="box-header with-border">
+                                <ul>
+
+                                    <li>Click On <b>Vendor Payment Update</b> on Left Menu from Vendor Section menu.List Page Will Open.</li>
+                                    <li>To Add Payment Click On Add Button .fill up fields and Save It</li>
+
+                                    <li>Added Record will display in the List Page</li>
+                                    <li>To Edit  click on Edit Icon in the List Page.Then Edit Page Will Open.Modify the Record and Save it.</li>
+                                    <li>To Delete  click on Delete Icon in the List Page.</li>
+
+                                </ul>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <hr />
+        <div class="row">
+            <div class="col-md-12">
+                <a href="#" data-key='{"Param":"Show_16"}' style="padding:5px;text-decoration:none;border-radius:5px;background-color:#fff;" class="myLink">
+                    How Add Vendor Product Replacement?
+                </a>
+
+                <div id="Show_16" style="display:none;">
+
+                    <div class="box box-info">
+                        <div class="box">
+                            <div class="box-header with-border">
+                                <ul>
+
+                                    <li>Click On <b>Vendor Product Replacement</b> on Left Menu from Vendor Section menu.List Page Will Open.</li>
+                                    <li>To Replace Vendor Click On Add Button .fill up fields and Save It</li>
+
+                                    <li>Added Record will display in the List Page</li>
+                                    <li>To Edit  click on Edit Icon in the List Page.Then Edit Page Will Open.Modify the Record and Save it.</li>
+                                    <li>To Delete  click on Delete Icon in the List Page.</li>
+
+                                </ul>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <hr />
+
+        <div class="row">
+            <div class="col-md-12">
+                <a href="#" data-key='{"Param":"Show_17"}' style="padding:5px;text-decoration:none;border-radius:5px;background-color:#fff;" class="myLink">
+                    How Change Vendor Order?
+                </a>
+
+                <div id="Show_17" style="display:none;">
+
+                    <div class="box box-info">
+                        <div class="box">
+                            <div class="box-header with-border">
+                                <ul>
+
+                                    <li>Click On <b>Change Vendor</b> on Left Menu from Vendor Section menu.List Page Will Open.</li>
+                                    <li>To Change Vendor. Click On Submit Button after choose order date and Existing vendor.Select Checkboxes which one you want to change then selecet new vendor and click on change vendor button. .fill up fields and Save It</li>
+
+                                    <li>Added Record will display in the List Page</li>
+                                    <li>To Edit  click on Edit Icon in the List Page.Then Edit Page Will Open.Modify the Record and Save it.</li>
+                                    <li>To Delete  click on Delete Icon in the List Page.</li>
+
+                                </ul>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+
+        <div class="row">
+            <div class="col-md-12">
+                <a href="#" data-key='{"Param":"Show_18"}' style="padding:5px;text-decoration:none;border-radius:5px;background-color:#fff;" class="myLink">
+                    How Add Service List for Bill Payment?
+                </a>
+
+                <div id="Show_18" style="display:none;">
+
+                    <div class="box box-info">
+                        <div class="box">
+                            <div class="box-header with-border">
+                                <ul>
+
+                                    <li>Click On <b>Service List</b> on Left Menu from Bill Pay Section menu.List Page Will Open.</li>
+                                    <li>To Add Service. Click On Add Button fill up fields and Save It</li>
+
+                                    <li>Added Record will display in the List Page</li>
+                                    <li>To Edit  click on Edit Icon in the List Page.Then Edit Page Will Open.Modify the Record and Save it.</li>
+                                    <li>To Delete  click on Delete Icon in the List Page.</li>
+
+                                </ul>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <hr />
+        <div class="row">
+            <div class="col-md-12">
+                <a href="#" data-key='{"Param":"Show_19"}' style="padding:5px;text-decoration:none;border-radius:5px;background-color:#fff;" class="myLink">
+                    How Add Circle List for Bill Payment?
+                </a>
+
+                <div id="Show_19" style="display:none;">
+
+                    <div class="box box-info">
+                        <div class="box">
+                            <div class="box-header with-border">
+                                <ul>
+
+                                    <li>Click On <b>Circle List</b> on Left Menu from Bill Pay Section menu.List Page Will Open.</li>
+                                    <li>To Add Circle. Click On Add Button fill up fields and Save It</li>
+
+                                    <li>Added Record will display in the List Page</li>
+                                    <li>To Edit  click on Edit Icon in the List Page.Then Edit Page Will Open.Modify the Record and Save it.</li>
+                                    <li>To Delete  click on Delete Icon in the List Page.</li>
+
+                                </ul>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <hr />
+
+        <div class="row">
+            <div class="col-md-12">
+                <a href="#" data-key='{"Param":"Show_20"}' style="padding:5px;text-decoration:none;border-radius:5px;background-color:#fff;" class="myLink">
+                    How Add Circle List for Bill Payment?
+                </a>
+
+                <div id="Show_20" style="display:none;">
+
+                    <div class="box box-info">
+                        <div class="box">
+                            <div class="box-header with-border">
+                                <ul>
+
+                                    <li>Click On <b>Circle List</b> on Left Menu from Bill Pay Section menu.List Page Will Open.</li>
+                                    <li>To Add Circle. Click On Add Button fill up fields and Save It</li>
+
+                                    <li>Added Record will display in the List Page</li>
+                                    <li>To Edit  click on Edit Icon in the List Page.Then Edit Page Will Open.Modify the Record and Save it.</li>
+                                    <li>To Delete  click on Delete Icon in the List Page.</li>
+
+                                </ul>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <hr />
+        <div class="row">
+            <div class="col-md-12">
+                <a href="#" data-key='{"Param":"Show_21"}' style="padding:5px;text-decoration:none;border-radius:5px;background-color:#fff;" class="myLink">
+                    How Add Cities List for Bill Payment?
+                </a>
+
+                <div id="Show_21" style="display:none;">
+
+                    <div class="box box-info">
+                        <div class="box">
+                            <div class="box-header with-border">
+                                <ul>
+
+                                    <li>Click On <b>Cities List</b> on Left Menu from Bill Pay Section menu.List Page Will Open.</li>
+                                    <li>To Add Cities. Click On Add Button fill up fields and Save It</li>
+
+                                    <li>Added Record will display in the List Page</li>
+                                    <li>To Edit  click on Edit Icon in the List Page.Then Edit Page Will Open.Modify the Record and Save it.</li>
+                                    <li>To Delete  click on Delete Icon in the List Page.</li>
+
+                                </ul>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+        <hr />
+
+        <div class="row">
+            <div class="col-md-12">
+                <a href="#" data-key='{"Param":"Show_21"}' style="padding:5px;text-decoration:none;border-radius:5px;background-color:#fff;" class="myLink">
+                    How Add Cities List for Bill Payment?
+                </a>
+
+                <div id="Show_21" style="display:none;">
+
+                    <div class="box box-info">
+                        <div class="box">
+                            <div class="box-header with-border">
+                                <ul>
+
+                                    <li>Click On <b>Cities List</b> on Left Menu from Bill Pay Section menu.List Page Will Open.</li>
+                                    <li>To Add Cities. Click On Add Button fill up fields and Save It</li>
+
+                                    <li>Added Record will display in the List Page</li>
+                                    <li>To Edit Click on Edit Icon in the List Page.Then Edit Page Will Open.Modify the Record and Save it.</li>
+                                    <li>To Delete  Click on Delete Icon in the List Page.</li>
+
+                                </ul>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <hr />
+        <div class="row">
+            <div class="col-md-12">
+                <a href="#" data-key='{"Param":"Show_21"}' style="padding:5px;text-decoration:none;border-radius:5px;background-color:#fff;" class="myLink">
+                    How Add Operator List for Bill Payment?
+                </a>
+
+                <div id="Show_21" style="display:none;">
+
+                    <div class="box box-info">
+                        <div class="box">
+                            <div class="box-header with-border">
+                                <ul>
+
+                                    <li>Click On <b>Operator List</b> on Left Menu from Bill Pay Section menu.List Page Will Open.</li>
+                                    <li>To Add Operator. Click On Add Button fill up fields and Save It</li>
+
+                                    <li>Added Record will display in the List Page</li>
+                                    <li>To Edit Click on Edit Icon in the List Page.Then Edit Page Will Open.Modify the Record and Save it.</li>
+                                    <li>To Delete  Click on Delete Icon in the List Page.</li>
+
+                                </ul>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>*@
+
+    </section>
+}
+

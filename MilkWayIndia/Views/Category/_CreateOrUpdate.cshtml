@@ -1,0 +1,133 @@
+﻿@model MilkWayIndia.Models.Product
+
+
+@Html.HiddenFor(s => s.CategoryId)
+<div class="box-body">
+    <div class="row">
+        <div class="col-md-6">
+            <div id="SuccessMsg" style="color: red">@ViewBag.SuccessMsg</div>
+            <div class="form-group">
+                <label for="inputEmail3" class="col-sm-3 control-label">Main Category</label>
+                <div class="col-sm-6">
+                    @Html.DropDownListFor(model => model.ParentCategoryId, ViewBag.lstCategory as SelectList, "Select Category", new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="inputEmail3" class="col-sm-3 control-label">Category Name</label>
+                <div class="col-sm-6">
+                    @Html.TextBoxFor(m => m.Category, new { @class = "form-control", @id = "Category" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="inputEmail3" class="col-sm-3 control-label">Order By</label>
+                <div class="col-sm-6">
+                    @Html.TextBoxFor(m => m.OrderBy, new { @class = "form-control", @id = "OrderBy", onkeypress = "return ValidateNumber(event);", maxlength = 3 })
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="FLedgerCode" class="col-sm-3 control-label">Image</label>
+                <div class="col-sm-4">
+                    <input type="file" name="Document1" id="Document1" onchange="readURL(this)" />
+                    <span>Size : 200px * 200px</span>
+                    @Html.HiddenFor(m => m.Image)
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="inputEmail3" class="col-sm-3 control-label">Is Active</label>
+                <div class="col-sm-6">
+                    @Html.CheckBox("IsActive", new { @checked = "checked" })
+                </div>
+            </div>
+
+        </div>
+        <div id="cat_setting" class="col-md-6">
+            <div class="form-group">
+                <label for="inputEmail3" class="col-sm-3 control-label">Min. Amount</label>
+                <div class="col-sm-6">
+                    @Html.TextBoxFor(m => m.MinAmount, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="inputEmail3" class="col-sm-3 control-label">Max. Amount</label>
+                <div class="col-sm-6">
+                    @Html.TextBoxFor(m => m.MaxAmount, new { @class = "form-control", onkeypress = "return ValidateNumber(event);" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="FLedgerCode" class="col-sm-3 control-label">From Time</label>
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(m => m.FromTime, new { @class = "form-control", onkeypress = "return ValidateNumber(event);", type = "time" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="inputEmail3" class="col-sm-3 control-label">To Time</label>
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(m => m.ToTime, new { @class = "form-control", onkeypress = "return ValidateNumber(event);", type = "time" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="FLedgerCode" class="col-sm-3 control-label">Delivery From</label>
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(m => m.DeliveryFrom, new { @class = "form-control", onkeypress = "return ValidateNumber(event);", type = "time" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="inputEmail3" class="col-sm-3 control-label">Delivery To</label>
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(m => m.DeliveryTo, new { @class = "form-control", onkeypress = "return ValidateNumber(event);", type = "time" })
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="box-footer text-right">
+    <input type="submit" value="Save" class="btn btn-primary" onclick="return ValidCategory();" />
+</div>
+
+<script>
+    function ValidateNumber(e) {
+        var keycode = (e.which) ? e.which : e.keyCode;
+        //console.log(keycode);
+        var phn = document.getElementById('OrderBy');
+        //comparing pressed keycodes
+        if (!(keycode == 8 || keycode == 46) && (keycode < 48 || keycode > 57)) {
+            return false;
+        }
+        return true;
+    };
+
+    function ValidCategory() {
+        var status = true;
+        var Category = document.getElementById("Category").value;
+        if (Category == null || Category == "" || Category == "Enter Category") {
+            document.getElementById("Category").style.border = "1px solid #ff0000";
+            document.getElementById("Category").style.color = "#ff0000";
+            document.getElementById("Category").value = "Enter Category";
+            status = false;
+            return false;
+        }
+    }
+
+    function readURL(input) {
+        var ext = $(input).val().split('.').pop().toLowerCase();
+        if ($.inArray(ext, ['jpg', 'jpeg', 'png']) == -1) {
+            alert('Invalid file format. Only jpg and png are allowed.');
+            $(input).val('');
+            return;
+        }
+    }
+
+    function setCategorySetting() {
+        var catID = $('#ParentCategoryId').val();
+        $('#cat_setting').hide();
+        if (catID == '') {
+            $('#cat_setting').show();
+        }
+    }
+    $(function () {
+        setCategorySetting();
+        $("#ParentCategoryId").change(function () {
+            setCategorySetting();
+        });
+    });
+</script>

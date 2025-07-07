@@ -1,0 +1,83 @@
+﻿@{
+    Layout = "~/Views/Shared/_MyLayout.cshtml";
+}
+@section contain
+{
+    <script src="~/Content/plugins/jQuery/jquery-2.2.3.min.js"></script>
+    <script src="~/scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/Content/toastr/toastr.min.js"></script>
+    <link href="~/Content/toastr/toastr.min.css" rel="stylesheet" />
+    <script>
+        $(document).ready(function () {
+            var MasterClass = document.getElementById("LiProduct");
+            if (MasterClass != null) {
+                MasterClass.className = MasterClass.className + " active";
+            }
+        });
+    </script>
+    <section class="content-header">
+        <div class="box-header with-border">
+            <h3 class="box-title">Attribute List</h3>
+            <div class="box-tools">
+                <div class="input-group input-group-sm pull-right">
+                    <a data-url="/Attribute/Create" href="#" class="btn btn-primary pull-right btn-bootstrap-dialog">Add</a>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="content">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box box-primary">
+                    <div class="box-body">
+                        <div id="div_attribute" class="box-body table-responsive no-padding">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div class="loaderbody" id="loaderbody">
+        <div class="loader"></div>
+    </div>
+    <div class="modal fade" id="model_attribute" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    </div>
+    <script>
+        $(function () {
+            GetAttribute();
+        });
+
+        $("body").on("click", ".btn-bootstrap-dialog", function () {
+            var url = $(this).data('url');
+            $.get(url, function (data) {
+                $('#model_attribute').html(data);
+                $('#model_attribute').modal('show');
+            });
+            return false;
+        });
+
+        function GetAttribute() {
+            $.get("/Attribute/GetAttributeList", function (data) {
+                $('#div_attribute').html(data);
+            });
+        }
+
+        function SuccessAttribute(data) {
+            if (data.status = "1") {
+                $('#model_attribute').modal('hide');
+                toastr["success"](data.message);
+                GetAttribute();
+            }
+            else {
+                toastr["error"]("error");
+            }
+        }
+    </script>
+}
+
+
+
+
+
+

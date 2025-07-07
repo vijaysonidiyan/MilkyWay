@@ -1,0 +1,48 @@
+﻿@model MilkWayIndia.Models.ProductListVM
+<h4 class="panel-heading">
+    Product
+</h4>
+<table id="tblExistingDetails" class="display table table-striped table-bordered dt-responsive">
+    <thead>
+        <tr>
+            <th>@Html.CheckBox("cbCheckAll", new { OnClick = "checkAll(this)" })</th>
+            <th>Product Name</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null)
+        {
+            for (int i = 0; i < Model.ProductList.Count; i++)
+            {
+                if (!string.IsNullOrEmpty(Model.ProductList[i].Text))
+                {
+                    <tr>
+                        <td>
+                            @Html.CheckBoxFor(m => Model.ProductList[i].IsChecked, new { @class = "JchkAll" })
+                        </td>
+                        <td>
+                            @Model.ProductList[i].Text
+                            @Html.HiddenFor(m => Model.ProductList[i].Value)
+                            @Html.HiddenFor(m => Model.ProductList[i].Text)
+                        </td>
+                    </tr>
+                }
+            }
+        }
+
+        @*@if (ViewBag.lstProduct != null)
+            {
+                int i = 0;
+                foreach (System.Data.DataRow drProduct in ViewBag.lstProduct.Rows)
+                {
+                    <tr>
+                        <td>
+                            <input type="checkbox" name="chk[@i].id" CssClass="JchkAll" value="@drProduct["vID"]" checked>
+                        </td>
+                        <td>@drProduct["ProductName"]</td>
+                    </tr>
+                    i++;
+                }
+            }*@
+    </tbody>
+</table>

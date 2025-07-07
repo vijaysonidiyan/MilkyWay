@@ -1,0 +1,99 @@
+﻿
+@{
+    ViewBag.Title = "VendorList";
+    Layout = "~/Views/Shared/_MyLayout.cshtml";
+}
+
+@section contain
+{
+    <script src="~/Content/plugins/jQuery/jquery-2.2.3.min.js"></script>
+    <script>
+    $(document).ready(function () {
+        var MasterClass = document.getElementById("LiMst");
+        if (MasterClass != null) {
+            MasterClass.className = MasterClass.className + " active";
+
+        }
+    });
+    </script>
+    <section class="content-header">
+        @if (@TempData["error"] != null)
+    {
+            <script type="text/javascript">
+                            alert("@TempData["error"]");
+            </script>
+        }
+        <div class="box-header with-border">
+            <h3 class="box-title">Vendor List</h3>
+            <div class="box-tools">
+                <div class="input-group input-group-sm pull-right">
+                    @*<asp:LinkButton runat="server" ID="lbtnAdd" class="btn btn-default pull-right btn-add" PostBackUrl="~/.aspx">Back</asp:LinkButton>*@
+                    <input type="button" class="btn btn-primary pull-right btn-add" value="Add" onclick="location.href='@Url.Action("AddVendor", "Vendor")'" />
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box">
+                    <div class="box-body">
+                        <div class="box-body table-responsive no-padding">
+                            <table id="example1" class="table table-bordered table-striped">
+                                @{int rowNo = 0;}
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Sector Name</th>
+                                        <th>Name</th>
+                                        <th>Mobile</th>
+                                        <th>Email</th>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (System.Data.DataRow drclient in ViewBag.StaffList.Rows)
+                                    {
+                                        <tr>
+                                            <td>@(rowNo += 1)</td>
+                                            <td>@drclient["SectorName"]</td>
+                                            <td>@drclient["FirstName"] @drclient["LastName"]</td>
+                                            <td>@drclient["MobileNo"]</td>
+                                            <td>@drclient["Email"]</td>
+                                            <td><a href="/Vendor/EditVendor/@drclient["Id"]"><i class="fa fa-edit"></i></a></td>
+                                            <td><a href="/Vendor/DeleteVendor/@drclient["Id"]" , onclick="return confirm('Are you sure you want to delete this Data?');"><i class="fa fa-trash-o"></i></a></td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    @*@Html.Partial("_PagingSortingSearchingJSPartial")*@
+    <script>
+    $(function () {
+
+        $('#example1').DataTable({
+            "paging": true,
+            "lengthChange": true,
+            "searching": true,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false
+        });
+    });
+    </script>
+
+}
+
+
+
+

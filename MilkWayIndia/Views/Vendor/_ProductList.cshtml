@@ -1,0 +1,24 @@
+﻿
+<h4 class="panel-heading">
+    Product
+</h4>
+<table id="tblExistingDetails" class="display table table-striped table-bordered dt-responsive">
+    <thead>
+        <tr>
+            <th>@Html.CheckBox("cbCheckAll", new { OnClick = "checkAll(this)" })</th>
+            <th>Product Name</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (ViewBag.lstProduct != null)
+        {
+            foreach (System.Data.DataRow drProduct in ViewBag.lstProduct.Rows)
+            {
+                <tr>
+                    <td><input type="checkbox" name="chk[]" CssClass="JchkAll" value="@drProduct["Id"]"></td>
+                    <td>@drProduct["ProductName"]</td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

@@ -1,0 +1,243 @@
+﻿@model MilkWayIndia.Models.Customer
+@{
+    Layout = "~/Views/Shared/_MyLayout.cshtml";
+}
+
+@section contain
+{
+    <script src="~/js/jquery.js"></script>
+    @*<script src="~/Content/plugins/jQuery/jquery-2.2.3.min.js"></script>*@
+    <link href="~/Content/plugins/datepicker/datepicker3.css" rel="stylesheet" />
+    <script src="~/Content/plugins/datepicker/bootstrap-datepicker.js"></script>
+    <script src="~/Content/plugins/jQuery/jquery-2.2.3.min.js"></script>
+    <script src="~/scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/Content/toastr/toastr.min.js"></script>
+    <link href="~/Content/toastr/toastr.min.css" rel="stylesheet" />
+    <script>
+        $(document).ready(function () {
+            var MasterClass = document.getElementById("LiProduct");
+            if (MasterClass != null) {
+                MasterClass.className = MasterClass.className + " active";
+            }
+        });
+    </script>
+
+    <style>
+        .select2-container--default .select2-selection--single {
+            border: 1px solid #d2d6de;
+            border-radius: 0px;
+        }
+
+        .select2-container .select2-selection--single {
+            height: 33px;
+        }
+    </style>
+    <script>
+        $(function () {
+            $(".select2").select2();
+        });
+    </script>
+    <section class="content-header">
+        <h1>
+            Vendor Sector Product Assign
+        </h1>
+        <ol class="breadcrumb">
+            <li><a href="@Url.Action("Index", "Admin")"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="active">Vendor Sector Product Assign</li>
+        </ol>
+    </section>
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box box-info">
+                    @using (Ajax.BeginForm("ProductAssign", "Vendor", null, new AjaxOptions { OnSuccess = "SuccessAssign" }, new { @id = "frmProduct" }))
+                    {
+                        <div class="box-header with-border">
+                            <div class="btn-group-vertical">
+                                <button class="btn btn-success" type="button" onclick="location.href='@Url.Action("SectorProductAssignList", "Vendor")'">Back To List</button>
+                            </div>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <div id="SuccessMsg" style="color: red">@ViewBag.SuccessMsg</div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group has-feedback">
+                                        <label class="control-label">Sector Name</label>
+                                        <select id="ddlSector" name="ddlSector" class="form-control select2">
+                                            <option value="0">---Select---</option>
+                                            @if (ViewBag.Sector != null)
+                                            {
+                                                foreach (System.Data.DataRow drSectorName in ViewBag.Sector.Rows)
+                                                {
+                                                    <option value="@drSectorName["Id"]">@drSectorName["SectorName"] </option>
+                                                }
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group has-feedback">
+                                        <label class="control-label">Vendor Name</label>
+                                        <select id="ddlVendor" name="ddlVendor" class="form-control select2">
+                                            <option value="0">---Select---</option>
+                                            @if (ViewBag.Vendor != null)
+                                            {
+                                                foreach (System.Data.DataRow drStaffName in ViewBag.Vendor.Rows)
+                                                {
+                                                    <option value="@drStaffName["Id"]">@drStaffName["FirstName"] @drStaffName["LastName"]</option>
+                                                }
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group has-feedback">
+                                        <label class="control-label">Category Name</label>
+                                        <select id="ddlCategory" name="ddlCategory" class="form-control select2">
+                                            <option value="0">---Select---</option>
+                                            @if (ViewBag.Category != null)
+                                            {
+                                                foreach (System.Data.DataRow drCategory in ViewBag.Category.Rows)
+                                                {
+                                                    if (string.IsNullOrEmpty(drCategory["MainCategory"].ToString()))
+                                                    {
+                                                        <option value="@drCategory["Id"]">@drCategory["CategoryName"]</option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="@drCategory["Id"]">@drCategory["MainCategory"] >> @drCategory["CategoryName"]</option>
+                                                    }
+                                                }
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div id="div_products">
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="box-footer text-right">
+                            <input type="submit" id="btnSave" value="Save" onclick="return ValidateForm();" class="btn btn-primary" />
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </section>
+    <div class="loaderbody" id="loaderbody">
+        <div class="loader"></div>
+    </div>
+    <script src="~/Content/bootstrap/js/bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            //$("#ddlSector").change(function () {
+            //    var ddlVendor = $('#ddlVendor');
+            //    var id = $(this).find('option:selected').val();
+            //    $.post('/Vendor/GetVendorList', { id: id }, function (data) {
+            //        ddlVendor.empty().append('<option selected="selected" value="0">Select Vendor</option>');
+            //        $.each(data, function () {
+            //            ddlVendor.append($("<option></option>").val(this['ID']).html(this['Name']));
+            //        });
+            //    })
+            //});
+
+            $("#ddlCategory").change(function () {
+                var ddlCategory = $('#ddlCategory');
+                var id = $(this).find('option:selected').val();
+                $.get('/Vendor/GetProductByCategory', { id: id }, function (data) {
+                    $('#div_products').html(data);
+                })
+            });
+        });
+
+    </script>
+
+    <script>
+        function ValidateForm() {
+            if ($("#ddlSector").val() == null || $("#ddlSector").val() == "" || $("#ddlSector").val() == "0") {
+                document.getElementById("select2-ddlSector-container").style.border = "1px solid #ff0000";
+                document.getElementById("select2-ddlSector-container").style.color = "#ff0000";
+                document.getElementById("select2-ddlSector-container").value = "0";
+                return false;
+            }
+            if ($("#ddlVendor").val() == null || $("#ddlVendor").val() == "" || $("#ddlVendor").val() == "0") {
+                document.getElementById("select2-ddlVendor-container").style.border = "1px solid #ff0000";
+                document.getElementById("select2-ddlVendor-container").style.color = "#ff0000";
+                document.getElementById("select2-ddlVendor-container").value = "0";
+                return false;
+            }
+            if ($("#ddlCategory").val() == null || $("#ddlCategory").val() == "" || $("#ddlCategory").val() == "0") {
+                document.getElementById("select2-ddlCategory-container").style.border = "1px solid #ff0000";
+                document.getElementById("select2-ddlCategory-container").style.color = "#ff0000";
+                document.getElementById("select2-ddlCategory-container").value = "0";
+                return false;
+            }
+        }
+
+        function SuccessAssign(data) {
+            console.log(data.success);
+            if (data.success == "1") {
+                toastr["success"](data.message);
+            }
+            else {
+                toastr["error"]("Product already assigned...");
+            }
+        }
+
+        function checkAll(cb) {
+            var ctrls = document.getElementsByTagName('input');
+            for (var i = 0; i < ctrls.length; i++) {
+                var cbox = ctrls[i];
+                if (cbox.type == "checkbox") {
+                    cbox.checked = cb.checked;
+                }
+            }
+        }
+
+        $(function () {
+            $("#tblQuot [id*=chkHeader]").click(function () {
+                if ($(this).is(":checked")) {
+                    $("#tblQuot [id*=chkRow]").attr("checked", "checked");
+                } else {
+                    $("#tblQuot [id*=chkRow]").removeAttr("checked");
+                }
+            });
+            $("#tblQuot [id*=chkRow]").click(function () {
+                if ($("#tblQuot [id*=chkRow]").length == $("#tblQuot [id*=chkRow]:checked").length) {
+                    $("#tblQuot [id*=chkHeader]").attr("checked", "checked");
+                } else {
+                    $("#tblQuot [id*=chkHeader]").removeAttr("checked");
+                }
+            });
+        });
+
+        $(function () {
+            $("#tblQuot1 [id*=chkHeader]").click(function () {
+                if ($(this).is(":checked")) {
+                    $("#tblQuot1 [id*=chkRow]").attr("checked", "checked");
+                } else {
+                    $("#tblQuot1 [id*=chkRow]").removeAttr("checked");
+                }
+            });
+            $("#tblQuot1 [id*=chkRow]").click(function () {
+                if ($("#tblQuot1 [id*=chkRow]").length == $("#tblQuot1 [id*=chkRow]:checked").length) {
+                    $("#tblQuot1 [id*=chkHeader]").attr("checked", "checked");
+                } else {
+                    $("#tblQuot1 [id*=chkHeader]").removeAttr("checked");
+                }
+            });
+        });
+
+    </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+}

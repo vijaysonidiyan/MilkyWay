@@ -1,0 +1,30 @@
+﻿
+@{
+    ViewBag.Title = "Not Access";
+    Layout = "~/Views/Shared/_MyLayout.cshtml";
+}
+@section contain
+    {
+    <section class="content-header">
+        <h1>
+            Not Access
+        </h1>
+        <ol class="breadcrumb">
+            <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="active">Not Access</li>
+        </ol>
+    </section>
+    <section class="content">
+        <div class="error-page">
+            <h2 class="headline text-red">Not Access</h2>
+            <div class="error-content">
+                <h3><i class="fa fa-warning text-red"></i> Oops! Something went wrong.</h3>
+                <p>
+                    We will work on fixing that right away.
+                    Meanwhile, you may <a href="/admin/index">return to dashboard</a> or try using the search form.
+                </p>
+            </div>
+        </div>
+    </section>
+}
+

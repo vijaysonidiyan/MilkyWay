@@ -1,0 +1,38 @@
+﻿<div class="box-body">
+    <div class="box-body table-responsive no-padding">
+        <table id="example1" class="table table-bordered table-striped">
+            @{int rowNo = 0;}
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>SectorName</th>
+                    <th>CustomerName</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (System.Data.DataRow drclient in ViewBag.CustomerList.Rows)
+                {
+                    <tr>
+                        <td>@(rowNo += 1)</td>
+                        <td>@drclient["SectorName"]</td>
+                        <td>@drclient["CustomerName"]</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+   /// $(function () {
+
+        $('#example1').DataTable({
+            "paging": true,
+            "lengthChange": true,
+            "searching": true,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false
+        });
+   // });
+</script>
+

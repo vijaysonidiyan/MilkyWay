@@ -1,0 +1,57 @@
+﻿<div class="row">
+    <div class="col-md-12">
+        <div class="box box-info">
+            <div class="box-body">
+                <div class="box-body table-responsive no-padding">
+                    <table id="example1" class="table table-bordered table-striped">
+                        @{int rowNo = 0;}
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>DeliveryBoy</th>
+                                <th>Customer</th>
+                                <th>Date</th>
+                                <th>Address</th>
+                                <th>OrderNo</th>
+                                <th>Product</th>
+                                <th>Qty</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (System.Data.DataRow drclient in ViewBag.ProductorderList.Rows)
+                            {
+                            <tr>
+                                <td>@(rowNo += 1)</td>
+                                <td>@drclient["DeliveryBoy"]</td>
+                                <td>@drclient["Customer"]</td>
+                                <td>@drclient["OrderDate"]</td>
+                                <td>@drclient["BlockNo"] @drclient["FlatNo"] @drclient["BuildingName"]</td>
+                                <td>@drclient["OrderNo"]</td>
+                                <td>@drclient["ProductName"]</td>
+                                <td>@drclient["Qty"]</td>
+                                <td>@drclient["Amount"]</td>
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+            <script>
+                //  $(function () {
+                $('#example1').DataTable({
+                    "paging": true,
+                    "lengthChange": true,
+                    "searching": true,
+                    "ordering": true,
+                    "info": true,
+                    "autoWidth": false
+                });
+                //  });
+
+               
+            </script>
+

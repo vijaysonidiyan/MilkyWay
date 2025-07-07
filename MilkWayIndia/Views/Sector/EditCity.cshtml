@@ -1,0 +1,105 @@
+﻿@model MilkWayIndia.Models.Sector
+@{
+    ViewBag.Title = "EditCity";
+    Layout = "~/Views/Shared/_MyLayout.cshtml";
+}
+
+@section contain
+{
+
+
+    <script src="~/Content/plugins/jQuery/jquery-2.2.3.min.js"></script>
+    <link href="~/Content/plugins/datepicker/datepicker3.css" rel="stylesheet" />
+    <script src="~/Content/plugins/datepicker/bootstrap-datepicker.js"></script>
+    <script>
+        $(document).ready(function () {
+            var MasterClass = document.getElementById("LiMst");
+            if (MasterClass != null) {
+                MasterClass.className = MasterClass.className + " active";
+            }
+        });
+    </script>
+    <script>
+        $(function () {
+            $(".select2").select2();
+        });
+    </script>
+
+    <section class="content-header">
+        <h1>
+            Edit City
+        </h1>
+        <ol class="breadcrumb">
+            <li><a href="@Url.Action("Index", "Admin")"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="active">City</li>
+        </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="col-md-6">
+            <div class="box box-info">
+                <div class="box-header with-border">
+                    <div class="btn-group-vertical">
+                        <button class="btn btn-success" type="button" onclick="location.href='@Url.Action("CityList", "Sector")'">Back To Panel</button>
+                    </div>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
+                </div>
+                <div class="form-horizontal">
+                    @using (Ajax.BeginForm("EditCity", "Sector", new AjaxOptions { OnSuccess = "onSuccessLogin", UpdateTargetId = "SuccessMsg" }))
+                    {
+                        <div class="box-body">
+                            <div class="row">
+                                <div class="col-md-12">
+
+                                    <div id="SuccessMsg" style="color: red">@ViewBag.SuccessMsg</div>
+                                    @*@Html.HiddenFor(model => model.Id, new { @Value = ViewBag.SectorId })*@
+
+                                    <div class="form-group">
+                                        <label for="inputEmail3" class="col-sm-2 control-label">StateName</label>
+                                        <div class="col-sm-6">
+                                            @Html.TextBoxFor(m => m.Statename, new { @class = "form-control",@style= "ReadOnly:True", @id = "StateName", @Value = ViewBag.StateName })
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputEmail3" class="col-sm-2 control-label">CityName</label>
+                                        <div class="col-sm-6">
+                                            @Html.TextBoxFor(m => m.Cityname, new { @class = "form-control", @id = "CityName", @Value = ViewBag.CityName })
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="box-footer text-right">
+                            @* <input type="button" class="btn btn-orange" value="Cancel" />*@
+                            <input type="submit" value="Save" class="btn btn-primary" onclick="return ValidSector();" />
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        function ValidSector() {
+            var status = true;
+            var sector = document.getElementById("CityName").value;
+            if (sector == null || sector == "" || sector == "Please Enter StateName") {
+                document.getElementById("CityName").style.border = "1px solid #ff0000";
+                document.getElementById("CityName").style.color = "#ff0000";
+                document.getElementById("CityName").value = "Please Enter StateName";
+                status = false;
+                return false;
+            }
+
+
+
+        }
+
+
+    </script>
+}

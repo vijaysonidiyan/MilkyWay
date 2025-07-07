@@ -1,0 +1,113 @@
+﻿
+@{
+    Layout = null;
+}
+<script src="~/js/jquery.js"></script>
+@*<html>
+    <head>
+        <title>Authenticate Subscription</title>
+    </head>
+    <body>
+        <form name="paytm_form" method="POST" action="https://securegw-stage.paytm.in/order/pay?mid=NXEpnY32055934299372&orderId=1013">
+            <input type="hidden" name="txnToken" value="89d3ef1c95124716848c19d09931df0f1637055659523" />
+            <input type="hidden" name="SUBSCRIPTION_ID" value="234576" />
+            <input type="hidden" name="paymentMode" value="BALANCE" />
+            <input type="hidden" name="AUTH_MODE" value="OTP" />
+        </form>
+        <script type="text/javascript">
+             document.paytm_form.submit();
+        </script>
+    </body>
+    </html>*@
+
+@*<html>
+    <head>
+        <title>Authenticate Subscription</title>
+    </head>
+    <body>
+        <form name="paytm_form" method="POST" action="https://securegw-stage.paytm.in/order/pay?mid=NXEpnY32055934299372&orderId=1018">
+            <input type="hidden" name="txnToken" value="42e76b1cfb4b41b0b10b5914ef4b08331637146874715" />
+            <input type="hidden" name="SUBSCRIPTION_ID" value="234632" />
+            <input type="hidden" name="paymentMode" value="UPI" />
+            <input type="hidden" name="AUTH_MODE" value="USRPWD" />
+            <input type="hidden" name="payerAccount" value="7777777777@paytm" />
+        </form>
+        <script type="text/javascript">
+            document.paytm_form.submit();
+        </script>
+    </body>
+    </html>*@
+@*Production - https://securegw.paytm.in*@
+@Html.Raw(ViewBag.JSScript)
+
+<script>
+    $(function () { onScriptLoad(); });
+</script>
+<script type="text/javascript">
+    function onScriptLoad() {
+        var config = {
+            "root": "",
+            "flow": "DEFAULT",
+            "merchant": {
+                "name": "Milky Way India",
+                "logo": "http://admin.milkywayindia.com/image/logo.png"
+            },
+            "data": {
+                "orderId": "@ViewBag.OrderNo", /* update order id */
+                "token": "@ViewBag.Token", /* update token value */
+                "tokenType": "TXN_TOKEN",
+                "amount": "1" /* update amount */
+            },
+            payMode: {
+                "order": ['UPI']
+            },
+            "handler": {
+                "notifyMerchant": function (eventName, data) {
+                    console.log("notifyMerchant handler function called");
+                    console.log("eventName => ", eventName);
+                    console.log("data => ", data);
+                    if (eventName == "APP_CLOSED") {
+                        window.location = "/home/callback";
+                    }
+                }
+            }
+        };
+
+        if (window.Paytm && window.Paytm.CheckoutJS) {
+            window.Paytm.CheckoutJS.onLoad(function excecuteAfterCompleteLoad() {
+                // initialze configuration using init method
+                window.Paytm.CheckoutJS.init(config).then(function onSuccess() {
+                    // after successfully updating configuration, invoke JS Checkout
+                    console.log(config);
+                    window.Paytm.CheckoutJS.invoke();
+                }).catch(function onError(error) {
+                    console.log("error => ", error);
+                });
+            });
+        }
+    }
+</script>
+@*<script>
+        $(function () {
+            $("#app-close-btn").on("click", function () {
+                alert('hi');
+            });
+        });
+    </script>*@
+<style>
+    @@media (max-width: 767px) {
+        #paytm-checkoutjs.ptm-own-element .offer-desktop-view, #paytm-checkoutjs.ptm-own-element .paytm-wrapper {
+            height: 45% !important;
+            /*max-width: 70% !important;*/
+            top: 5%;
+        }
+    }
+
+    @@media (max-width: 992px) {
+        #paytm-checkoutjs.ptm-own-element .offer-desktop-view, #paytm-checkoutjs.ptm-own-element .paytm-wrapper {
+            height: 45% !important;
+            /*max-width: 60% !important;*/
+            top: 5%;
+        }
+    }
+</style>

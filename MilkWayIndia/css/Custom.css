@@ -1,0 +1,102 @@
+﻿.w-50 {
+    width: 50px;
+}
+
+.w-80 {
+    width: 80px;
+}
+
+.w-100 {
+    width: 100px;
+}
+
+.w-75 {
+    width: 75px;
+}
+
+.w-30 {
+    width: 30px;
+}
+
+.w-90 {
+    width: 90px;
+}
+
+.w-150 {
+    width: 150px;
+}
+
+.w-250 {
+    width: 250px;
+}
+
+.red {
+    color: #ff0000;
+}
+
+.btn-add {
+    float: right;
+    width: 50px;
+    padding-top: 4px;
+    padding-bottom: 5px;
+}
+
+.frm .col-lg-1, .frm .col-lg-10, .frm .col-lg-11, .frm .col-lg-12, .frm .col-lg-2, .frm .col-lg-3, .frm .col-lg-4, .frm .col-lg-5, .frm .col-lg-6, .frm .col-lg-7, .frm .col-lg-8, .frm .col-lg-9,
+.frm .col-md-1, .frm .col-md-10, .frm .col-md-11, .frm .col-md-12, .frm .col-md-2, .frm .col-md-3, .frm .col-md-4, .frm .col-md-5, .frm .col-md-6, .frm .col-md-7, .frm .col-md-8, .frm .col-md-9,
+.frm .col-sm-1, .frm .col-sm-10, .frm .col-sm-11, .frm .col-sm-12, .frm .col-sm-2, .frm .col-sm-3, .frm .col-sm-4, .frm .col-sm-5, .frm .col-sm-6, .frm .col-sm-7, .frm .col-sm-8, .frm .col-sm-9,
+.frm .col-xs-1, .frm .col-xs-10, .frm .col-xs-11, .frm .col-xs-12, .frm .col-xs-2, .frm .col-xs-3, .frm .col-xs-4, .frm .col-xs-5, .frm .col-xs-6, .frm .col-xs-7, .frm .col-xs-8, .frm .col-xs-9 {
+    padding-left: 2px;
+    padding-right: 15px;
+}
+
+.frm .form-control {
+    padding: 6px 3px;
+    height: 30px;
+}
+
+.frm .form-group .form-group {
+    margin-bottom: 1px;
+}
+
+.frm-tbl .table > thead > tr > th, .frm-tbl .table > tbody > tr > th, .frm-tbl .table > tfoot > tr > th,
+.frm-tbl .table > thead > tr > td, .frm-tbl .table > tbody > tr > td, .frm-tbl .table > tfoot > tr > td {
+    padding: 6px 2px;
+}
+
+.form-horizontal .control-label {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.btn.focus, .btn:focus, .btn:hover {
+    border: 1px solid #3c8dbc !important;
+}
+
+hr {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.nav-102 {
+    width: 102px;
+}
+
+.a {
+    color: #3c8dbc;
+}
+
+.pad-0 {
+    padding: 0 !important;
+}
+
+.mar-0 {
+    margin: 0 !important;
+}
+
+.fl {
+    float: left;
+}
+
+.fr {
+    float: right;
+}

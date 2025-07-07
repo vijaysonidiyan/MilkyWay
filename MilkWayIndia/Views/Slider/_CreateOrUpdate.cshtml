@@ -1,0 +1,133 @@
+﻿@model MilkWayIndia.Entity.tblSliders
+
+
+@Html.HiddenFor(s => s.ID)
+@Html.HiddenFor(s => s.PhotoPath)
+<div class="box-body">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="inputEmail3" class="col-sm-4 control-label"></label>
+                <div class="col-sm-6">
+                    <div id="SuccessMsg" style="color: red">@ViewBag.SuccessMsg</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="inputEmail3" class="col-sm-4 control-label">Sort Order</label>
+                <div class="col-sm-6">
+                    @Html.TextBoxFor(m => m.SortOrder, new { @class = "form-control", onkeypress = "return ValidateNumber(event);", maxlength = 3 })
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="inputEmail3" class="col-sm-4 control-label">Title</label>
+                <div class="col-sm-6">
+                    @Html.TextBoxFor(m => m.Title, new { @class = "form-control", @id = "Title" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="inputEmail3" class="col-sm-4 control-label">Website Link</label>
+                <div class="col-sm-6">
+                    @Html.TextBoxFor(m => m.WebsiteLink, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label">App Link</label>
+                <div class="col-sm-6">
+                    @Html.TextBoxFor(m => m.AppLink, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label">Mobile</label>
+                <div class="col-sm-6">
+                    @Html.TextBoxFor(m => m.Mobile, new { @class = "form-control", onkeypress = "return ValidateNumber(event);" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="FLedgerCode" class="col-sm-4 control-label">Image</label>
+                <div class="col-sm-4">
+                    <input type="file" name="Document1" id="Document1" onchange="readURL(this)" />
+                    @*<span>Size : 200px * 200px</span>*@
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Sector</label>
+                <div class="col-sm-6">
+                    <div id="div_sectors" class="scrollbox">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Description</label>
+                <div class="col-sm-10">
+                    @Html.TextAreaFor(m => m.Description, new { @class = "form-control textarea", rows = "8" })
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="box-footer text-right">
+    <input type="submit" value="Save" class="btn btn-primary" onclick="return ValidSlider();" />
+</div>
+
+<script>
+    $(function () {
+        var div_sectors = $('#div_sectors');
+        var id = $('#ID').val();
+        div_sectors.empty();
+        $.get('/Slider/FetchSectorList', { id: id }, function (data) {
+            div_sectors.html(data);
+        })
+    });
+
+    function ValidateNumber(e) {
+        var keycode = (e.which) ? e.which : e.keyCode;
+        if (!(keycode == 8 || keycode == 46) && (keycode < 48 || keycode > 57)) {
+            return false;
+        }
+        return true;
+    };
+
+    function ValidSlider() {
+        var status = true;
+        //$('select').removeClass('field-error');
+        $('input').removeClass('field-error');
+        //var Sector = document.getElementById("SectorID").value;
+        //if (Sector == null || Sector == "" || Sector == "Select Sector") {
+        //    $('#SectorID').addClass('field-error');
+        //    status = false;
+        //}
+        var SortOrder = document.getElementById("SortOrder").value;
+        if (SortOrder == null || SortOrder == "") {
+            $('#SortOrder').addClass('field-error');
+            status = false;
+        }
+        var Title = document.getElementById("Title").value;
+        if (Title == null || Title == "") {
+            $('#Title').addClass('field-error');
+            status = false;
+        }
+        return status;
+    }
+
+    function readURL(input) {
+        var ext = $(input).val().split('.').pop().toLowerCase();
+        if ($.inArray(ext, ['jpg', 'jpeg', 'png']) == -1) {
+            alert('Invalid file format. Only jpg and png are allowed.');
+            $(input).val('');
+            return;
+        }
+    }
+</script>
+<script src="~/Content/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js"></script>
+<script>
+    $(function () {
+        $('.textarea').wysihtml5()
+    })
+</script>

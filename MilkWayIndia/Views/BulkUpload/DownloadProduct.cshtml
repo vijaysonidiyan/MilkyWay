@@ -1,0 +1,195 @@
+﻿@{
+    ViewBag.Title = "VendorProductOrder";
+    Layout = "~/Views/Shared/_MyLayout.cshtml";
+}
+@section contain
+{
+    <script src="~/Content/plugins/jQuery/jquery-2.2.3.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var MasterClass = document.getElementById("ReportLi");
+            if (MasterClass != null) {
+                MasterClass.className = MasterClass.className + " active";
+
+            }
+        });
+    </script>
+    <link href="~/Content/plugins/datepicker/datepicker3.css" rel="stylesheet" />
+    <script src="~/Content/plugins/datepicker/bootstrap-datepicker.js"></script>
+    <section class="content-header">
+        @if (@TempData["error"] != null)
+    {
+            <script type="text/javascript">
+                alert("@TempData["error"]");
+            </script>
+        }
+    </section>
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box box-info">
+                    <div class="box">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">Download Products</h3>
+                        </div>
+                        <div class="box-body">
+                            @using (Ajax.BeginForm("DownloadProduct", "BulkUpload", new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "upddiv" }))
+                            {
+                                <div class="btn-group-vertical ">
+                                    <div class="form-group has-feedback">
+                                        <select id="ddlSector" name="ddlSector" class="form-control select2">
+                                            <option value="0">---Select Sector---</option>
+                                            @if (ViewBag.lstSector != null)
+                                            {
+                                                foreach (System.Data.DataRow drSector in ViewBag.lstSector.Rows)
+                                                {
+                                                    <option value="@drSector["Id"]">@drSector["SectorName"] </option>
+                                                }
+                                            }
+                                        </select>
+                                        @if (ViewBag.SectorId != null)
+                                        {
+                                            <script>
+                                                document.getElementById('ddlSector').value = '@ViewBag.SectorId';
+                                            </script>
+                                        }
+                                    </div>
+                                </div>
+                                <div class="btn-group-vertical ">
+                                    <div class="form-group has-feedback">
+                                        <select id="ddlVendor" name="ddlVendor" class="form-control select2">
+                                            <option value="0">---Select Vendor---</option>
+                                            @if (ViewBag.lstVendor != null)
+                                            {
+                                                foreach (System.Data.DataRow drVendor in ViewBag.lstVendor.Rows)
+                                                {
+                                                    <option value="@drVendor["Id"]">@drVendor["FirstName"] @drVendor["LastName"] </option>
+                                                }
+                                            }
+                                        </select>
+                                        @if (ViewBag.VendorId != null)
+                                        {
+                                            <script>
+                                                document.getElementById('ddlVendor').value = '@ViewBag.VendorId';
+                                            </script>
+                                        }
+                                    </div>
+                                </div>
+                                <div class="btn-group-vertical ">
+                                    <div class="form-group has-feedback">
+                                        <select id="ddlCategory" name="ddlCategory" class="form-control select2">
+                                            <option value="0">---Select Category---</option>
+                                            @if (ViewBag.lstCategory != null)
+                                            {
+                                                foreach (var item in ViewBag.lstCategory)
+                                                {
+                                                    <option value="@item.Value">@item.Text</option>
+                                                }
+                                            }
+                                        </select>
+                                        @if (ViewBag.CategoryId != null)
+                                        {
+                                            <script>
+                                                document.getElementById('ddlCategory').value = '@ViewBag.CategoryId';
+                                            </script>
+                                        }
+                                    </div>
+                                </div>
+                                <div class="btn-group-vertical">
+                                    <div class="form-group has-feedback">
+                                        <input type="submit" id="btn" value="Download" name="submit" class="btn btn-primary" onclick="return validate();" />
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box box-info">
+                    <div class="box">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">Upload File</h3>
+                        </div>
+                        <form role="form" action="/bulkupload/updateproduct" method="post" enctype="multipart/form-data">
+                            <div class="box-body">
+                                <div id="SuccessMsg" style="color: red">@ViewBag.SuccessMsg</div>
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">Excel File</label>
+                                    <input type="file" name="postedFile" id="postedFile" onchange="readURL(this)" required />
+                                </div>
+                            </div>
+                            <div class="box-footer">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <script>
+        function readURL(input) {
+            var ext = $(input).val().split('.').pop().toLowerCase();
+            if ($.inArray(ext, ['csv']) == -1) {
+                alert('Invalid file format. Only csv are allowed.');
+                $(input).val('');
+                return;
+            }
+        }
+    </script>
+    <script>
+        function validate() {
+            var status = true;
+            var sector = document.getElementById('ddlSector').value;
+            if (sector == '' || sector == null || sector == "0") {
+                document.getElementById('ddlSector').style.border = "1px solid #ff0000";
+                status = false;
+            }
+            else {
+                document.getElementById('ddlSector').style.border = "";
+            }
+            var vendor = document.getElementById('ddlVendor').value;
+            if (vendor == '' || vendor == null || vendor == "0") {
+                document.getElementById('ddlVendor').style.border = "1px solid #ff0000";
+                status = false;
+            }
+            else {
+                document.getElementById('ddlVendor').style.border = "";
+            }
+            var category = document.getElementById('ddlCategory').value;
+            if (category == '' || category == null || category == "0") {
+                document.getElementById('ddlCategory').style.border = "1px solid #ff0000";
+                status = false;
+            }
+            else {
+                document.getElementById('ddlCategory').style.border = "";
+            }
+            return status;
+        }
+
+        $(document).ready(function () {
+            $("#ddlSector").change(function () {
+                var id = $(this).find('option:selected').val();
+                $.post("/Vendor/GetVendorList?id=" + id, function (data) {
+                    var ddlVendor = $("[id*=ddlVendor]");
+                    var dataRows = JSON.parse(data);
+                    ddlVendor.empty().append('<option selected="selected" value="0">---Select---</option>');
+                    for (var i = 0; i < dataRows.length; i++) {
+                        var row = new Array();
+                        var id = dataRows[i].Id;
+                        var fname = dataRows[i].FirstName;
+                        var lname = dataRows[i].LastName;
+                        var opt = new Option(dataRows[i].fname);
+                        $('#ddlVendor').append('<option value="' + id + '">' + fname + ' ' + lname + '</option>');
+                    }
+                });
+            });
+        });
+    </script>
+}
+
+

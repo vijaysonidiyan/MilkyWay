@@ -1,0 +1,112 @@
+﻿@{
+    Layout = "~/Views/Shared/_MyLayout.cshtml";
+}
+@section contain
+{
+    <script src="~/Content/plugins/jQuery/jquery-2.2.3.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var MasterClass = document.getElementById("LiProduct");
+            if (MasterClass != null) {
+                MasterClass.className = MasterClass.className + " active";
+
+            }
+        });
+    </script>
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box box-primary">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Product List</h3>
+                    </div>
+                    <div class="box-footer text-right">
+                        @using (Ajax.BeginForm("UploadProduct", "BulkUpload", null, new AjaxOptions { OnSuccess = "SuccessUpload" }, new { @id = "frmUpload" }))
+                        {
+                            <input type="hidden" value="@ViewBag.UploadID" name="UploadID" />
+                            <button type="submit" class="btn btn-primary">Upload Products</button>
+                            <a href="/bulkupload/index" class="btn btn-danger">Back</a>
+                        }
+                        @Html.Raw(ViewBag.Message)
+                    </div>
+                    <div class="box-body">
+                        <div class="box-body table-responsive no-padding">
+                            <table class="table table-bordered table-striped">
+                                @{int rowNo = 0;}
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Category</th>
+                                        <th>Product Name</th>
+                                        <th>MRP</th>
+                                        <th>Sale Price</th>
+                                        <th>Purchase Price</th>
+                                        <th>Profit L</th>
+                                        <th>Profit %</th>
+                                        <th>Profit</th>
+                                        <th>Error</th>
+                                        @*<th>Action</th>*@
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (ViewBag.lstProduct != null)
+                                    {
+                                        foreach (var item in ViewBag.lstProduct)
+                                        {
+                                            <tr>
+                                                <td>@(rowNo += 1)</td>
+                                                <td>@item.CategoryName</td>
+                                                <td>
+                                                    @item.ProductName
+                                                </td>
+                                                <td>
+                                                    @item.MRP
+                                                </td>
+                                                <td>
+                                                    @item.SalePrice
+                                                </td>
+                                                <td>@item.PurchasePrice</td>
+                                                <td>@item.ProfitL</td>
+                                                <td>@item.ProfitP</td>
+                                                <td>@item.Profit</td>
+                                                <td>
+                                                    <span class="text-danger">
+                                                        @item.ErrorMessage
+                                                    </span></td>
+                                                @*<td><a href="/BulkUpload/Edit/@item.ID"><i class="fa fa-edit"></i></a></td>*@
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div class="loaderbody" id="loaderbody">
+        <div class="loader"></div>
+    </div>
+    <script>
+        $(document).ready(function () {
+            $("#loaderbody").addClass('hide');
+            $(document).bind('ajaxStart', function () {
+                $("#loaderbody").removeClass('hide');
+            }).bind('ajaxStop', function () {
+                $("#loaderbody").addClass('hide');
+            });
+        });
+
+        function SuccessUpload() {
+
+        }
+    </script>
+}
+
+
+
+
+
+

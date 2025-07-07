@@ -1,0 +1,102 @@
+﻿@model IEnumerable<MilkWayIndia.Entity.tblBillPayCity>
+@{
+    Layout = "~/Views/Shared/_MyLayout.cshtml";
+}
+@section contain
+{
+    <script src="~/Content/plugins/jQuery/jquery-2.2.3.min.js"></script>
+    <script src="~/scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var MasterClass = document.getElementById("LiBilpay");
+            if (MasterClass != null) {
+                MasterClass.className = MasterClass.className + " active";
+            }
+        });
+    </script>
+    <section class="content-header">
+        <div class="box-header with-border">
+            <h3 class="box-title">Billpay City List</h3>
+            <div class="box-tools">
+                <div class="input-group input-group-sm pull-right">
+                    <a data-url="/billpay/addcity" class="btn-bootstrap-dialog btn btn-primary pull-right btn-add">Add</a>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box">
+                    <div class="box-body">
+                        @Html.Raw(ViewBag.Message)
+                        <div class="table-responsive">
+                            <table id="example1" class="table table-bordered table-striped">
+                                @{int rowNo = 0;}
+                                <thead>
+                                    <tr>
+                                        <th width="50px">No</th>
+                                        <th>Name</th>
+                                        <th width="50px">Active</th>
+                                        <td width="20px"></td>
+                                        <td width="20px"></td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model != null)
+                                    {
+                                        foreach (var item in Model)
+                                        {
+                                            <tr>
+                                                <td>@(rowNo += 1)</td>
+                                                <td>@item.Name</td>
+                                                @if (item.IsActive == true)
+                                                {
+                                                    <td><a class="btn label label-success" href="/billpay/updatecity?ID=@item.ID">Active</a></td>
+                                                }
+                                                else
+                                                {
+                                                    <td><a class="btn label label-danger" href="/billpay/updatecity?ID=@item.ID">InActive</a></td>
+                                                }
+                                                <td><a data-url="/billpay/editcity/@item.ID" class="btn-bootstrap-dialog"><i class="fa fa-edit"></i></a></td>
+                                                <td><a href="/billpay/deletecity/@item.ID" , onclick="return confirm('Are you sure you want to delete this Data?');"><i class="fa fa-trash-o"></i></a></td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div class="modal fade" id="bootstrapDialog" role="dialog" aria-labelledby="myModal-label" aria-hidden="true">
+
+    </div>
+    <script>
+        $("body").on("click", ".btn-bootstrap-dialog", function () {
+            var url = $(this).data('url');
+            $.get(url, function (data) {
+                $('#bootstrapDialog').html(data);
+                $('#bootstrapDialog').modal('show');
+            });
+            return false;
+        });
+
+        function SuccessCity(data) {
+            $('#frmCity span').text('');
+            if (data.status == "1") {
+                location.reload();
+            }
+            else {
+                $('#frmCity span').text(data.message);
+            }
+        }
+    </script>
+}
+
+
+
+

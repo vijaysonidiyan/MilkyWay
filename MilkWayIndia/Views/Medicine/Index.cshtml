@@ -1,0 +1,86 @@
+﻿@{
+    Layout = "~/Views/Shared/_MyLayout.cshtml";
+}
+@section contain
+{
+    <script src="~/Content/plugins/jQuery/jquery-2.2.3.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var MasterClass = document.getElementById("LiProduct");
+            if (MasterClass != null) {
+                MasterClass.className = MasterClass.className + " active";
+
+            }
+        });
+    </script>
+    <section class="content-header">
+        <div class="box-header with-border">
+            <h3 class="box-title">Medicine List</h3>
+        </div>
+    </section>
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box">
+                    <div class="box-body">
+                        <div id="view-all" class="tab-base">
+                            <div class="table-responsive">
+                                <table id="tblMedicine" class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th width="100px">CreateDate</th>
+                                            <th width="70px">Status</th>
+                                            <th width="70px">Photo</th>
+                                            <th width="70px">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <script>
+        $(document).ready(function () {
+            $('#tblMedicine').DataTable({
+                ajax: {
+                    type: 'GET',
+                    dataType: 'JSON',
+                    url: '@Url.Action("GetAllMedicine", "Medicine")'
+                },
+                columns: [
+                    { 'data': 'CustomerName' },
+                    { 'data': 'CreateDateStr' },
+                    { 'data': 'Status' },
+                     {
+                         'data': 'PhotoPath',
+                         'render': function (data) {
+                             {
+                                 return '<a  href="' + data + '" title="View" target="_blank" style="margin-right:10px" class="btn btn-success btn-sm" ><i class="fa fa-eye"></i></a>'
+                             }
+                         },
+                     },
+                    {
+                        'data': 'ID',
+                        'render': function (data) {
+                            {
+                                return '<a class="btn btn-danger btn-sm deleteuser" href="/medicine/delete/' + data + '"><i class="fa fa-trash"></i></a>'
+                            }
+                        },
+                    }
+                ]
+            })
+        });
+    </script>
+}
+
+
+
+
+
+

@@ -1,0 +1,303 @@
+﻿@model MilkWayIndia.Models.Vendor
+@{
+    ViewBag.Title = "AddVendorProductReplacement";
+    Layout = "~/Views/Shared/_MyLayout.cshtml";
+}
+
+
+@section contain
+{
+
+    <script src="~/Content/plugins/jQuery/jquery-2.2.3.min.js"></script>
+    <link href="~/Content/plugins/datepicker/datepicker3.css" rel="stylesheet" />
+    <script src="~/Content/plugins/datepicker/bootstrap-datepicker.js"></script>
+    <script>
+        $(document).ready(function () {
+            var MasterClass = document.getElementById("ReminderLi");
+            if (MasterClass != null) {
+                MasterClass.className = MasterClass.className + " active";
+            }
+        });
+    </script>
+    <script>
+        $(function () {
+            $(".select2").select2();
+        });
+    </script>
+
+
+    <script language="javascript" type="text/javascript">
+        $(document).ready(function () {
+            //$("#ddlState").prop("disabled", true);
+            $("#ddlVendor").change(function () {
+                var id = $("#ddlVendor").val();
+            $.ajax({
+                cache: false,
+                type: "GET",
+                url: '@Url.Action("GetProduct", "Vendor")',
+                data: { "Statecode": id },
+                success: function (json, textStatus) {
+                    $("#ddlProduct").empty();
+                    json = json || {};
+                    $("#ddlProduct").append('<option value=0>--Select--</option>');
+                    for (var i = 0; i < json.length; i++) {
+                        $("#ddlProduct").append('<option value="' + json[i].Procode + '">' + json[i].ProName + '</option>');
+                    }
+                    $("#ddlProduct").prop("disabled", false);
+                },
+                error: function () {
+                    alert("Data Not Found");
+                }
+        });
+       
+        
+            });
+
+
+
+
+
+            //
+
+            $("#ddlProduct").change(function () {
+                var id = $("#ddlProduct").val();
+            $.ajax({
+                cache: false,
+                type: "GET",
+                url: '@Url.Action("GetProductprice", "Vendor")',
+                data: { "Statecode": id },
+                success: function (json, textStatus) {
+
+                   
+                   
+                    json = json || {};
+
+
+                    
+                    for (var i = 0; i < json.length; i++) {
+
+                        document.getElementById("MRPPrice").value = json[i].MRP;
+                        document.getElementById("PurchasePrice").value = json[i].Pprice;
+                        
+                        document.getElementById("SellPrice").value = json[i].Sprice;
+                        
+                    }
+                   
+                   
+                    
+                    $("#Payamount").prop("disabled", false);
+                },
+                error: function () {
+                    alert("Data Not Found");
+                }
+        });
+       
+        
+                 });
+            //
+
+    });
+    </script>
+
+    <section class="content-header">
+        <h1>
+            Add Vendor Product Replacement
+        </h1>
+        <ol class="breadcrumb">
+            <li><a href="@Url.Action("Index", "Admin")"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="active">vendor</li>
+        </ol>
+    </section>
+
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="col-md-6">
+            <div class="box box-info">
+                <div class="box-header with-border">
+                    <div class="btn-group-vertical">
+                        <button class="btn btn-success" type="button" onclick="location.href='@Url.Action("VendorReplacementList", "Vendor")'">Back To Panel</button>
+                    </div>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
+                </div>
+                <div class="form-horizontal">
+                    @*@using (Html.BeginForm("AddVendorPayment", "Vendor", FormMethod.Post, new { enctype = "multipart/form-data" }))*@
+
+                    @using (Ajax.BeginForm("AddVendorProductReplacement", "Vendor", new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "upddiv" }))
+                    {
+                        <div class="box-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div id="SuccessMsg" style="color: green">@ViewBag.SuccessMsg</div>
+                                    <div id="ErrorMsg" style="color: red">@ViewBag.ErrorMsg</div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Sector Name</label>
+                                        <div class="col-sm-6">
+                                            <select id="ddlSector" name="ddlSector" class="form-control">
+                                                <option value="0">---Select---</option>
+                                                @if (ViewBag.Sector != null)
+                                                {
+                                                    foreach (System.Data.DataRow drSectorName in ViewBag.Sector.Rows)
+                                                    {
+                                                        <option value="@drSectorName["Id"]">@drSectorName["SectorName"]</option>
+                                                    }
+                                                }
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Vendor Name</label>
+                                        <div class="col-sm-6">
+                                            <select id="ddlVendor" name="ddlVendor" class="form-control select2">
+                                                <option value="0">---Select---</option>
+                                                @if (ViewBag.Vendor != null)
+                                                {
+                                                    foreach (System.Data.DataRow drStaffName in ViewBag.Vendor.Rows)
+                                                    {
+                                                        <option value="@drStaffName["Id"]">@drStaffName["FirstName"] @drStaffName["LastName"]</option>
+                                                    }
+                                                }
+                                            </select>
+                                            @if (ViewBag.VendorId != null)
+                                            {
+                                                <script>
+                                                        document.getElementById('ddlVendor').value = '@ViewBag.VendorId';
+                                                </script>
+                                            }
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Product</label>
+                                        <div class="col-sm-6">
+                                            <select id="ddlProduct" name="ddlProduct" class="form-control select2"></select>
+
+                                            @if (ViewBag.CityName != null)
+                                            {
+                                                <script>
+                                                    document.getElementById('ddlProduct').value = '@ViewBag.CityName';
+                                                </script>
+                                            }
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="inputEmail3" class="col-sm-3 control-label">MRP</label>
+                                        <div class="col-sm-6">
+                                            @Html.TextBoxFor(m => m.MRPPrice, new { @class = "form-control", @id = "MRPPrice" })
+                                        </div>
+                                    </div>
+
+
+                                    <div class="form-group">
+                                        <label for="inputEmail3" class="col-sm-3 control-label">Purchase Price</label>
+                                        <div class="col-sm-6">
+                                            @Html.TextBoxFor(m => m.PurchasePrice, new { @class = "form-control", @id = "PurchasePrice" })
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputEmail3" class="col-sm-3 control-label">Sale Price</label>
+                                        <div class="col-sm-6">
+                                            @Html.TextBoxFor(m => m.SellPrice, new { @class = "form-control", @id = "SellPrice" })
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">qty</label>
+                                        <div class="col-sm-6">
+                                            @Html.TextBoxFor(m => m.Qty, new { placeholder = "", @id = "Qty", @class = "form-control" })
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Date</label>
+                                        <div class="col-sm-6">
+                                            @Html.TextBoxFor(m => m.PayRefdate, new { placeholder = "", @id = "PayRefdate", @class = "form-control", @Value = ViewBag.PayRefdate })
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="box-footer text-right">
+                            @* <input type="button" class="btn btn-orange" value="Cancel" />*@
+                            <input type="submit" value="Save" class="btn btn-primary" onclick="return ValidVendor();" />
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <script>
+        $(document).ready(function () {
+            $("#ddlSector").change(function () {
+                var id = $(this).find('option:selected').val();
+                $.ajax({
+                    url: '/Vendor/GetVendorList?id=' + id,
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",// Not to set any content header
+                    datatype: "json",
+                    processData: false,
+                    success: function (data) {
+                        //console.log(data);
+                        var ddlVendor = $("[id*=ddlVendor]");
+                        ddlVendor.empty().append('<option selected="selected" value="0">---Select Vendor---</option>');
+                        for (var i = 0; i < data.length; i++) {
+                            var id = data[i].ID;
+                            var name = data[i].Name;
+                            $('#ddlVendor').append('<option value="' + id + '">' + name + '</option>');
+                        }
+
+                    }
+                });
+            });
+
+
+
+
+
+        });
+    </script>
+
+    <script>
+        $('#PayRefdate').datepicker({
+            "autoclose": true,
+
+            todayHighlight: true
+        });
+
+
+
+
+    </script>
+    <script>
+        function ValidVendor() {
+            var status = true;
+            var sector = document.getElementById("ddlSector").value;
+            if (sector == null || sector == "" || sector == "0") {
+                document.getElementById("ddlSector").style.border = "1px solid #ff0000";
+                document.getElementById("ddlSector").style.color = "#ff0000";
+                document.getElementById("ddlSector").value = "0";
+                status = false;
+                return false;
+            }
+
+            function ValidateNumber(e) {
+
+                var keycode = (e.which) ? e.which : e.keyCode;
+                //console.log(keycode);
+                var phn = document.getElementById('MobileNo');
+                //comparing pressed keycodes
+                if (!(keycode == 8 || keycode == 46) && (keycode < 48 || keycode > 57)) {
+                    return false;
+                }
+                return true;
+            };
+
+    </script>
+
+}

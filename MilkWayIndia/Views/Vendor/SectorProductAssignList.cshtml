@@ -1,0 +1,171 @@
+﻿@{
+    ViewBag.Title = "SectorProductAssignList";
+    Layout = "~/Views/Shared/_MyLayout.cshtml";
+}
+
+@section contain
+{
+    <script src="~/Content/plugins/jQuery/jquery-2.2.3.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var MasterClass = document.getElementById("LiProduct");
+            if (MasterClass != null) {
+                MasterClass.className = MasterClass.className + " active";
+
+            }
+        });
+    </script>
+    <section class="content-header">
+        @if (@TempData["error"] != null)
+    {
+            <script type="text/javascript">
+                alert("@TempData["error"]");
+            </script>
+        }
+        <div class="box-header with-border">
+            <h3 class="box-title">Sector Product Assign List</h3>
+            @*<div class="box-tools">
+                    <div class="input-group input-group-sm pull-right">
+                        <input type="button" class="btn btn-primary pull-right btn-add" value="Add" onclick="location.href='@Url.Action("AddSectorProductAssign", "Vendor")'" />
+                    </div>
+                </div>*@
+        </div>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box">
+                    <div class="box-header with-border">
+                        <div class="btn-group-vertical">
+                            <div class="form-group has-feedback">
+                                <a href="/Vendor/ProductAssign" class="btn btn-success">Add</a>
+                            </div>
+                        </div>
+
+                        @*<div class="btn-group-vertical ">
+                                @using (Ajax.BeginForm("SectorProductAssignList", "Vendor", new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "upddiv" }))
+                                {
+                                    <div class="btn-group-vertical">
+                                        <div class="form-group has-feedback">
+                                            <select id="ddlSector" name="ddlSector" class="form-control">
+                                                <option value="0">---Select Sector---</option>
+                                                @if (ViewBag.Sector != null)
+                                                {
+                                                    foreach (System.Data.DataRow drSectorName in ViewBag.Sector.Rows)
+                                                    {
+                                                        <option value="@drSectorName["Id"]">@drSectorName["SectorName"] </option>
+                                                    }
+                                                }
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="btn-group-vertical ">
+                                        <div class="form-group has-feedback">
+                                            <select id="ddlVendor" name="ddlVendor" class="form-control">
+                                                <option value="0">---Select Vendor---</option>
+                                                @if (ViewBag.Vendor != null)
+                                                {
+                                                    foreach (System.Data.DataRow drStaffName in ViewBag.Vendor.Rows)
+                                                    {
+                                                        <option value="@drStaffName["Id"]">@drStaffName["FirstName"] @drStaffName["LastName"]</option>
+                                                    }
+                                                }
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="btn-group-vertical ">
+                                        <div class="form-group has-feedback">
+                                            <select id="ddlCategory" name="ddlCategory" class="form-control">
+                                                <option value="0">---Select Category---</option>
+                                                @if (ViewBag.Category != null)
+                                                {
+                                                    foreach (System.Data.DataRow drCustomerName in ViewBag.Category.Rows)
+                                                    {
+                                                        <option value="@drCustomerName["Id"]">@drCustomerName["CategoryName"]</option>
+                                                    }
+                                                }
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                   <div class="btn-group-vertical">
+                                       <div class="form-group has-feedback">
+                                           <button type="submit" id="clkbtncomp" class="btn btn-primary">Submit</button>
+                                       </div>
+                                   </div>
+                                }
+                            </div>*@
+                    </div>
+
+                    <div id="upddiv">
+                        @Html.Partial("SectorProductAssignPartial")
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    @*@Html.Partial("_PagingSortingSearchingJSPartial")*@
+    <!-- jQuery 2.2.3 -->
+    <script src="~/Content/plugins/jQuery/jquery-2.2.3.min.js"></script>
+    <script src="~/Content/bootstrap/js/bootstrap.min.js"></script>
+    <!-- DataTables -->
+    <script src="~/Content/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="~/Content/plugins/datatables/dataTables.bootstrap.min.js"></script>
+    <script>
+        $(function () {
+            $('#example1').DataTable({
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false
+            });
+        });
+
+        //$("#ddlSector").change(function () {
+        //    debugger;
+        //    //event.preventDefault();
+        //    var id = $(this).find('option:selected').val();
+
+        //    $.ajax({
+        //        url: '/Vendor/GetVendorList?id=' + id,
+        //        type: "POST",
+        //        contentType: "application/json; charset=utf-8",// Not to set any content header
+        //        datatype: "json",
+        //        processData: false,
+        //        success: function (data) {
+        //            Data = data;
+        //            var dataRows = JSON.parse(Data);
+        //            console.log(dataRows);
+
+        //            var ddlVendor = $("[id*=ddlVendor]");
+        //            //ddlBuilding.empty().append();
+        //            ddlVendor.empty().append('<option selected="selected" value="0">---Select Vendor---</option>');
+        //            for (var i = 0; i < dataRows.length; i++) {
+        //                var row = new Array();
+        //                var id = dataRows[i].Id;
+        //                var fname = dataRows[i].FirstName;
+        //                var lname = dataRows[i].LastName;
+
+        //                var opt = new Option(dataRows[i].fname);
+        //                console.log(id + "," + fname);
+
+        //                $('#ddlVendor').append('<option value="' + id + '">' + fname + ' ' + lname + '</option>');
+
+        //            }
+
+        //        }
+        //    });
+        //});
+    </script>
+
+}
+
+
+
+

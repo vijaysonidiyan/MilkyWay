@@ -1,0 +1,76 @@
+﻿@model MilkWayIndia.Models.Chatbot
+@{
+    /**/
+
+    ViewBag.Title = "BackTutorialList";
+    Layout = "~/Views/Shared/_MyLayout.cshtml";
+}
+
+@section contain
+{
+
+    <section>
+        <div class="box-header with-border">
+            <h3 class="box-title">Backoffice Tutorial List</h3>
+            <div class="box-tools">
+                <div class="input-group input-group-sm pull-right">
+                    @*<asp:LinkButton runat="server" ID="lbtnAdd" class="btn btn-default pull-right btn-add" PostBackUrl="~/.aspx">Back</asp:LinkButton>*@
+                    <input type="button" class="btn btn-primary pull-right btn-add" value="Add" onclick="location.href='@Url.Action("AddBackOfficeSetting", "Admin")'" />
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <section class="content">
+
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box">
+                    <div class="box-body">
+                        <div class="box-body table-responsive no-padding">
+                            <table id="example1" class="table table-bordered table-striped">
+                                @{int rowNo = 0;}
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Query</th>
+                                        <th>Youtube Link</th>
+                                        <th>Image</th>
+                                        <th>Steps</th>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (ViewBag.BackOfficestepList != null)
+                                    {
+                                        foreach (System.Data.DataRow drclient in ViewBag.BackOfficestepList.Rows)
+                                        {
+                                            <tr>
+                                                <td>@(rowNo += 1)</td>
+                                                <td>@drclient["Stepname"]</td>
+                                                <td>@drclient["youtubelink"]</td>
+                                                <td>@drclient["image"]</td>
+                                                <td>@Html.Raw(drclient["stepfollow"])</td>
+
+                                                <td><a href="/Admin/EditBackOffice/@drclient["Id"]"><i class="fa fa-edit"></i></a></td>
+
+                                                <td><a href="/Admin/DeleteBackoffice/@drclient["Id"]" onclick="return confirm('You Can Not Delete Record.');"><i class="fa fa-trash-o"></i></a></td>
+
+
+                                            </tr>
+                                        }
+                                    }
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+}
+
