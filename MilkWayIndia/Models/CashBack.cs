@@ -23,6 +23,30 @@ namespace MilkWayIndia.Models
         public decimal Amount { get; set; }
 
 
+        public string PaymentSource { get; set; }
+
+        public bool IsActive { get; set; }
+        public int PaymentSourceId { get; set; }
+
+        public decimal? FromPrice { get; set; }
+
+        public decimal? ToPrice { get; set; }
+
+        public bool IsPriceRangeApplicable { get; set; }
+
+        public decimal? Percentage { get; set; }
+
+        public decimal? LumsumAmount { get; set; }
+
+        public decimal? PlatformChargesPercentage { get; set; }
+
+        public decimal? PlatformChargesLumsumAmount { get; set; }
+        public string previous1 { get; set; }
+        public string next1 { get; set; }
+
+
+        public string startpoint { get; set; }
+        public string endpoint { get; set; }
         public DataTable getCashbackList(int? Id)
         {
             //con.Open();
@@ -38,7 +62,36 @@ namespace MilkWayIndia.Models
             return dt;
         }
 
+        public int DeletePaymentSource(int id)
+        {
+            using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["MilkWayIndia"].ConnectionString))
+            {
+                con.Open();
 
+                SqlCommand cmd = new SqlCommand("DELETE FROM tbl_PaymentSourceMaster WHERE Id = @Id", con);
+                cmd.Parameters.AddWithValue("@Id", id);
+
+                int result = cmd.ExecuteNonQuery();
+                con.Close();
+
+                return result;
+            }
+        }
+        public int DeletePaymentPlateFormFees(int id)
+        {
+            using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["MilkWayIndia"].ConnectionString))
+            {
+                con.Open();
+
+                SqlCommand cmd = new SqlCommand("DELETE FROM tbl_PaymentSourceWisePlatformFees WHERE Id = @Id", con);
+                cmd.Parameters.AddWithValue("@Id", id);
+
+                int result = cmd.ExecuteNonQuery();
+                con.Close();
+
+                return result;
+            }
+        }
 
         public DataTable getServiceList(int? Id)
         {

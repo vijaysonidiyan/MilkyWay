@@ -2,7 +2,9 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -13,16 +15,563 @@ namespace MilkWayIndia.Controllers
     {
 
         CashBack objcashback = new CashBack();
+        clsCommon _clsCommon = new clsCommon();
         Subscription objsub = new Subscription();
         // DataRow dr = dtNew.NewRow();
+
+
+        //Payment Source
+        [HttpGet]
+        public ActionResult AddPaymentSource()
+        {
+            if (Request.Cookies["gstusr"] == null)
+                return Redirect("/home/login?ReturnURL=" + Request.RawUrl);
+            //if (HttpContext.Session["UserId"] == null)
+            //    return Redirect("/home/login?ReturnURL=" + Request.RawUrl);
+
+            var control = Helper.CheckPermission(Request.RawUrl.ToString());
+            if (control.IsView == false)
+                return Redirect("/notaccess/index");
+
+            ViewBag.IsAdmin = control.IsAdmin;
+            ViewBag.IsView = control.IsView;
+            ViewBag.IsAdd = control.IsAdd;
+
+            DataTable dtcategory = new DataTable();
+
+            ViewBag.Category = dtcategory;
+
+            return View();
+        }
+        [HttpPost]
+        public ActionResult AddPaymentSourceNew(FormCollection form)
+        {
+            try
+            {
+                if (Request.Cookies["gstusr"] == null)
+                    return Redirect("/home/login?ReturnURL=" + Request.RawUrl);
+
+                string paymentSource = form["PaymentSource"];
+                bool isActive = true;
+                if (form.AllKeys.Contains("IsActive"))
+                    isActive = form["IsActive"]?.Contains("true") == true;
+
+                if (string.IsNullOrWhiteSpace(paymentSource))
+                {
+                    ViewBag.ErrorMsg = "Payment Source name is required.";
+                    return View("AddPaymentSource");
+                }
+
+                using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["MilkWayIndia"].ConnectionString))
+                {
+                    con.Open();
+                    SqlCommand com = new SqlCommand(@"
+                INSERT INTO tbl_PaymentSourceMaster (PaymentSource, IsActive)
+                VALUES (@PaymentSource, @IsActive)", con);
+
+                    com.Parameters.AddWithValue("@PaymentSource", paymentSource.Trim());
+                    com.Parameters.AddWithValue("@IsActive", isActive);
+
+                    int i = com.ExecuteNonQuery();
+                    con.Close();
+
+                    if (i > 0)
+                        HttpContext.Session["Msg"] = "Payment source added successfully.";
+                    else
+                        ViewBag.ErrorMsg = "Something went wrong while saving.";
+                }
+
+                return RedirectToAction("PaymentSourceList");
+            }
+            catch (Exception ex)
+            {
+                ViewBag.ErrorMsg = "Error occurred: " + ex.Message;
+                return View("AddPaymentSource");
+            }
+        }
+       [HttpGet]
+        public ActionResult PaymentSourceList()
+        {
+            // Check user session
+            if (HttpContext.Session["UserId"] == null)
+                return Redirect("/home/login?ReturnURL=" + Request.RawUrl);
+            var control = Helper.CheckPermission(Request.RawUrl.ToString());
+            if (!control.IsView)
+                return Redirect("/notaccess/index");
+            // Set permission flags for view
+            ViewBag.IsAdmin = control.IsAdmin;
+            ViewBag.IsView = control.IsView;
+            ViewBag.IsAdd = control.IsAdd;
+
+            // Display success message from session (if any)
+            ViewBag.SuccessMsg = HttpContext.Session["Msg"]?.ToString() ?? "";
+            HttpContext.Session["Msg"] = "";
+
+            // Load payment source list
+            DataTable dtPaymentSource = new DataTable();
+            using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["MilkWayIndia"].ConnectionString))
+            {
+                con.Open();
+                SqlCommand cmd = new SqlCommand("SELECT Id, PaymentSource, IsActive FROM tbl_PaymentSourceMaster ORDER BY PaymentSource ASC", con);
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                da.Fill(dtPaymentSource);
+            }
+
+            // Pass data to view
+            ViewBag.PaymentSourceList = dtPaymentSource;
+            ViewBag.ReturnUrl = Request.Url.ToString();
+            ViewBag.IsAttribute = Request.Url.ToString().Contains("portal") || Request.Url.ToString().Contains("localhost");
+
+            return View();
+        }
+        [HttpGet]
+        public ActionResult DeletePaymentSource(int id)
+        {
+            try
+            {
+                objcashback.Id = id;
+                int delresult = objcashback.DeletePaymentSource(id);
+
+                if (delresult > 0)
+                {
+                    TempData["SuccessMsg"] = "Payment source deleted successfully.";
+                }
+                else
+                {
+                    TempData["ErrorMsg"] = "Payment source not found or already deleted.";
+                }
+
+                return RedirectToAction("PaymentSourceList");
+            }
+            catch (System.Data.SqlClient.SqlException ex)
+            {
+                if (ex.Message.ToLower().Contains("fk_orderdetail_product"))
+                {
+                    TempData["ErrorMsg"] = "You cannot delete this record because it is referenced by other records.";
+                }
+                else
+                {
+                    TempData["ErrorMsg"] = "SQL error: " + ex.Message;
+                }
+                return RedirectToAction("PaymentSourceList");
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMsg"] = "Unexpected error: " + ex.Message;
+                return RedirectToAction("PaymentSourceList");
+            }
+        }
+
+        [HttpGet]
+        public ActionResult EditPaymentSource(int id = 0)
+        {
+            if (HttpContext.Session["UserId"] == null)
+                return Redirect("/home/login?ReturnURL=" + Request.RawUrl);
+
+            ViewBag.IsEdit = false;
+
+            if (id > 0)
+            {
+                DataTable dt = _clsCommon.selectwhere("*", "tbl_PaymentSourceMaster", $"Id = '{id}'");
+                if (dt.Rows.Count > 0)
+                {
+                    DataRow dr = dt.Rows[0];
+
+                    ViewBag.IsEdit = true;
+                    ViewBag.Id = Convert.ToInt32(dr["Id"]);
+                    ViewBag.PaymentSource = dr["PaymentSource"].ToString();
+                    ViewBag.IsActive = true;
+                }
+                else
+                {
+                    TempData["ErrorMsg"] = "Payment source not found.";
+                    return RedirectToAction("PaymentSourceList");
+                }
+            }
+
+            return View();
+        }
+        [HttpPost]
+        public ActionResult UpdatePaymentSourceList(CashBack objCash, FormCollection form)
+        {
+            int i = 0;
+            try
+            {
+                string paymentSource = form["PaymentSource"];
+                bool isActive = form["IsActive"]?.Contains("true") == true;
+                int id = Convert.ToInt32(form["Id"]);
+
+                if (string.IsNullOrWhiteSpace(paymentSource))
+                {
+                    ViewBag.ErrorMsg = "Payment Source name is required.";
+                    return View("EditPaymentSource");
+                }
+
+                using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["MilkWayIndia"].ConnectionString))
+                {
+                    con.Open();
+
+                    SqlCommand com = new SqlCommand(@"
+                UPDATE tbl_PaymentSourceMaster
+                SET PaymentSource = @PaymentSource,
+                    IsActive = @IsActive
+                WHERE Id = @Id", con);
+
+                    com.Parameters.AddWithValue("@PaymentSource", paymentSource.Trim());
+                    com.Parameters.AddWithValue("@IsActive", isActive);
+                    com.Parameters.AddWithValue("@Id", id);
+
+                    i = com.ExecuteNonQuery();
+
+                    con.Close();
+                }
+
+                if (i > 0)
+                {
+                    TempData["SuccessMsg"] = "Payment source updated successfully.";
+                }
+                else
+                {
+                    TempData["ErrorMsg"] = "Update failed. Record not found.";
+                }
+
+                return RedirectToAction("PaymentSourceList");
+            }
+            catch (Exception ex)
+            {
+                ViewBag.ErrorMsg = "Error occurred: " + ex.Message;
+                return View("EditPaymentSource");
+            }
+        }
+        //PaymentSourcewise PlateFormFees
+        [HttpGet]
+        public ActionResult AddPaymentPlateFormFees()
+        {
+            if (Request.Cookies["gstusr"] == null)
+                return Redirect("/home/login?ReturnURL=" + Request.RawUrl);
+
+            var control = Helper.CheckPermission(Request.RawUrl.ToString());
+            if (control.IsView == false)
+                return Redirect("/notaccess/index");
+
+            ViewBag.IsAdmin = control.IsAdmin;
+            ViewBag.IsView = control.IsView;
+            ViewBag.IsAdd = control.IsAdd;
+
+            DataTable dtPaymentSource = new DataTable();
+
+            using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["MilkWayIndia"].ConnectionString))
+            {
+                con.Open();
+                SqlCommand cmd = new SqlCommand("SELECT Id, PaymentSource FROM tbl_PaymentSourceMaster WHERE IsActive = 1", con);
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                da.Fill(dtPaymentSource);
+            }
+
+            ViewBag.PaymentSourceList = dtPaymentSource;
+
+            return View();
+        }
+        [HttpPost]
+        public ActionResult AddPaymentPlateFormFeesNew(FormCollection form)
+        {
+            try
+            {
+                if (Request.Cookies["gstusr"] == null)
+                    return Redirect("/home/login?ReturnURL=" + Request.RawUrl);
+
+                int paymentSourceId = Convert.ToInt32(form["PaymentSourceId"]);
+                bool isPriceRangeApplicable = form["IsPriceRangeApplicable"]?.Contains("true") == true;
+
+                decimal? fromPrice = string.IsNullOrWhiteSpace(form["FromPrice"]) ? (decimal?)null : Convert.ToDecimal(form["FromPrice"]);
+                decimal? toPrice = string.IsNullOrWhiteSpace(form["ToPrice"]) ? (decimal?)null : Convert.ToDecimal(form["ToPrice"]);
+                decimal? percentage = string.IsNullOrWhiteSpace(form["Percentage"]) ? (decimal?)null : Convert.ToDecimal(form["Percentage"]);
+                decimal? lumsumAmount = string.IsNullOrWhiteSpace(form["LumsumAmount"]) ? (decimal?)null : Convert.ToDecimal(form["LumsumAmount"]);
+                decimal? platformChargesPercentage = string.IsNullOrWhiteSpace(form["PlatformChargesPercentage"]) ? (decimal?)null : Convert.ToDecimal(form["PlatformChargesPercentage"]);
+                decimal? platformChargesLumsumAmount = string.IsNullOrWhiteSpace(form["PlatformChargesLumsumAmount"]) ? (decimal?)null : Convert.ToDecimal(form["PlatformChargesLumsumAmount"]);
+                bool isActive = form.AllKeys.Contains("IsActive") && form["IsActive"]?.Contains("true") == true;
+
+                using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["MilkWayIndia"].ConnectionString))
+                {
+                    con.Open();
+                    SqlCommand com = new SqlCommand(@"
+                INSERT INTO tbl_PaymentSourceWisePlatformFees
+                (
+                    PaymentSourceId,
+                    FromPrice,
+                    ToPrice,
+                    IsPriceRangeApplicable,
+                    Percentage,
+                    LumsumAmount,
+                    PlatformChargesPercentage,
+                    PlatformChargesLumsumAmount,
+                    IsActive
+                )
+                VALUES
+                (
+                    @PaymentSourceId,
+                    @FromPrice,
+                    @ToPrice,
+                    @IsPriceRangeApplicable,
+                    @Percentage,
+                    @LumsumAmount,
+                    @PlatformChargesPercentage,
+                    @PlatformChargesLumsumAmount,
+                    @IsActive
+                )", con);
+
+                    com.Parameters.AddWithValue("@PaymentSourceId", paymentSourceId);
+                    com.Parameters.AddWithValue("@FromPrice", (object)fromPrice ?? DBNull.Value);
+                    com.Parameters.AddWithValue("@ToPrice", (object)toPrice ?? DBNull.Value);
+                    com.Parameters.AddWithValue("@IsPriceRangeApplicable", isPriceRangeApplicable);
+                    com.Parameters.AddWithValue("@Percentage", (object)percentage ?? DBNull.Value);
+                    com.Parameters.AddWithValue("@LumsumAmount", (object)lumsumAmount ?? DBNull.Value);
+                    com.Parameters.AddWithValue("@PlatformChargesPercentage", (object)platformChargesPercentage ?? DBNull.Value);
+                    com.Parameters.AddWithValue("@PlatformChargesLumsumAmount", (object)platformChargesLumsumAmount ?? DBNull.Value);
+                    com.Parameters.AddWithValue("@IsActive", isActive);
+
+                    int i = com.ExecuteNonQuery();
+                    con.Close();
+
+                    if (i > 0)
+                        HttpContext.Session["Msg"] = "Platform fee details added successfully.";
+                    else
+                        ViewBag.ErrorMsg = "Something went wrong while saving.";
+                }
+
+                return RedirectToAction("PaymentPlateFormFeesList");
+            }
+            catch (Exception ex)
+            {
+                ViewBag.ErrorMsg = "Error occurred: " + ex.Message;
+                return View("AddPaymentPlateFormFees");
+            }
+        }
+        [HttpGet]
+        public ActionResult PaymentPlateFormFeesList()
+        {
+            // Check user session
+            if (HttpContext.Session["UserId"] == null)
+                return Redirect("/home/login?ReturnURL=" + Request.RawUrl);
+
+            var control = Helper.CheckPermission(Request.RawUrl.ToString());
+            if (!control.IsView)
+                return Redirect("/notaccess/index");
+
+            ViewBag.IsAdmin = control.IsAdmin;
+            ViewBag.IsView = control.IsView;
+            ViewBag.IsAdd = control.IsAdd;
+
+            // Show success message if available
+            ViewBag.SuccessMsg = HttpContext.Session["Msg"]?.ToString() ?? "";
+            HttpContext.Session["Msg"] = "";
+
+            // Load combined list with JOIN
+            DataTable dtPaymentFees = new DataTable();
+            using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["MilkWayIndia"].ConnectionString))
+            {
+                con.Open();
+                SqlCommand cmd = new SqlCommand(@"
+            SELECT 
+                PF.Id,
+                PSM.PaymentSource,
+                PF.FromPrice,
+                PF.ToPrice,
+                PF.IsPriceRangeApplicable,
+                PF.Percentage,
+                PF.LumsumAmount,
+                PF.PlatformChargesPercentage,
+                PF.PlatformChargesLumsumAmount,
+                PF.IsActive
+            FROM tbl_PaymentSourceWisePlatformFees PF
+            INNER JOIN tbl_PaymentSourceMaster PSM ON PF.PaymentSourceId = PSM.Id
+            ORDER BY PSM.PaymentSource ASC", con);
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                da.Fill(dtPaymentFees);
+            }
+
+            ViewBag.PaymentFeesList = dtPaymentFees;
+            ViewBag.ReturnUrl = Request.Url.ToString();
+            ViewBag.IsAttribute = Request.Url.ToString().Contains("portal") || Request.Url.ToString().Contains("localhost");
+
+            return View();
+        }
+        [HttpGet]
+        public ActionResult DeletePaymentPlateFormFees(int id)
+        {
+            try
+            {
+                objcashback.Id = id;
+                int delresult = objcashback.DeletePaymentPlateFormFees(id);
+
+                if (delresult > 0)
+                {
+                    TempData["SuccessMsg"] = "Payment source deleted successfully.";
+                }
+                else
+                {
+                    TempData["ErrorMsg"] = "Payment source not found or already deleted.";
+                }
+
+                return RedirectToAction("PaymentSourceList");
+            }
+            catch (System.Data.SqlClient.SqlException ex)
+            {
+                if (ex.Message.ToLower().Contains("fk_orderdetail_product"))
+                {
+                    TempData["ErrorMsg"] = "You cannot delete this record because it is referenced by other records.";
+                }
+                else
+                {
+                    TempData["ErrorMsg"] = "SQL error: " + ex.Message;
+                }
+                return RedirectToAction("PaymentPlateFormFeesList");
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMsg"] = "Unexpected error: " + ex.Message;
+                return RedirectToAction("PaymentPlateFormFeesList");
+            }
+        }
+        [HttpGet]
+        public ActionResult EditPaymentPlateFormFees(int id = 0)
+        {
+            if (HttpContext.Session["UserId"] == null)
+                return Redirect("/home/login?ReturnURL=" + Request.RawUrl);
+
+            ViewBag.IsEdit = false;
+            DataTable dtPaymentSource = new DataTable();
+            using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["MilkWayIndia"].ConnectionString))
+            {
+                con.Open();
+                SqlCommand cmd = new SqlCommand("SELECT Id, PaymentSource FROM tbl_PaymentSourceMaster WHERE IsActive = 1", con);
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                da.Fill(dtPaymentSource);
+            }
+            ViewBag.PaymentSourceList = dtPaymentSource;
+
+            if (id > 0)
+            {
+                // Fetch platform fee record with Payment Source info
+                DataTable dt = new DataTable();
+                using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["MilkWayIndia"].ConnectionString))
+                {
+                    con.Open();
+                    SqlCommand cmd = new SqlCommand(@"
+                SELECT PF.*, PSM.PaymentSource 
+                FROM tbl_PaymentSourceWisePlatformFees PF
+                INNER JOIN tbl_PaymentSourceMaster PSM ON PF.PaymentSourceId = PSM.Id
+                WHERE PF.Id = @Id", con);
+                    cmd.Parameters.AddWithValue("@Id", id);
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    da.Fill(dt);
+                }
+
+                if (dt.Rows.Count > 0)
+                {
+                    DataRow dr = dt.Rows[0];
+                    ViewBag.IsEdit = true;
+
+                    ViewBag.Id = Convert.ToInt32(dr["Id"]);
+                    ViewBag.PaymentSourceId = Convert.ToInt32(dr["PaymentSourceId"]);
+                    ViewBag.FromPrice = dr["FromPrice"] != DBNull.Value ? Convert.ToDecimal(dr["FromPrice"]) : (decimal?)null;
+                    ViewBag.ToPrice = dr["ToPrice"] != DBNull.Value ? Convert.ToDecimal(dr["ToPrice"]) : (decimal?)null;
+                    ViewBag.IsPriceRangeApplicable = Convert.ToBoolean(dr["IsPriceRangeApplicable"]);
+                    ViewBag.Percentage = dr["Percentage"] != DBNull.Value ? Convert.ToDecimal(dr["Percentage"]) : (decimal?)null;
+                    ViewBag.LumsumAmount = dr["LumsumAmount"] != DBNull.Value ? Convert.ToDecimal(dr["LumsumAmount"]) : (decimal?)null;
+                    ViewBag.PlatformChargesPercentage = dr["PlatformChargesPercentage"] != DBNull.Value ? Convert.ToDecimal(dr["PlatformChargesPercentage"]) : (decimal?)null;
+                    ViewBag.PlatformChargesLumsumAmount = dr["PlatformChargesLumsumAmount"] != DBNull.Value ? Convert.ToDecimal(dr["PlatformChargesLumsumAmount"]) : (decimal?)null;
+                    ViewBag.IsActive = dr["IsActive"] != DBNull.Value ? Convert.ToBoolean(dr["IsActive"]) : false;
+                }
+                else
+                {
+                    TempData["ErrorMsg"] = "Payment platform fee record not found.";
+                    return RedirectToAction("PaymentPlateFormFeesList");
+                }
+            }
+
+            return View();
+        }
+        [HttpPost]
+        public ActionResult UpdatePaymentPlateFormFees(FormCollection form)
+        {
+            int i = 0;
+            try
+            {
+                if (Request.Cookies["gstusr"] == null)
+                    return Redirect("/home/login?ReturnURL=" + Request.RawUrl);
+
+                int id = Convert.ToInt32(form["Id"]);
+                int paymentSourceId = Convert.ToInt32(form["PaymentSourceId"]);
+                bool isPriceRangeApplicable = form["IsPriceRangeApplicable"]?.Contains("true") == true;
+                bool isActive = form.AllKeys.Contains("IsActive") && form["IsActive"]?.Contains("true") == true;
+
+                decimal? fromPrice = string.IsNullOrWhiteSpace(form["FromPrice"]) ? (decimal?)null : Convert.ToDecimal(form["FromPrice"]);
+                decimal? toPrice = string.IsNullOrWhiteSpace(form["ToPrice"]) ? (decimal?)null : Convert.ToDecimal(form["ToPrice"]);
+                decimal? percentage = string.IsNullOrWhiteSpace(form["Percentage"]) ? (decimal?)null : Convert.ToDecimal(form["Percentage"]);
+                decimal? lumsumAmount = string.IsNullOrWhiteSpace(form["LumsumAmount"]) ? (decimal?)null : Convert.ToDecimal(form["LumsumAmount"]);
+                decimal? platformChargesPercentage = string.IsNullOrWhiteSpace(form["PlatformChargesPercentage"]) ? (decimal?)null : Convert.ToDecimal(form["PlatformChargesPercentage"]);
+                decimal? platformChargesLumsumAmount = string.IsNullOrWhiteSpace(form["PlatformChargesLumsumAmount"]) ? (decimal?)null : Convert.ToDecimal(form["PlatformChargesLumsumAmount"]);
+
+                using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["MilkWayIndia"].ConnectionString))
+                {
+                    con.Open();
+
+                    SqlCommand com = new SqlCommand(@"
+                UPDATE tbl_PaymentSourceWisePlatformFees
+                SET 
+                    PaymentSourceId = @PaymentSourceId,
+                    FromPrice = @FromPrice,
+                    ToPrice = @ToPrice,
+                    IsPriceRangeApplicable = @IsPriceRangeApplicable,
+                    Percentage = @Percentage,
+                    LumsumAmount = @LumsumAmount,
+                    PlatformChargesPercentage = @PlatformChargesPercentage,
+                    PlatformChargesLumsumAmount = @PlatformChargesLumsumAmount,
+                    IsActive = @IsActive
+                WHERE Id = @Id", con);
+
+                    com.Parameters.AddWithValue("@Id", id);
+                    com.Parameters.AddWithValue("@PaymentSourceId", paymentSourceId);
+                    com.Parameters.AddWithValue("@FromPrice", (object)fromPrice ?? DBNull.Value);
+                    com.Parameters.AddWithValue("@ToPrice", (object)toPrice ?? DBNull.Value);
+                    com.Parameters.AddWithValue("@IsPriceRangeApplicable", isPriceRangeApplicable);
+                    com.Parameters.AddWithValue("@Percentage", (object)percentage ?? DBNull.Value);
+                    com.Parameters.AddWithValue("@LumsumAmount", (object)lumsumAmount ?? DBNull.Value);
+                    com.Parameters.AddWithValue("@PlatformChargesPercentage", (object)platformChargesPercentage ?? DBNull.Value);
+                    com.Parameters.AddWithValue("@PlatformChargesLumsumAmount", (object)platformChargesLumsumAmount ?? DBNull.Value);
+                    com.Parameters.AddWithValue("@IsActive", isActive);
+
+                    i = com.ExecuteNonQuery();
+                    con.Close();
+                }
+
+                if (i > 0)
+                {
+                    TempData["SuccessMsg"] = "Platform fee record updated successfully.";
+                }
+                else
+                {
+                    TempData["ErrorMsg"] = "Update failed. Record not found.";
+                }
+
+                return RedirectToAction("PaymentPlateFormFeesList");
+            }
+            catch (Exception ex)
+            {
+                ViewBag.ErrorMsg = "Error occurred: " + ex.Message;
+                return View("EditPaymentPlateFormFees");
+            }
+        }
+
         // GET: CashBack
         public ActionResult Index()
         {
             return View();
         }
 
-
-
+        
         [HttpGet]
         public ActionResult CashBackSettings()
         {

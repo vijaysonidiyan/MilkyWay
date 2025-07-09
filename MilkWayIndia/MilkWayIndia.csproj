@@ -1846,6 +1846,12 @@
     <Content Include="Views\Product\AddProductVendor.cshtml" />
     <Content Include="Views\Product\ProductVendorList.cshtml" />
     <Content Include="Views\Product\EditProductVendor.cshtml" />
+    <Content Include="Views\CashBack\AddPaymentSource.cshtml" />
+    <Content Include="Views\CashBack\PaymentSourceList.cshtml" />
+    <Content Include="Views\CashBack\EditPaymentSource.cshtml" />
+    <Content Include="Views\CashBack\AddPaymentPlateFormFees.cshtml" />
+    <Content Include="Views\CashBack\PaymentPlateFormFeesList.cshtml" />
+    <Content Include="Views\CashBack\EditPaymentPlateFormFees.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

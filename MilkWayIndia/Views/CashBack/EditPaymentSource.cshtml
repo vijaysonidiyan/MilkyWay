@@ -1,0 +1,80 @@
+﻿@model MilkWayIndia.Models.CashBack
+
+@{
+    ViewBag.Title = "Edit Payment Source";
+    Layout = "~/Views/Shared/_MyLayout.cshtml";
+}
+
+@section contain {
+    <link href="~/Content/plugins/datepicker/datepicker3.css" rel="stylesheet" />
+    <script src="~/Content/plugins/datepicker/bootstrap-datepicker.js"></script>
+    <script src="~/Content/plugins/jQuery/jquery-2.2.3.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var MasterClass = document.getElementById("LiProduct");
+            if (MasterClass != null) {
+                MasterClass.className += " active";
+            }
+        });
+    </script>
+
+    <section class="content-header">
+        <h1>Edit Payment Source</h1>
+        <ol class="breadcrumb">
+            <li><a href="@Url.Action("Index", "Admin")"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="active">Edit Payment Source</li>
+        </ol>
+    </section>
+
+    <section class="content">
+        <div class="col-md-12">
+            <div class="box box-info">
+                <div class="box-header with-border">
+                    <div class="btn-group-vertical">
+                        <button class="btn btn-success" type="button" onclick="location.href='@Url.Action("PaymentSourceList", "CashBack")'">Back To List</button>
+                    </div>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-horizontal">
+                    @using (Html.BeginForm("UpdatePaymentSourceList", "CashBack", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                    {
+                        <div class="box-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div id="SuccessMsg" style="color: red">@ViewBag.SuccessMsg</div>
+                                    @Html.Hidden("Id", (int)ViewBag.Id)
+
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label">Payment Source</label>
+                                            <div class="col-sm-6">
+                                                <input type="text" name="PaymentSource" class="form-control" value="@ViewBag.PaymentSource" required />
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label">Is Active</label>
+                                            <div class="col-sm-6">
+                                                <input type="checkbox" name="IsActive" @(ViewBag.IsActive ? "checked" : "") />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="box-footer text-right">
+                            <input type="submit" value="Save" class="btn btn-primary" />
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </section>
+}
