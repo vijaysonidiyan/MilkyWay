@@ -834,7 +834,7 @@ namespace MilkWayIndia.Models
                 try
                 {
                     con.Open();
-                    string query = "SELECT Id, ProductName FROM tbl_Product_Master WHERE IsActive = 1 ORDER BY ProductName";
+                    string query = "SELECT Id, ProductName FROM tbl_Product_Master ORDER BY ProductName";
                     SqlDataAdapter da = new SqlDataAdapter(query, con);
                     da.Fill(dt);
                 }

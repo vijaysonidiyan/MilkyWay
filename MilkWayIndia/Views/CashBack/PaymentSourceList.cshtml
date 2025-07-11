@@ -24,7 +24,7 @@
             </script>
         }
         <div class="box-header with-border">
-            <h3 class="box-title">ProductVendor List</h3>
+            <h3 class="box-title">Payment Source List</h3>
             <div class="box-tools">
                 <div class="input-group input-group-sm pull-right">
                     @*<asp:LinkButton runat="server" ID="lbtnAdd" class="btn btn-default pull-right btn-add" PostBackUrl="~/.aspx">Back</asp:LinkButton>*@
@@ -62,51 +62,7 @@
                                 <br />
 
                              
-                                <div class="row">
-                                    <div class="col-md-2" style="text-align:right">
-
-                                        <div class="input-group input-group-sm pull-right">
-
-
-                                            @Html.TextBoxFor(m => m.startpoint, new { @class = "form-control", @id = "startpoint", onkeypress = "return ValidateNumber(event);", @Value = ViewBag.startpoint, style = "width:100px;text-align: center;font-size: 18px;font-weight:bold;padding:2px;border-radius:2px; ", @readonly = "readonly" })
-
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-1">
-                                        <span>To</span>
-                                    </div>
-
-                                    <div class="col-md-2" style="text-align:left">
-                                        <div class="input-group input-group-sm pull-left">
-                                            @Html.TextBoxFor(m => m.endpoint, new { @class = "form-control", @id = "endpoint", onkeypress = "return ValidateNumber(event);", @Value = ViewBag.endpoint, style = "width:100px;text-align: center;font-size: 18px;font-weight:bold;padding:2px;border-radius:2px;", @readonly = "readonly" })
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-5">
-                                        <div class="input-group input-group-sm pull-left">
-                                            <button type="submit" id="clkbtncomp2" name="submit" value="First" class="btn btn-warning" onclick="return Valid()">First</button>
-                                            &nbsp;
-                                            <button type="submit" id="clkbtncomp" name="submit" value="Previous" class="btn btn-warning" onclick="return Valid()">Previous</button>
-                                            &nbsp;
-                                            <button type="submit" id="clkbtncomp1" name="submit" value="Next" class="btn btn-warning" onclick="return Valid()">Next</button>
-                                            &nbsp;
-                                            <button type="submit" id="clkbtncomp3" name="submit" value="Last" class="btn btn-warning" onclick="return Valid()">Last</button>
-
-                                            @Html.TextBoxFor(m => m.previous1, new { @class = "form-control", @id = "previous", onkeypress = "return ValidateNumber(event);", @Value = ViewBag.previousid, style = "display:none" })
-
-                                            @Html.TextBoxFor(m => m.next1, new { @class = "form-control", @id = "next", onkeypress = "return ValidateNumber(event);", @Value = ViewBag.nextid, style = "display:none" })
-
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-
-                                        Select All:
-                                        <input type="checkbox" id="selectall" name="selectall" value="selectall">
-                                        <button type="submit" id="submit" name="submit" value="Delete" class="btn btn-warning" onclick="return confirm('Are you sure you want to Delete this Data?');">Delete</button>
-
-                                    </div>
-                                </div>
+                             
                                 <div class="box-body table-responsive no-padding">
 
                                     <table id="example1" class="table table-bordered table-striped" name="example1">

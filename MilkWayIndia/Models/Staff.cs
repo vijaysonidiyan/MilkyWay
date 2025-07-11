@@ -156,7 +156,8 @@ namespace MilkWayIndia.Models
                 con.Close();
             }
             catch (Exception ex)
-            { }
+            {
+            }
             return i;
 
         }
@@ -170,6 +171,15 @@ namespace MilkWayIndia.Models
                 cmd.Parameters.AddWithValue("@Id", Id);
             else
                 cmd.Parameters.AddWithValue("@Id", DBNull.Value);
+            SqlDataAdapter da = new SqlDataAdapter(cmd);
+            DataTable dt = new DataTable();
+            da.Fill(dt);
+            return dt;
+        }
+        public DataTable GetVendorByStaffId(int staffId)
+        {
+            SqlCommand cmd = new SqlCommand("SELECT * FROM tbl_Vendor_Master WHERE StaffId = @StaffId", con);
+            cmd.Parameters.AddWithValue("@StaffId", staffId);
             SqlDataAdapter da = new SqlDataAdapter(cmd);
             DataTable dt = new DataTable();
             da.Fill(dt);
@@ -207,7 +217,6 @@ namespace MilkWayIndia.Models
             da.Fill(dt);
             return dt;
         }
-
         //delete
         public int DeleteStaff(int id)
         {
@@ -217,8 +226,6 @@ namespace MilkWayIndia.Models
             con.Close();
             return i;
         }
-
-
         public DataTable getPlatformList(int? Id)
         {
             //con.Open();
@@ -233,9 +240,6 @@ namespace MilkWayIndia.Models
             da.Fill(dt);
             return dt;
         }
-
-
-
         public int InsertPlatform(Staff obj)
         {
             int i = 0;
@@ -265,7 +269,6 @@ namespace MilkWayIndia.Models
             return i;
 
         }
-
         public int DeleteRole(int id)
         {
             con.Open();
@@ -274,8 +277,6 @@ namespace MilkWayIndia.Models
             con.Close();
             return i;
         }
-
-
         public DataTable getModuleList(int? Id)
         {
             //con.Open();
@@ -290,8 +291,6 @@ namespace MilkWayIndia.Models
             da.Fill(dt);
             return dt;
         }
-
-
         public int InsertModule(Staff obj)
         {
             int i = 0;
@@ -311,7 +310,6 @@ namespace MilkWayIndia.Models
             return i;
 
         }
-
         public int UpdateModule(Staff obj)
         {
             int i = 0;
@@ -339,7 +337,6 @@ namespace MilkWayIndia.Models
             return i;
 
         }
-
         public int DeleteModule(int id)
         {
             con.Open();
@@ -348,9 +345,6 @@ namespace MilkWayIndia.Models
             con.Close();
             return i;
         }
-
-
-
         public DataTable BindPlatformWiseModule(String Platform)
         {
             con.Open();
@@ -375,8 +369,6 @@ namespace MilkWayIndia.Models
             con.Close();
             return dt;
         }
-
-
         public DataTable getStaffList()
         {
             //con.Open();
@@ -388,7 +380,6 @@ namespace MilkWayIndia.Models
             da.Fill(dt);
             return dt;
         }
-
         public DataTable getStaffUserValidation()
         {
             //con.Open();
@@ -421,7 +412,6 @@ namespace MilkWayIndia.Models
             da.Fill(dt);
             return dt;
         }
-
         public int InsertUserValidation(Staff obj)
         {
             int i = 0;
@@ -449,8 +439,6 @@ namespace MilkWayIndia.Models
             { }
             return i;
         }
-
-
         public DataTable GetModuleList()
         {
             
@@ -466,16 +454,13 @@ namespace MilkWayIndia.Models
             da.Fill(dt);
             return dt;
         }
-
-        public DataTable ChkDuplModule(string moduleid, int? roleId)
+       public DataTable ChkDuplModule(string moduleid, int? roleId)
         {
             SqlDataAdapter da = new SqlDataAdapter("select * from tbl_Role_Module where RoleId=" + roleId + " and ModuleId=" + moduleid + "", con);
             DataTable dt = new DataTable();
             da.Fill(dt);
             return dt;
         }
-
-
         public DataTable ChkDuplRole(string RoleName)
         {
             SqlDataAdapter da = new SqlDataAdapter("select * from tbldesignation where DesignationName='" + RoleName + "'", con);

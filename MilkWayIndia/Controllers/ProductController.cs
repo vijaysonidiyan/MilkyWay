@@ -52,8 +52,8 @@ namespace MilkWayIndia.Controllers
                 return Redirect("/home/login?ReturnURL=" + Request.RawUrl);
 
             var control = Helper.CheckPermission(Request.RawUrl.ToString());
-            if (control.IsView == false)
-                return Redirect("/notaccess/index");
+            //if (control.IsView == false)
+            //    return Redirect("/notaccess/index");
 
             ViewBag.IsAdmin = control.IsAdmin;
             ViewBag.IsView = control.IsView;
@@ -251,8 +251,8 @@ namespace MilkWayIndia.Controllers
                 {
                     con.Open();
                     SqlCommand checkCmd = new SqlCommand(@"
-                SELECT COUNT(*) FROM tbl_ProductVendor_Master 
-                WHERE VendorId = @VendorId AND ProductId = @ProductId", con);
+                    SELECT COUNT(*) FROM tbl_ProductVendor_Master 
+                    WHERE VendorId = @VendorId AND ProductId = @ProductId", con);
                     checkCmd.Parameters.AddWithValue("@VendorId", vendorId);
                     checkCmd.Parameters.AddWithValue("@ProductId", objProdt.Id);
 
@@ -365,12 +365,13 @@ namespace MilkWayIndia.Controllers
         {
             if (HttpContext.Session["UserId"] == null)
                 return Redirect("/home/login?ReturnURL=" + Request.RawUrl);
+
             var control = Helper.CheckPermission(Request.RawUrl.ToString());
-            if (!control.IsView)
-                return Redirect("/notaccess/index");
+
             ViewBag.IsAdmin = control.IsAdmin;
             ViewBag.IsView = control.IsView;
             ViewBag.IsAdd = control.IsAdd;
+
             if (HttpContext.Session["Msg"] != null && !string.IsNullOrEmpty(HttpContext.Session["Msg"].ToString()))
             {
                 ViewBag.SuccessMsg = HttpContext.Session["Msg"].ToString();
@@ -380,7 +381,38 @@ namespace MilkWayIndia.Controllers
             {
                 ViewBag.SuccessMsg = "";
             }
-            DataTable dtProductVendor = objProdt.BindProductVendorList();
+
+            int currentVendorId = Convert.ToInt32(HttpContext.Session["UserId"]); 
+
+            DataTable dtProductVendor = new DataTable();
+            using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["MilkWayIndia"].ConnectionString))
+            {
+                con.Open();
+                SqlCommand cmd = new SqlCommand(@"
+            SELECT 
+                pvm.Id, pvm.OrderBy, pvm.ProductId, pm.ProductName,
+                pvm.VendorId, vm.UserName,
+                pvm.RewardPoint, pvm.Price, pvm.PurchasePrice, 
+                pvm.DiscountAmount, pvm.Profit, pvm.SalePrice, 
+                pvm.CGST, pvm.SGST, pvm.IGST, pvm.IsActive, 
+                pvm.IsDaily, pvm.IsAlternate, pvm.IsMultiple, pvm.IsWeekDay
+            FROM 
+                tbl_ProductVendor_Master pvm
+            LEFT JOIN 
+                tbl_Product_Master pm ON pm.Id = pvm.ProductId
+            LEFT JOIN 
+                tbl_Vendor_Master vm ON vm.Id = pvm.VendorId
+            WHERE 
+                pvm.VendorId = @VendorId
+            ORDER BY 
+                pvm.OrderBy ASC", con);
+
+                cmd.Parameters.AddWithValue("@VendorId", currentVendorId);
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                da.Fill(dtProductVendor);
+            }
+
             int totalRecords = dtProductVendor.Rows.Count;
 
             ViewBag.previousid = "0";
@@ -388,10 +420,12 @@ namespace MilkWayIndia.Controllers
             ViewBag.startpoint = "1";
             ViewBag.endpoint = totalRecords.ToString();
             ViewBag.ProductList = dtProductVendor;
+
+            // Load category list
             DataTable dtCategory = objProdt.GetAllMaincategory();
             ViewBag.Category = dtCategory;
 
-            
+            // Load product master list
             DataTable dtProductMaster = new DataTable();
             using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["MilkWayIndia"].ConnectionString))
             {
@@ -401,11 +435,14 @@ namespace MilkWayIndia.Controllers
                 da.Fill(dtProductMaster);
             }
             ViewBag.ProductListMaster = dtProductMaster;
+
             ViewBag.RarURL = Request.Url.ToString();
             ViewBag.IsAttribute = Request.Url.ToString().Contains("portal") || Request.Url.ToString().Contains("localhost:4937");
 
             return View();
         }
+
+
         [HttpGet]
         public ActionResult Product_List_New()
         {
