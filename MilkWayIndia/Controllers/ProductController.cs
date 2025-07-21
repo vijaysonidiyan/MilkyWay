@@ -272,10 +272,11 @@ namespace MilkWayIndia.Controllers
                 VALUES
                 (@ProductId, @VendorId, @Price, @DiscountAmount, @CGST, @SGST, @IGST, @RewardPoint,
                  @IsActive, @IsDaily, @IsAlternate, @IsMultiple, @IsWeekDay,
-                 @PurchasePrice, @SalePrice, @Profit, @OrderBy)", con);
+                 @PurchasePrice, @SalePrice, @Profit, @OrderBy, @Subscription)", con);
 
                     com.Parameters.AddWithValue("@ProductId", (object)objProdt.Id ?? DBNull.Value);
                     com.Parameters.AddWithValue("@VendorId", vendorId);
+                    com.Parameters.AddWithValue("@Subscription", objProdt.Subscription);
                     com.Parameters.AddWithValue("@Price", (object)objProdt.Price ?? DBNull.Value);
                     com.Parameters.AddWithValue("@DiscountAmount", (object)objProdt.DiscountAmount ?? DBNull.Value);
                     com.Parameters.AddWithValue("@CGST", (object)objProdt.CGST ?? DBNull.Value);
@@ -393,7 +394,7 @@ namespace MilkWayIndia.Controllers
                 pvm.Id, pvm.OrderBy, pvm.ProductId, pm.ProductName,
                 pvm.VendorId, vm.UserName,
                 pvm.RewardPoint, pvm.Price, pvm.PurchasePrice, 
-                pvm.DiscountAmount, pvm.Profit, pvm.SalePrice, 
+                pvm.DiscountAmount, pvm.Profit, pvm.SalePrice, pvm.Subscription AS Subscription,
                 pvm.CGST, pvm.SGST, pvm.IGST, pvm.IsActive, 
                 pvm.IsDaily, pvm.IsAlternate, pvm.IsMultiple, pvm.IsWeekDay
             FROM 
@@ -685,6 +686,8 @@ namespace MilkWayIndia.Controllers
                     ViewBag.IsWeekDay = Convert.ToBoolean(dr["IsWeekDay"]);
                     ViewBag.PurchaseAmount = dr["PurchasePrice"].ToString();
                     ViewBag.SaleAmount = dr["SalePrice"].ToString();
+                    ViewBag.Subscription = dr["Subscription"].ToString();
+
                     ViewBag.Profit = dr["Profit"].ToString();
                     ViewBag.OrderBy = dr["OrderBy"].ToString();
                 }
@@ -1256,6 +1259,7 @@ namespace MilkWayIndia.Controllers
                     IsWeekDay = @IsWeekDay,
                     PurchasePrice = @PurchasePrice,
                     SalePrice = @SalePrice,
+                    Subscription = @Subscription,
                     Profit = @Profit,
                     OrderBy = @OrderBy
                 WHERE Id = @Id", con);
@@ -1269,6 +1273,7 @@ namespace MilkWayIndia.Controllers
                     com.Parameters.AddWithValue("@CGST", (object)objProdt.CGST ?? DBNull.Value);
                     com.Parameters.AddWithValue("@SGST", (object)objProdt.SGST ?? DBNull.Value);
                     com.Parameters.AddWithValue("@IGST", (object)objProdt.IGST ?? DBNull.Value);
+                    com.Parameters.AddWithValue("@Subscription", (object)objProdt.Subscription ?? DBNull.Value);
                     com.Parameters.AddWithValue("@RewardPoint", (object)objProdt.RewardPoint ?? DBNull.Value);
 
                     com.Parameters.AddWithValue("@IsActive", form["IsActive"]?.Contains("true") == true);

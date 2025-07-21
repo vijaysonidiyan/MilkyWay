@@ -26,7 +26,8 @@ namespace MilkWayIndia.Entity
         public bool? IsDaily { get; set; }
         public bool? IsAlternate { get; set; }
         public bool? IsMultiple { get; set; }
-        public bool? IsWeekDay { get; set; }        
+        public bool? IsWeekDay { get; set; }
+        public string Subscription { get; set; }
 
     }
 }
