@@ -75,6 +75,7 @@ namespace MilkWayIndia.Controllers
                     Session["Username"] = staff.UserName;
                     Session["RoleName"] = dt.Rows[0]["Role"].ToString();
 					Session["isVendorLogin"] = false;
+					Session["VendorSectorId"] = "0";
 					if (!string.IsNullOrEmpty(dt.Rows[0]["Photo"].ToString()))
                         Session["ProfilePic"] = dt.Rows[0]["Photo"].ToString();
                     else
@@ -101,6 +102,7 @@ namespace MilkWayIndia.Controllers
 						Session["Username"] = dtVendor.Rows[0]["FirstName"].ToString() + " " + dtVendor.Rows[0]["LastName"].ToString();
 						Session["RoleName"] = "Vendor";
 						Session["isVendorLogin"] = true;
+						Session["VendorSectorId"] = dtVendor.Rows[0]["SectorId"].ToString();
 						if (!string.IsNullOrEmpty(dtVendor.Rows[0]["Photo"].ToString()))
 							Session["ProfilePic"] = dtVendor.Rows[0]["Photo"].ToString();
 						else

@@ -24,9 +24,9 @@
                 </span>
             </a>
             <ul class="treeview-menu">
-                <li><a href="@Url.Action("AddProductNew", "Product")"><i class="fa fa-circle-o"></i>Product New</a></li>
-                
-                    <li><a href="@Url.Action("AddProductVendor", "Product")"><i class="fa fa-circle-o"></i>Product Vendor </a></li>
+                <li>@*<a href="@Url.Action("AddProductNew", "Product")"><i class="fa fa-circle-o"></i>Product New</a>*@</li>
+
+                <li><a href="@Url.Action("AddProductVendor", "Product")"><i class="fa fa-circle-o"></i>Product Vendor </a></li>
 
             </ul>
         </li>
@@ -39,8 +39,8 @@
                 </span>
             </a>
             <ul class="treeview-menu">
-                <li><a href="@Url.Action("SubscriptionList", "Subscription")"><i class="fa fa-circle-o"></i>Subscription Master </a></li>
-                <li><a href="@Url.Action("CustomerSubscriptionList", "Subscription")"><i class="fa fa-circle-o"></i>Customer Subscription </a></li>
+                @*<li><a href="@Url.Action("SubscriptionList", "Subscription")"><i class="fa fa-circle-o"></i>Subscription Master </a></li>
+                    <li><a href="@Url.Action("CustomerSubscriptionList", "Subscription")"><i class="fa fa-circle-o"></i>Customer Subscription </a></li>*@
                 <li><a href="@Url.Action("CustomerWalletList", "Customer")"><i class="fa fa-circle-o"></i>Customer Wallet </a></li>
                 <li><a href="@Url.Action("CanceledSubscriptionList", "Subscription")"><i class="fa fa-circle-o"></i>Cancel Subscription </a></li>
                 <li><a href="@Url.Action("ExpiredSubscriptionList", "Subscription")"><i class="fa fa-circle-o"></i>Expired Subscriptions </a></li>

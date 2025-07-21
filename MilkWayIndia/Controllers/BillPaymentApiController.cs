@@ -93,7 +93,16 @@ namespace MilkWayIndia.Controllers
         }
 
 
-        [Route("api/BillPaymentApi/BillPay/{CustomerId}/{OperatorCode}/{NumberTag}/{Fieldtag1}/{Type}/{Amount}/{Lat}/{Long}/{AgentId}/{PaymentMode}/{CustomerMobile}/{Fieldtag2}/{FieldTag3}")]
+		[Route("api/BillPaymentApi/GetPaymentSourcePlatformFees")]
+		[HttpGet]
+		public IHttpActionResult GetPaymentSourcePlatformFees() //JsonResult
+		{
+			BillPayment order = new BillPayment();
+			var dtList = order.GetPaymentSourcePlatformFees();
+			return Ok(dtList);
+		}
+
+		[Route("api/BillPaymentApi/BillPay/{CustomerId}/{OperatorCode}/{NumberTag}/{Fieldtag1}/{Type}/{Amount}/{Lat}/{Long}/{AgentId}/{PaymentMode}/{CustomerMobile}/{Fieldtag2}/{FieldTag3}")]
         [HttpGet]
 
         public HttpResponseMessage BillPay(int CustomerId, int OperatorCode, string NumberTag, string Fieldtag1, string Type, int Amount, string Lat, string Long, string AgentId, string PaymentMode, string CustomerMobile, string Fieldtag2, string FieldTag3)
