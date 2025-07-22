@@ -180,7 +180,7 @@ namespace MilkWayIndia.Controllers
                     ViewBag.IsEdit = true;
                     ViewBag.Id = Convert.ToInt32(dr["Id"]);
                     ViewBag.PaymentSource = dr["PaymentSource"].ToString();
-                    ViewBag.IsActive = true;
+                    ViewBag.IsActive = Convert.ToBoolean(dr["IsActive"]);
                 }
                 else
                 {
