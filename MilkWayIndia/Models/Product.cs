@@ -817,7 +817,7 @@ namespace MilkWayIndia.Models
         public DataTable GetAllMaincategory()
         {
             DataTable dt = new DataTable();
-            dt = _clsCommon.selectwhere("*", "tbl_Product_Master", " ParentCategoryId Is NULL");
+            dt = _clsCommon.selectwhere("*", "tbl_Product_Category_Master", " ParentCategoryId Is NULL");
             return dt;
         }
         public DataTable GetAllProduct()
@@ -867,7 +867,14 @@ namespace MilkWayIndia.Models
             return dt;
         }
 
-        public DataTable GetSubMaincategorynew(int? CategoryId)
+		public DataTable GetProductFromCategory(int? CategoryId)
+		{
+			DataTable dt = new DataTable();
+			dt = _clsCommon.selectwhere("*", "tbl_Product_Master", " IsActive='True' AND CategoryId ='" + CategoryId + "' Order by OrderBy ASC");
+			return dt;
+		}
+
+		public DataTable GetSubMaincategorynew(int? CategoryId)
         {
 
             SqlDataAdapter da = new SqlDataAdapter("select * from tbl_Product_Subcat_Master where ParentCategoryId ='" + CategoryId + "'", con);

@@ -142,7 +142,6 @@
                                     <table id="example1" class="table table-bordered table-striped" name="example1">
                                         <thead>
                                             <tr>
-                                                <th>Sort Order</th>
                                                 <th>Product </th>
                                                 <th>Vendor </th>
                                                 <th>Reward Points</th>
@@ -151,15 +150,15 @@
                                                 <th>Discount</th>
                                                 <th>Profit</th>
                                                 <th>Sale Price</th>
-                                                <th>Subscription</th>
+                                                @*<th>Subscription</th>*@
                                                 <th>CGST</th>
                                                 <th>SGST</th>
                                                 <th>IGST</th>
                                                 <th>Is Active</th>
-                                                <th>Is Daily</th>
+                                                @*<th>Is Daily</th>
                                                 <th>Is Alternate</th>
                                                 <th>Is Multiple</th>
-                                                <th>Is Week Day</th>
+                                                <th>Is Week Day</th>*@
                                                 <th>Edit</th>
                                                 <th>Delete</th>
                                             </tr>
@@ -168,24 +167,24 @@
                                             @foreach (System.Data.DataRow row in ViewBag.ProductList.Rows)
                                             {
                                                 <tr>
-                                                    <td>@row["OrderBy"]</td>
+                                                    @*<td>@row["OrderBy"]</td>*@
                                                     <td>@row["ProductName"]</td>
                                                     <td>@row["UserName"]</td>
                                                     <td>@row["RewardPoint"]</td>
-                                                    <td>@row["Price"]</td>
+                                                    <td>@row["MRPPrice"]</td>
                                                     <td>@row["PurchasePrice"]</td>
                                                     <td>@row["DiscountAmount"]</td>
                                                     <td>@row["Profit"]</td>
-                                                    <td>@row["SalePrice"]</td>
-                                                    <td>@row["Subscription"]</td>
+                                                    <td>@row["SellPrice"]</td>
+                                                    @*<td>@row["Subscription"]</td>*@
                                                     <td>@row["CGST"]</td>
                                                     <td>@row["SGST"]</td>
                                                     <td>@row["IGST"]</td>
                                                     <td>@((bool)row["IsActive"] ? "Yes" : "No")</td>
-                                                    <td>@((bool)row["IsDaily"] ? "Yes" : "No")</td>
+                                                    @*<td>@((bool)row["IsDaily"] ? "Yes" : "No")</td>
                                                     <td>@((bool)row["IsAlternate"] ? "Yes" : "No")</td>
                                                     <td>@((bool)row["IsMultiple"] ? "Yes" : "No")</td>
-                                                    <td>@((bool)row["IsWeekDay"] ? "Yes" : "No")</td>
+                                                    <td>@((bool)row["IsWeekDay"] ? "Yes" : "No")</td>*@
 
                                                     <td>
                                                         <a href="/Product/EditProductVendor/@row["Id"]">

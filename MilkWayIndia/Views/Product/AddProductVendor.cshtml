@@ -46,18 +46,43 @@
                                 <div class="col-md-12">
                                     <div id="SuccessMsg" style="color: red">@ViewBag.SuccessMsg</div>
                                     <div class="col-md-6">
+
+                                        <div class="form-group">
+                                            <label for="inputEmail3" class="col-sm-3 control-label">Category</label>
+                                            <div class="col-sm-6">
+                                                @*@Html.TextBoxFor(m => m.CategoryId, new { @class = "form-control", @id = "CategoryId" })*@
+                                                <select id="ddlCategory" name="ddlCategory" class="form-control">
+                                                    <option value="0">---Select---</option>
+                                                    @if (ViewBag.Category != null)
+                                                    {
+                                                        foreach (System.Data.DataRow drCategoryName in ViewBag.Category.Rows)
+                                                        {
+                                                            <option value="@drCategoryName["Id"]">@drCategoryName["CategoryName"]</option>
+                                                        }
+                                                    }
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="inputEmail3" class="col-sm-3 control-label">Sub Category</label>
+                                            <div class="col-sm-6">
+                                                <select id="ddlSubCategory" name="CategoryId" class="form-control"></select>
+                                            </div>
+                                        </div>
+
                                         <div class="form-group">
                                             <label for="ProductId" class="col-sm-3 control-label">Product</label>
                                             <div class="col-sm-6">
                                                 <select id="ProductId" name="Id" class="form-control">
-                                                    <option value="0">---Select---</option>
+                                                    @*<option value="0">---Select---</option>
                                                     @if (ViewBag.ProductList != null)
                                                     {
                                                         foreach (System.Data.DataRow dr in ViewBag.ProductList.Rows)
                                                         {
                                                             <option value="@dr["Id"]">@dr["ProductName"]</option>
                                                         }
-                                                    }
+                                                    }*@
                                                 </select>
                                             </div>
                                         </div>
@@ -283,6 +308,34 @@
                 else {
                     div_subcat.empty();
                 }
+            });
+        });
+
+        function setSubCategory() {
+            var catid = $('#ddlCategory').val();
+            var URL = '/product/GetSubCategory?CategoryId=' + catid;
+            $('#ddlSubCategory').html('');
+            $.getJSON(URL, function (data) {
+                $('#ddlSubCategory').html(data);
+            });
+        }
+
+        function setPrroductCategory() {
+            var catid = $('#ddlSubCategory').val();
+            var URL = '/product/setPrroductCategory?CategoryId=' + catid;
+            $('#ProductId').html('');
+            $.getJSON(URL, function (data) {
+                $('#ProductId').html(data);
+            });
+        }
+
+        $(document).ready(function () {
+            $('#ddlCategory').change(function () {
+                setSubCategory();
+            });
+
+            $('#ddlSubCategory').change(function () {
+                setPrroductCategory();
             });
         });
     </script>

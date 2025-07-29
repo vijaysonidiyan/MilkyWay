@@ -1170,7 +1170,7 @@ namespace MilkWayIndia.Models
             return dt;
         }
 
-        public DataTable getDateCustomerWalletTransAll(int? CustomerId, DateTime? FromDate, DateTime? ToDate)
+        public DataTable getDateCustomerWalletTransAll(int? CustomerId, DateTime? FromDate, DateTime? ToDate,int vendorSectorId = 0)
         {
             if (CustomerId == 0) CustomerId = null;
             con.Open();
@@ -1188,7 +1188,10 @@ namespace MilkWayIndia.Models
                 cmd.Parameters.AddWithValue("@ToDate", ToDate);
             else
                 cmd.Parameters.AddWithValue("@ToDate", DBNull.Value);
-            SqlDataAdapter da = new SqlDataAdapter(cmd);
+
+			cmd.Parameters.AddWithValue("@VendorSectorId", vendorSectorId);
+
+			SqlDataAdapter da = new SqlDataAdapter(cmd);
             DataTable dt = new DataTable();
             da.Fill(dt);
             con.Close();

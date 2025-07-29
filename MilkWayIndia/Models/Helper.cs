@@ -49,8 +49,8 @@ namespace MilkWayIndia.Models
         public static string MagicSender = "MILKWY";
         private static TimeZoneInfo INDIAN_ZONE = TimeZoneInfo.FindSystemTimeZoneById("India Standard Time");
         public static DateTime indianTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, INDIAN_ZONE);
-        public static string PhotoFolderPath = "http://admin.milkywayindia.com";
-        public static string PhotoFolderPathtest = "https://portal.milkywayindia.com";
+        public static string PhotoFolderPath = "https://gatimaan.milkywaysoftware.com";
+        public static string PhotoFolderPathtest = "https://gatimaan.milkywaysoftware.com";
         //Test
         //public static string PaytmMerchantID = "NXEpnY32055934299372";
         //public static string PaytmMerchantKey = "j_Vnb_oN6XqIPVI5";
@@ -75,11 +75,11 @@ namespace MilkWayIndia.Models
         public string PaytmCallback()
         {
             var rawURL = HttpContext.Current.Request.Url.ToString();
-            if (rawURL.Contains("portal"))
-                return "https://portal.milkywayindia.com";
-            else if (rawURL.Contains("admin"))
-                return "https://admin.milkywayindia.com";
-            else
+            if (rawURL.Contains("admin"))
+                return "https://admin.milkywaysoftware.com";
+			else if (rawURL.Contains("gatimaan"))
+				return "https://gatimaan.milkywaysoftware.com";
+			else
                 return "http://localhost:4937";
         }
         EFDbContext db = new EFDbContext();
@@ -1218,7 +1218,7 @@ namespace MilkWayIndia.Models
                 userInfo.Add("custId", CustomerId);
                 body.Add("requestType", "Payment");
                 body.Add("mid", PaytmMerchantID);
-                body.Add("websiteName", "WEBSTAGING");
+                body.Add("websiteName", "DEFAULT");
                 body.Add("orderId", orderid);
                 body.Add("txnAmount", txnAmount);
                 body.Add("userInfo", userInfo);
