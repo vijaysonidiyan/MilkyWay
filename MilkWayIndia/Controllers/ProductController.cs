@@ -63,7 +63,11 @@ namespace MilkWayIndia.Controllers
             DataTable dtProductNames = objProdt.GetAllProductNames();
             ViewBag.ProductList = dtProductNames;
 
-            return View();
+			DataTable dtcategory = new DataTable();
+			dtcategory = objProdt.GetAllMaincategory();
+			ViewBag.Category = dtcategory;
+
+			return View();
         }
 
 
@@ -243,6 +247,7 @@ namespace MilkWayIndia.Controllers
                 string cookieValue = Request.Cookies["gstusr"].Value;
                 string numberOnly = new string(cookieValue.Where(char.IsDigit).ToArray());
                 int vendorId = 0;
+                int categoryId = 0;
 
                 if (!int.TryParse(numberOnly, out vendorId))
                     return Redirect("/home/login?ReturnURL=" + Request.RawUrl);
@@ -251,7 +256,7 @@ namespace MilkWayIndia.Controllers
                 {
                     con.Open();
                     SqlCommand checkCmd = new SqlCommand(@"
-                    SELECT COUNT(*) FROM tbl_ProductVendor_Master 
+                    SELECT COUNT(*) FROM tbl_Vendor_Product_Assign 
                     WHERE VendorId = @VendorId AND ProductId = @ProductId", con);
                     checkCmd.Parameters.AddWithValue("@VendorId", vendorId);
                     checkCmd.Parameters.AddWithValue("@ProductId", objProdt.Id);
@@ -264,36 +269,44 @@ namespace MilkWayIndia.Controllers
                         ViewBag.ProductList = dtProductNames;
                         return View("AddProductVendor"); 
                     }
-                    SqlCommand com = new SqlCommand(@"
-                INSERT INTO tbl_ProductVendor_Master
-                (ProductId, VendorId, Price, DiscountAmount, CGST, SGST, IGST, RewardPoint,
-                 IsActive, IsDaily, IsAlternate, IsMultiple, IsWeekDay,
-                 PurchasePrice, SalePrice, Profit, OrderBy)
-                VALUES
-                (@ProductId, @VendorId, @Price, @DiscountAmount, @CGST, @SGST, @IGST, @RewardPoint,
-                 @IsActive, @IsDaily, @IsAlternate, @IsMultiple, @IsWeekDay,
-                 @PurchasePrice, @SalePrice, @Profit, @OrderBy, @Subscription)", con);
 
-                    com.Parameters.AddWithValue("@ProductId", (object)objProdt.Id ?? DBNull.Value);
-                    com.Parameters.AddWithValue("@VendorId", vendorId);
-                    com.Parameters.AddWithValue("@Subscription", objProdt.Subscription);
-                    com.Parameters.AddWithValue("@Price", (object)objProdt.Price ?? DBNull.Value);
+                    SqlCommand com = new SqlCommand(@"
+                INSERT INTO tbl_Vendor_Product_Assign
+                (SectorId,VendorId,CategoryId,ProductId,IsActive,MRPPrice,DiscountPrice,CGST,SGST,IGST,Profit,SellPrice,RewardPoint)
+                VALUES
+                (@SectorId,@VendorId,@CategoryId,@ProductId,@IsActive,@MRPPrice,@DiscountPrice,@CGST,@SGST,@IGST,@Profit,@SellPrice,@RewardPoint)", con);
+                //(ProductId, VendorId, Price, DiscountAmount, CGST, SGST, IGST, RewardPoint,
+                // IsActive, IsDaily, IsAlternate, IsMultiple, IsWeekDay,
+                // PurchasePrice, SalePrice, Profit, OrderBy)
+                //VALUES
+                //(@ProductId, @VendorId, @Price, @DiscountAmount, @CGST, @SGST, @IGST, @RewardPoint,
+                // @IsActive, @IsDaily, @IsAlternate, @IsMultiple, @IsWeekDay,
+                // @PurchasePrice, @SalePrice, @Profit, @OrderBy, @Subscription)", con);
+
+                    com.Parameters.AddWithValue("@SectorId", Convert.ToInt32(Session["VendorSectorId"]));
+					com.Parameters.AddWithValue("@VendorId", vendorId);
+					com.Parameters.AddWithValue("@CategoryId", (object)objProdt.CategoryId ?? DBNull.Value);
+					com.Parameters.AddWithValue("@ProductId", (object)objProdt.Id ?? DBNull.Value);
+					com.Parameters.AddWithValue("@IsActive", form["IsActive"]?.Contains("true") == true);					
+                    com.Parameters.AddWithValue("@MRPPrice", (object)objProdt.Price ?? DBNull.Value);
                     com.Parameters.AddWithValue("@DiscountAmount", (object)objProdt.DiscountAmount ?? DBNull.Value);
                     com.Parameters.AddWithValue("@CGST", (object)objProdt.CGST ?? DBNull.Value);
                     com.Parameters.AddWithValue("@SGST", (object)objProdt.SGST ?? DBNull.Value);
                     com.Parameters.AddWithValue("@IGST", (object)objProdt.IGST ?? DBNull.Value);
-                    com.Parameters.AddWithValue("@RewardPoint", (object)objProdt.RewardPoint ?? DBNull.Value);
+					com.Parameters.AddWithValue("@Profit", (object)objProdt.Profit ?? DBNull.Value);
+					com.Parameters.AddWithValue("@SalePrice", (object)objProdt.SaleAmount ?? DBNull.Value);
+					com.Parameters.AddWithValue("@RewardPoint", (object)objProdt.RewardPoint ?? DBNull.Value);
 
-                    com.Parameters.AddWithValue("@IsActive", form["IsActive"]?.Contains("true") == true);
-                    com.Parameters.AddWithValue("@IsDaily", form["IsDaily"]?.Contains("true") == true);
-                    com.Parameters.AddWithValue("@IsAlternate", form["IsAlternate"]?.Contains("true") == true);
-                    com.Parameters.AddWithValue("@IsMultiple", form["IsMultiple"]?.Contains("true") == true);
-                    com.Parameters.AddWithValue("@IsWeekDay", form["IsWeekDay"]?.Contains("true") == true);
+                    
+                    //com.Parameters.AddWithValue("@IsDaily", form["IsDaily"]?.Contains("true") == true);
+                    //com.Parameters.AddWithValue("@IsAlternate", form["IsAlternate"]?.Contains("true") == true);
+                    //com.Parameters.AddWithValue("@IsMultiple", form["IsMultiple"]?.Contains("true") == true);
+                    //com.Parameters.AddWithValue("@IsWeekDay", form["IsWeekDay"]?.Contains("true") == true);
 
-                    com.Parameters.AddWithValue("@PurchasePrice", (object)objProdt.PurchaseAmount ?? DBNull.Value);
-                    com.Parameters.AddWithValue("@SalePrice", (object)objProdt.SaleAmount ?? DBNull.Value);
-                    com.Parameters.AddWithValue("@Profit", (object)objProdt.Profit ?? DBNull.Value);
-                    com.Parameters.AddWithValue("@OrderBy", (object)objProdt.OrderBy ?? DBNull.Value);
+                    //com.Parameters.AddWithValue("@PurchasePrice", (object)objProdt.PurchaseAmount ?? DBNull.Value);
+                    
+                    
+                    //com.Parameters.AddWithValue("@OrderBy", (object)objProdt.OrderBy ?? DBNull.Value);
 
                     i = com.ExecuteNonQuery();
                     con.Close();
@@ -391,14 +404,13 @@ namespace MilkWayIndia.Controllers
                 con.Open();
                 SqlCommand cmd = new SqlCommand(@"
             SELECT 
-                pvm.Id, pvm.OrderBy, pvm.ProductId, pm.ProductName,
-                pvm.VendorId, vm.UserName,
-                pvm.RewardPoint, pvm.Price, pvm.PurchasePrice, 
-                pvm.DiscountAmount, pvm.Profit, pvm.SalePrice, pvm.Subscription AS Subscription,
-                pvm.CGST, pvm.SGST, pvm.IGST, pvm.IsActive, 
-                pvm.IsDaily, pvm.IsAlternate, pvm.IsMultiple, pvm.IsWeekDay
+                 pvm.Id, pvm.OrderBy, pvm.ProductId, pm.ProductName,
+                 pvm.VendorId, vm.UserName,
+                 pvm.RewardPoint, pvm.MRPPrice, pvm.PurchasePrice, 
+                 pvm.DiscountPrice as DiscountAmount, pvm.Profit, pvm.SellPrice, 
+                 pvm.CGST, pvm.SGST, pvm.IGST, pvm.IsActive
             FROM 
-                tbl_ProductVendor_Master pvm
+                tbl_Vendor_Product_Assign pvm
             LEFT JOIN 
                 tbl_Product_Master pm ON pm.Id = pvm.ProductId
             LEFT JOIN 
@@ -2161,7 +2173,25 @@ namespace MilkWayIndia.Controllers
             return Json(sb.ToString(), JsonRequestBehavior.AllowGet);
         }
 
-        public JsonResult GetSubCategorynew(int CategoryId)
+
+		public JsonResult setPrroductCategory(int CategoryId)
+		{
+			string code = string.Empty;
+			StringBuilder sb = new StringBuilder();
+			var dtcategory = objProdt.GetProductFromCategory(CategoryId);
+			if (dtcategory.Rows.Count > 0)
+			{
+				sb.Append("<option value='0' >---Select Product---</option>");
+				for (int i = 0; i < dtcategory.Rows.Count; i++)
+				{
+					sb.Append("<option value='" + dtcategory.Rows[i]["Id"] + "' >" + dtcategory.Rows[i]["ProductName"] + " </option> ");
+				}
+			}
+
+			return Json(sb.ToString(), JsonRequestBehavior.AllowGet);
+		}
+
+		public JsonResult GetSubCategorynew(int CategoryId)
         {
             string code = string.Empty;
             StringBuilder sb = new StringBuilder();
