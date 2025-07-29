@@ -15,19 +15,44 @@
         });
     </script>
     <script>
-        $(document).ready(function () {
-            if (!$('#IsPriceRangeApplicable').is(':checked')) {
-                $('#FromPrice, #ToPrice').prop('disabled', true);
+    $(document).ready(function () {
+        var MasterClass = document.getElementById("LiProduct");
+        if (MasterClass != null) {
+            MasterClass.className += " active";
+        }
+
+        // Handle PaymentSource change
+        $('#PaymentSourceId').change(function () {
+            var selectedId = $(this).val();
+
+            if (selectedId != "0") {
+                $.ajax({
+                    url: '@Url.Action("CheckPriceRangeApplicable", "CashBack")',
+                    type: 'POST',
+                    data: { paymentSourceId: selectedId },
+                    success: function (response) {
+                        if (response.isApplicable) {
+                            $('#FromPrice').prop('disabled', false);
+                            $('#ToPrice').prop('disabled', false);
+                        } else {
+                            $('#FromPrice').prop('disabled', true).val('');
+                            $('#ToPrice').prop('disabled', true).val('');
+                        }
+                    },
+                    error: function () {
+                        console.log('Error while checking price range applicability');
+                    }
+                });
+            } else {
+                $('#FromPrice, #ToPrice').prop('disabled', true).val('');
             }
-            $('#IsPriceRangeApplicable').change(function () {
-                if ($(this).is(':checked')) {
-                    $('#FromPrice, #ToPrice').prop('disabled', false);
-                } else {
-                    $('#FromPrice, #ToPrice').prop('disabled', true).val(''); // Disable and clear values
-                }
-            });
         });
+
+        // Optionally trigger change on page load if needed
+        $('#PaymentSourceId').trigger('change');
+    });
     </script>
+
 
     <section class="content-header">
         <h1>
@@ -75,22 +100,22 @@
                                         </div>
 
 
-                                        <div class="form-group">
-                                            <label for="inputEmail3" class="col-sm-3 control-label">Is PriceRange Applicable </label>
-                                            <div class="col-sm-5">
-                                                @Html.CheckBox("IsPriceRangeApplicable")
-                                            </div>
-                                        </div>
+                                        @*<div class="form-group">
+                                                <label for="inputEmail3" class="col-sm-3 control-label">Is PriceRange Applicable </label>
+                                                <div class="col-sm-5">
+                                                    @Html.CheckBox("IsPriceRangeApplicable")
+                                                </div>
+                                            </div>*@
                                         <div class="form-group">
                                             <label for="inputEmail3" class="col-sm-3 control-label">FromPrice </label>
                                             <div class="col-sm-6">
-                                                @Html.TextBoxFor(m => m.FromPrice, new { @class = "form-control", @id = "FromPrice", onkeypress = "return ValidateNumber(event);" })
+                                                @Html.TextBoxFor(m => m.FromPrice, new { @class = "form-control", @id = "FromPrice", onkeypress = "return ValidateNumber(event);", disabled = "disabled" })
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label for="inputEmail3" class="col-sm-3 control-label">ToPrice </label>
                                             <div class="col-sm-6">
-                                                @Html.TextBoxFor(m => m.ToPrice, new { @class = "form-control", @id = "ToPrice", onkeypress = "return ValidateNumber(event);" })
+                                                @Html.TextBoxFor(m => m.ToPrice, new { @class = "form-control", @id = "ToPrice", onkeypress = "return ValidateNumber(event);", disabled = "disabled" })
                                             </div>
                                         </div>
 

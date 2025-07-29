@@ -67,12 +67,12 @@ namespace MilkWayIndia.Controllers
                     con.Open();
                     SqlCommand com = new SqlCommand(@"
                 INSERT INTO tbl_PaymentSourceMaster (PaymentSource, IsActive)
-                VALUES (@PaymentSource, @IsActive)", con);
+                VALUES (@PaymentSource, @IsActive ,@IsPricerangeApplicable)", con);
 
                     com.Parameters.AddWithValue("@PaymentSource", paymentSource.Trim());
                     com.Parameters.AddWithValue("@IsActive", isActive);
-
-                    int i = com.ExecuteNonQuery();
+					com.Parameters.AddWithValue("@IsPricerangeApplicable", isActive);
+					int i = com.ExecuteNonQuery();
                     con.Close();
 
                     if (i > 0)
@@ -181,7 +181,8 @@ namespace MilkWayIndia.Controllers
                     ViewBag.Id = Convert.ToInt32(dr["Id"]);
                     ViewBag.PaymentSource = dr["PaymentSource"].ToString();
                     ViewBag.IsActive = Convert.ToBoolean(dr["IsActive"]);
-                }
+					ViewBag.IsPricerangeApplicable = Convert.ToBoolean(dr["IsPricerangeApplicable"]);
+				}
                 else
                 {
                     TempData["ErrorMsg"] = "Payment source not found.";
@@ -199,7 +200,8 @@ namespace MilkWayIndia.Controllers
             {
                 string paymentSource = form["PaymentSource"];
                 bool isActive = form["IsActive"]?.Contains("true") == true;
-                int id = Convert.ToInt32(form["Id"]);
+				bool IsPricerangeApplicable = form["IsPricerangeApplicable"]?.Contains("true") == true;
+				int id = Convert.ToInt32(form["Id"]);
 
                 if (string.IsNullOrWhiteSpace(paymentSource))
                 {
@@ -214,12 +216,14 @@ namespace MilkWayIndia.Controllers
                     SqlCommand com = new SqlCommand(@"
                 UPDATE tbl_PaymentSourceMaster
                 SET PaymentSource = @PaymentSource,
-                    IsActive = @IsActive
+                    IsActive = @IsActive,
+                     IsPricerangeApplicable = @IsPricerangeApplicable
                 WHERE Id = @Id", con);
 
                     com.Parameters.AddWithValue("@PaymentSource", paymentSource.Trim());
                     com.Parameters.AddWithValue("@IsActive", isActive);
-                    com.Parameters.AddWithValue("@Id", id);
+					com.Parameters.AddWithValue("@IsPricerangeApplicable", IsPricerangeApplicable);
+					com.Parameters.AddWithValue("@Id", id);
 
                     i = com.ExecuteNonQuery();
 
@@ -281,8 +285,6 @@ namespace MilkWayIndia.Controllers
                     return Redirect("/home/login?ReturnURL=" + Request.RawUrl);
 
                 int paymentSourceId = Convert.ToInt32(form["PaymentSourceId"]);
-                bool isPriceRangeApplicable = form["IsPriceRangeApplicable"]?.Contains("true") == true;
-
                 decimal? fromPrice = string.IsNullOrWhiteSpace(form["FromPrice"]) ? (decimal?)null : Convert.ToDecimal(form["FromPrice"]);
                 decimal? toPrice = string.IsNullOrWhiteSpace(form["ToPrice"]) ? (decimal?)null : Convert.ToDecimal(form["ToPrice"]);
                 decimal? percentage = string.IsNullOrWhiteSpace(form["Percentage"]) ? (decimal?)null : Convert.ToDecimal(form["Percentage"]);
@@ -300,7 +302,6 @@ namespace MilkWayIndia.Controllers
                     PaymentSourceId,
                     FromPrice,
                     ToPrice,
-                    IsPriceRangeApplicable,
                     Percentage,
                     LumsumAmount,
                     PlatformChargesPercentage,
@@ -312,7 +313,6 @@ namespace MilkWayIndia.Controllers
                     @PaymentSourceId,
                     @FromPrice,
                     @ToPrice,
-                    @IsPriceRangeApplicable,
                     @Percentage,
                     @LumsumAmount,
                     @PlatformChargesPercentage,
@@ -323,7 +323,6 @@ namespace MilkWayIndia.Controllers
                     com.Parameters.AddWithValue("@PaymentSourceId", paymentSourceId);
                     com.Parameters.AddWithValue("@FromPrice", (object)fromPrice ?? DBNull.Value);
                     com.Parameters.AddWithValue("@ToPrice", (object)toPrice ?? DBNull.Value);
-                    com.Parameters.AddWithValue("@IsPriceRangeApplicable", isPriceRangeApplicable);
                     com.Parameters.AddWithValue("@Percentage", (object)percentage ?? DBNull.Value);
                     com.Parameters.AddWithValue("@LumsumAmount", (object)lumsumAmount ?? DBNull.Value);
                     com.Parameters.AddWithValue("@PlatformChargesPercentage", (object)platformChargesPercentage ?? DBNull.Value);
@@ -377,7 +376,6 @@ namespace MilkWayIndia.Controllers
                 PSM.PaymentSource,
                 PF.FromPrice,
                 PF.ToPrice,
-                PF.IsPriceRangeApplicable,
                 PF.Percentage,
                 PF.LumsumAmount,
                 PF.PlatformChargesPercentage,
@@ -434,7 +432,29 @@ namespace MilkWayIndia.Controllers
                 return RedirectToAction("PaymentPlateFormFeesList");
             }
         }
-        [HttpGet]
+		[HttpPost]
+		public JsonResult CheckPriceRangeApplicable(int paymentSourceId)
+		{
+			bool isApplicable = false;
+
+			using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["MilkWayIndia"].ConnectionString))
+			{
+				con.Open();
+				SqlCommand cmd = new SqlCommand("SELECT ISNULL(IsPricerangeApplicable, 0) FROM tbl_PaymentSourceMaster WHERE Id = @Id", con);
+				cmd.Parameters.AddWithValue("@Id", paymentSourceId);
+
+				object result = cmd.ExecuteScalar();
+
+				if (result != null && result != DBNull.Value)
+				{
+					isApplicable = Convert.ToBoolean(result);
+				}
+			}
+
+			return Json(new { isApplicable });
+		}
+
+		[HttpGet]
         public ActionResult EditPaymentPlateFormFees(int id = 0)
         {
             if (HttpContext.Session["UserId"] == null)
@@ -477,7 +497,6 @@ namespace MilkWayIndia.Controllers
                     ViewBag.PaymentSourceId = Convert.ToInt32(dr["PaymentSourceId"]);
                     ViewBag.FromPrice = dr["FromPrice"] != DBNull.Value ? Convert.ToDecimal(dr["FromPrice"]) : (decimal?)null;
                     ViewBag.ToPrice = dr["ToPrice"] != DBNull.Value ? Convert.ToDecimal(dr["ToPrice"]) : (decimal?)null;
-                    ViewBag.IsPriceRangeApplicable = Convert.ToBoolean(dr["IsPriceRangeApplicable"]);
                     ViewBag.Percentage = dr["Percentage"] != DBNull.Value ? Convert.ToDecimal(dr["Percentage"]) : (decimal?)null;
                     ViewBag.LumsumAmount = dr["LumsumAmount"] != DBNull.Value ? Convert.ToDecimal(dr["LumsumAmount"]) : (decimal?)null;
                     ViewBag.PlatformChargesPercentage = dr["PlatformChargesPercentage"] != DBNull.Value ? Convert.ToDecimal(dr["PlatformChargesPercentage"]) : (decimal?)null;
@@ -524,7 +543,6 @@ namespace MilkWayIndia.Controllers
                     PaymentSourceId = @PaymentSourceId,
                     FromPrice = @FromPrice,
                     ToPrice = @ToPrice,
-                    IsPriceRangeApplicable = @IsPriceRangeApplicable,
                     Percentage = @Percentage,
                     LumsumAmount = @LumsumAmount,
                     PlatformChargesPercentage = @PlatformChargesPercentage,
@@ -536,7 +554,7 @@ namespace MilkWayIndia.Controllers
                     com.Parameters.AddWithValue("@PaymentSourceId", paymentSourceId);
                     com.Parameters.AddWithValue("@FromPrice", (object)fromPrice ?? DBNull.Value);
                     com.Parameters.AddWithValue("@ToPrice", (object)toPrice ?? DBNull.Value);
-                    com.Parameters.AddWithValue("@IsPriceRangeApplicable", isPriceRangeApplicable);
+                    //com.Parameters.AddWithValue("@IsPriceRangeApplicable", isPriceRangeApplicable);
                     com.Parameters.AddWithValue("@Percentage", (object)percentage ?? DBNull.Value);
                     com.Parameters.AddWithValue("@LumsumAmount", (object)lumsumAmount ?? DBNull.Value);
                     com.Parameters.AddWithValue("@PlatformChargesPercentage", (object)platformChargesPercentage ?? DBNull.Value);

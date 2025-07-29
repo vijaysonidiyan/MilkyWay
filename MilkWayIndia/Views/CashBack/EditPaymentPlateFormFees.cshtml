@@ -18,20 +18,34 @@
         });
     </script>
     <script>
-        $(document).ready(function () {
-            function togglePriceFields() {
-                if ($('#IsPriceRangeApplicable').is(':checked')) {
-                    $('#FromPrice, #ToPrice').prop('disabled', false);
-                } else {
-                    $('#FromPrice, #ToPrice').val('').prop('disabled', true);
-                }
+    $(document).ready(function () {
+        function togglePriceFields(isApplicable) {
+            if (isApplicable) {
+                $('#FromPrice, #ToPrice').prop('disabled', false);
+            } else {
+                $('#FromPrice, #ToPrice').val('').prop('disabled', true);
             }
-            togglePriceFields();
-            $('#IsPriceRangeApplicable').change(function () {
-                togglePriceFields();
-            });
+        }
+
+        $('#PaymentSourceId').change(function () {
+            var selectedId = $(this).val();
+            if (selectedId != "0") {
+                $.ajax({
+                    url: '@Url.Action("CheckPriceRangeApplicable", "CashBack")',
+                    type: 'POST',
+                    data: { paymentSourceId: selectedId },
+                    success: function (res) {
+                        togglePriceFields(res.isApplicable);
+                    }
+                });
+            } else {
+                togglePriceFields(false);
+            }
         });
+        $('#PaymentSourceId').trigger('change');
+    });
     </script>
+
 
     <section class="content-header">
         <h1>Edit PaymentPlateFormFees</h1>
@@ -83,24 +97,24 @@
                                             </div>
                                         </div>
 
-                                        <div class="form-group">
-                                            <label class="col-sm-3 control-label">Is PriceRange Applicable</label>
-                                            <div class="col-sm-6">
-                                                <input type="hidden" name="IsPriceRangeApplicable" value="false" />
-                                                <input type="checkbox" id="IsPriceRangeApplicable" name="IsPriceRangeApplicable" value="true" @(ViewBag.IsPriceRangeApplicable ? "checked" : "") />
-                                            </div>
-                                        </div>
+                                        @*<div class="form-group">
+                                                <label class="col-sm-3 control-label">Is PriceRange Applicable</label>
+                                                <div class="col-sm-6">
+                                                    <input type="hidden" name="IsPriceRangeApplicable" value="false" />
+                                                    <input type="checkbox" id="IsPriceRangeApplicable" name="IsPriceRangeApplicable" value="true" @(ViewBag.IsPriceRangeApplicable ? "checked" : "") />
+                                                </div>
+                                            </div>*@
 
                                         <div class="form-group">
                                             <label class="col-sm-3 control-label">FromPrice</label>
                                             <div class="col-sm-6">
-                                                <input type="text" id="FromPrice" name="FromPrice" class="form-control" value="@ViewBag.FromPrice"/>
+                                                <input type="text" id="FromPrice" name="FromPrice" class="form-control" value="@ViewBag.FromPrice" />
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label class="col-sm-3 control-label">ToPrice</label>
                                             <div class="col-sm-6">
-                                                <input type="text" id="ToPrice" name="ToPrice" class="form-control" value="@ViewBag.ToPrice"/>
+                                                <input type="text" id="ToPrice" name="ToPrice" class="form-control" value="@ViewBag.ToPrice" />
                                             </div>
                                         </div>
 
@@ -109,25 +123,25 @@
                                         <div class="form-group">
                                             <label class="col-sm-3 control-label">Percentage</label>
                                             <div class="col-sm-6">
-                                                <input type="text" name="Percentage" class="form-control" value="@ViewBag.Percentage"/>
+                                                <input type="text" name="Percentage" class="form-control" value="@ViewBag.Percentage" />
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label class="col-sm-3 control-label">Lumsum Amount</label>
                                             <div class="col-sm-6">
-                                                <input type="text" name="LumsumAmount" class="form-control" value="@ViewBag.LumsumAmount"/>
+                                                <input type="text" name="LumsumAmount" class="form-control" value="@ViewBag.LumsumAmount" />
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label class="col-sm-3 control-label">Platform ChargesPercentage</label>
                                             <div class="col-sm-6">
-                                                <input type="text" name="PlatformChargesPercentage" class="form-control" value="@ViewBag.PlatformChargesPercentage"/>
+                                                <input type="text" name="PlatformChargesPercentage" class="form-control" value="@ViewBag.PlatformChargesPercentage" />
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label class="col-sm-3 control-label">Platform ChargesLumsumAmount</label>
                                             <div class="col-sm-6">
-                                                <input type="text" name="PlatformChargesLumsumAmount" class="form-control" value="@ViewBag.PlatformChargesLumsumAmount"/>
+                                                <input type="text" name="PlatformChargesLumsumAmount" class="form-control" value="@ViewBag.PlatformChargesLumsumAmount" />
                                             </div>
                                         </div>
                                         <div class="form-group">
