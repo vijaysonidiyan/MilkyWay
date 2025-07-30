@@ -163,8 +163,7 @@
                                         <thead>
                                             <tr>
                                                 <th>Sort Order</th>
-                                                <th>Category</th>
-                                                <th>Sub Cat</th>
+                                                @*<th>Category</th>*@
                                                 <th>Product</th>
                                                 <th>MRP Price</th>
                                                 <th>Purchase Price</th>
@@ -198,12 +197,12 @@
                                             @foreach (System.Data.DataRow drclient in ViewBag.ProductList.Rows)
                                             {
 
-                                                string maincat = "";
-                                                maincat = drclient["Subcat"].ToString();
-                                                if (drclient["Maincat"] != null && drclient["Maincat"].ToString() != "")
-                                                {
-                                                    maincat = drclient["Maincat"].ToString();
-                                                }
+                                                //string maincat = "";
+                                                //maincat = drclient["Subcat"].ToString();
+                                                //if (drclient["Maincat"] != null && drclient["Maincat"].ToString() != "")
+                                                //{
+                                                //    maincat = drclient["Maincat"].ToString();
+                                                //}
                                                 //if (drclient["Maincat"] == null)
                                                 //{
 
@@ -234,15 +233,15 @@
 
 
 
-                                                <td>
-                                                    @maincat
-                                                </td>
+                                                @*<td>
+                                                    1
+                                                </td>*@
 
 
 
 
 
-                                                <td>@drclient["Subcat"]</td>
+                                                @*<td>@drclient["Subcat"]</td>*@
                                                 <td>
 
 

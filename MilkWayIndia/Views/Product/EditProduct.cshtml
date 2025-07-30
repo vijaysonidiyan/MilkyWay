@@ -240,27 +240,38 @@
                                                 }
                                             </div>
                                         </div>
-
                                         <div class="form-group">
-                                            <label for="inputEmail3" class="col-sm-3 control-label">Image</label>
+                                            <label class="col-sm-3 control-label">Image</label>
                                             <div class="col-sm-6">
-                                                <input type="file" name="Document1" id="Document1" /><span>Size : 300px * 300px</span><br />
+                                                <input type="file" name="Document1" id="Document1" />
+                                                <span>Size: 300px * 300px</span><br />
 
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="inputEmail3" class="col-sm-3 control-label">Other Images</label>
-                                            <div class="col-sm-6">
-                                                <input type="file" name="photos" id="photos" multiple />
-                                                <span>Size : 300px * 300px</span><br />
-                                                @if (ViewBag.Image != null && ViewBag.Image != "")
+                                                @if (!string.IsNullOrEmpty(ViewBag.MainImage))
                                                 {
                                                     <div class="form-group has-feedback" id="imgicon">
-                                                        <img src="~/image/product/@ViewBag.Image" height="100" width="100" onClick="window.open(this.src);" />
+                                                        <img src="~/image/product/@ViewBag.MainImage" height="100" width="100" onClick="window.open(this.src);" />
+                                                        <p><strong>File Name:</strong> @ViewBag.MainImage</p>
                                                     </div>
                                                 }
                                             </div>
                                         </div>
+
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label">Other Images</label>
+                                            <div class="col-sm-6">
+                                                <input type="file" name="photos" id="photos" multiple />
+                                                <span>Size: 300px * 300px</span><br />
+
+                                                @if (!string.IsNullOrEmpty(ViewBag.Image))
+                                                {
+                                                    <div class="form-group has-feedback" id="imgicon">
+                                                        <img src="~/image/product/@ViewBag.Image" height="100" width="100" onClick="window.open(this.src);" />
+                                                        <p><strong>File Name:</strong> @ViewBag.Image</p>
+                                                    </div>
+                                                }
+                                            </div>
+                                        </div>
+
 
 
 

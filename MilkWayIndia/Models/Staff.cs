@@ -39,6 +39,35 @@ namespace MilkWayIndia.Models
         public bool IsEdit { get; set; }
         public bool IsDelete { get; set; }
         public bool IsmanageFund { get; set; }
+         
+        public string NewPassword { get; set; }
+        public string ConfirmPassword { get; set; }
+        public string UsernameOrEmail { get; set; }
+        public bool UpdateStaffPassword(string usernameOrEmail, string newPassword)
+        {
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["MilkWayIndia"].ConnectionString);
+            string query = "UPDATE tbl_Staff_Master SET Password=@Password WHERE UserName=@User OR Email=@User";
+            SqlCommand cmd = new SqlCommand(query, con);
+            cmd.Parameters.AddWithValue("@Password", newPassword);
+            cmd.Parameters.AddWithValue("@User", usernameOrEmail);
+            con.Open();
+            int rows = cmd.ExecuteNonQuery();
+            con.Close();
+            return rows > 0;
+        }
+
+        public bool UpdateVendorPassword(string usernameOrEmail, string newPassword)
+        {
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["MilkWayIndia"].ConnectionString);
+            string query = "UPDATE tbl_Vendor_Master SET Password=@Password WHERE UserName=@User OR Email=@User";
+            SqlCommand cmd = new SqlCommand(query, con);
+            cmd.Parameters.AddWithValue("@Password", newPassword);
+            cmd.Parameters.AddWithValue("@User", usernameOrEmail);
+            con.Open();
+            int rows = cmd.ExecuteNonQuery();
+            con.Close();
+            return rows > 0;
+        }
         public DataTable Adminlogin(string UserName, string Password)
         {
             con.Open();
@@ -51,6 +80,26 @@ namespace MilkWayIndia.Models
             con.Close();
             return dtLoginUser;
         }
+		public DataTable GetStaffByUsernameOrEmail(string input)
+		{
+			SqlCommand cmd = new SqlCommand("SELECT * FROM tbl_Staff_Master WHERE UserName=@Input OR Email=@Input", con);
+			cmd.Parameters.AddWithValue("@Input", input);
+			SqlDataAdapter da = new SqlDataAdapter(cmd);
+			DataTable dt = new DataTable();
+			da.Fill(dt);
+			return dt;
+		}
+
+		public DataTable GetVendorByUsernameOrEmail(string input)
+		{
+			SqlCommand cmd = new SqlCommand("SELECT * FROM tbl_Vendor_Master WHERE UserName=@Input OR Email=@Input", con);
+			cmd.Parameters.AddWithValue("@Input", input);
+			SqlDataAdapter da = new SqlDataAdapter(cmd);
+			DataTable dt = new DataTable();
+			da.Fill(dt);
+			return dt;
+		}
+
 		public DataTable VendorLogin(string UserName, string Password)
 		{
 			con.Open();

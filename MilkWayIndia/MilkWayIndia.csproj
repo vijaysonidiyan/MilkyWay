@@ -1852,6 +1852,7 @@
     <Content Include="Views\CashBack\AddPaymentPlateFormFees.cshtml" />
     <Content Include="Views\CashBack\PaymentPlateFormFeesList.cshtml" />
     <Content Include="Views\CashBack\EditPaymentPlateFormFees.cshtml" />
+    <Content Include="Views\Home\ResetPassword.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

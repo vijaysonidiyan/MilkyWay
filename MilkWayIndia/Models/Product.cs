@@ -214,41 +214,39 @@ namespace MilkWayIndia.Models
             return dt;
         }
 
-        public DataTable BindProuctnew()
-        {
-            if (con.State == ConnectionState.Open)
-            {
-                con.Close();
-            }
+		public DataTable BindProuctnew()
+		{
+			if (con.State == ConnectionState.Open)
+			{
+				con.Close();
+			}
 
-            //string query = "SELECT pm.*,pcm.id,pcm.CategoryName AS Subcat,pcm.ParentCategoryId,pcm1.CategoryName AS Maincat,pcm1.Id ";
-            //query += "FROM [dbo].[tbl_Product_Category_Master] pcm   left Join ";
-            //query += "[tbl_Product_Category_Master] pcm1 On pcm1.Id=pcm.ParentCategoryId ";
-            //query += "inner Join tbl_Product_Master pm On pcm.Id=pm.CategoryId order by pm.OrderBy ASC OFFSET 0 ROWS FETCH NEXT 50 ROWS ONLY";
+			string query = @"
+        SELECT 
+            Pm.*, 
+            Pcm.Id, 
+            Pcm.CategoryName AS Maincat
+        FROM 
+            [dbo].[tbl_Product_Master] Pm
+        INNER JOIN 
+            [dbo].[tbl_Product_Category_Master] Pcm ON Pm.CategoryId = Pcm.Id
+        ORDER BY 
+            Pm.OrderBy ASC
+        OFFSET 0 ROWS FETCH NEXT 50 ROWS ONLY";
 
-            string query = "SELECT Pm.*,Pcm.id,Psm.SubCatName AS Subcat,Pcm.ParentCategory AS Maincat ";
-            query += "FROM [dbo].[tbl_Product_Master] Pm   inner Join ";
-            query += "[tbl_Parent_Category_Master] Pcm On Pm.CategoryId=Pcm.Id Inner Join ";
-            query += "[tbl_Product_Subcat_Master] Psm On Pm.SubcatId=Psm.Id ";
-            query += " order by Pm.OrderBy ASC OFFSET 0 ROWS FETCH NEXT 50 ROWS ONLY";
+			con.Open();
 
-            con.Open();
+			SqlCommand cmd = new SqlCommand(query, con);
+			cmd.CommandType = CommandType.Text;
 
+			SqlDataAdapter da = new SqlDataAdapter(cmd);
+			DataTable dt = new DataTable();
+			da.Fill(dt);
+			con.Close();
+			return dt;
+		}
 
-            SqlCommand cmd = new SqlCommand(query, con);
-            cmd.CommandType = CommandType.Text;
-            //if (!string.IsNullOrEmpty(Id.ToString()))
-            //    cmd.Parameters.AddWithValue("@Id", Id);
-            //else
-            //    cmd.Parameters.AddWithValue("@Id", DBNull.Value);
-            SqlDataAdapter da = new SqlDataAdapter(cmd);
-            DataTable dt = new DataTable();
-            da.Fill(dt);
-            con.Close();
-            return dt;
-        }
-
-        public DataTable BindProductVendorList()
+		public DataTable BindProductVendorList()
         {
             if (con.State == ConnectionState.Open)
             {
@@ -1150,10 +1148,10 @@ namespace MilkWayIndia.Models
         public int DeleteProductVendor(int id, int orderBy)
         {
             con.Open();
-            SqlCommand cmd = new SqlCommand("DELETE FROM tbl_ProductVendor_Master WHERE Id = " + id, con);
+            SqlCommand cmd = new SqlCommand("DELETE FROM tbl_Vendor_Product_Assign WHERE Id = " + id, con);
             int result = cmd.ExecuteNonQuery();
 
-            SqlCommand cmd1 = new SqlCommand("UPDATE tbl_ProductVendor_Master SET OrderBy = OrderBy - 1 WHERE Id <> " + id + " AND OrderBy >= " + orderBy, con);
+            SqlCommand cmd1 = new SqlCommand("UPDATE tbl_Vendor_Product_Assign SET OrderBy = OrderBy - 1 WHERE Id <> " + id + " AND OrderBy >= " + orderBy, con);
             cmd1.CommandType = CommandType.Text;
             int affected = cmd1.ExecuteNonQuery();
 
@@ -1196,116 +1194,118 @@ namespace MilkWayIndia.Models
             return i;
         }
 
-        public int InsertProduct(Product obj)
-        {
-            int i = 0;
-            try
+            public int InsertProduct(Product obj)
             {
-                con.Open();
-                SqlCommand com = new SqlCommand("Product_Insert", con);
-                com.CommandType = CommandType.StoredProcedure;
-                if (!string.IsNullOrEmpty(obj.CategoryId.ToString()))
-                    com.Parameters.AddWithValue("@CategoryId", obj.CategoryId);
-                else
-                    com.Parameters.AddWithValue("@CategoryId", DBNull.Value);
-                if (!string.IsNullOrEmpty(obj.ProductName))
-                    com.Parameters.AddWithValue("@ProductName", obj.ProductName);
-                else
-                    com.Parameters.AddWithValue("@ProductName", DBNull.Value);
-                if (!string.IsNullOrEmpty(obj.Code))
-                    com.Parameters.AddWithValue("@Code", obj.Code);
-                else
-                    com.Parameters.AddWithValue("@Code", DBNull.Value);
-                if (!string.IsNullOrEmpty(obj.Price.ToString()))
-                    com.Parameters.AddWithValue("@Price", obj.Price);
-                else
-                    com.Parameters.AddWithValue("@Price", 0);
-                if (!string.IsNullOrEmpty(obj.DiscountAmount.ToString()))
-                    com.Parameters.AddWithValue("@DiscountAmount", obj.DiscountAmount);
-                else
-                    com.Parameters.AddWithValue("@DiscountAmount", 0);
-                if (!string.IsNullOrEmpty(obj.CGST.ToString()))
-                    com.Parameters.AddWithValue("@CGST", obj.CGST);
-                else
-                    com.Parameters.AddWithValue("@CGST", 0);
-                if (!string.IsNullOrEmpty(obj.SGST.ToString()))
-                    com.Parameters.AddWithValue("@SGST", obj.SGST);
-                else
-                    com.Parameters.AddWithValue("@SGST", 0);
-                if (!string.IsNullOrEmpty(obj.IGST.ToString()))
-                    com.Parameters.AddWithValue("@IGST", obj.IGST);
-                else
-                    com.Parameters.AddWithValue("@IGST", 0);
-                if (!string.IsNullOrEmpty(obj.RewardPoint.ToString()))
-                    com.Parameters.AddWithValue("@RewardPoint", obj.RewardPoint);
-                else
-                    com.Parameters.AddWithValue("@RewardPoint", 0);
-                if (!string.IsNullOrEmpty(obj.Detail))
-                    com.Parameters.AddWithValue("@Detail", obj.Detail);
-                else
-                    com.Parameters.AddWithValue("@Detail", DBNull.Value);
-                if (!string.IsNullOrEmpty(obj.Image))
-                    com.Parameters.AddWithValue("@Image", obj.Image);
-                else
-                    com.Parameters.AddWithValue("@Image", DBNull.Value);
-                if (!string.IsNullOrEmpty(obj.PurchaseAmount.ToString()))
-                    com.Parameters.AddWithValue("@PurchasePrice", obj.PurchaseAmount);
-                else
-                    com.Parameters.AddWithValue("@PurchasePrice", 0);
-                if (!string.IsNullOrEmpty(obj.SaleAmount.ToString()))
-                    com.Parameters.AddWithValue("@SalePrice", obj.SaleAmount);
-                else
-                    com.Parameters.AddWithValue("@SalePrice", 0);
-                if (!string.IsNullOrEmpty(obj.Profit.ToString()))
-                    com.Parameters.AddWithValue("@Profit", obj.Profit);
-                else
-                    com.Parameters.AddWithValue("@Profit", 0);
-                if (!string.IsNullOrEmpty(obj.Subscription.ToString()))
-                    com.Parameters.AddWithValue("@Subscription", obj.Subscription);
-                else
-                    com.Parameters.AddWithValue("@Subscription", 0);
-                if (!string.IsNullOrEmpty(obj.OrderBy.ToString()))
-                    com.Parameters.AddWithValue("@OrderBy", obj.OrderBy);
-                else
-                    com.Parameters.AddWithValue("@OrderBy", 0);
+                int i = 0;
+                try
+                {
+                    con.Open();
+                    SqlCommand com = new SqlCommand("Product_Insert", con);
+                    com.CommandType = CommandType.StoredProcedure;
+                    if (!string.IsNullOrEmpty(obj.CategoryId.ToString()))
+                        com.Parameters.AddWithValue("@CategoryId", obj.CategoryId);
+                    else
+                        com.Parameters.AddWithValue("@CategoryId", DBNull.Value);
+                    if (!string.IsNullOrEmpty(obj.ProductName))
+                        com.Parameters.AddWithValue("@ProductName", obj.ProductName);
+                    else
+                        com.Parameters.AddWithValue("@ProductName", DBNull.Value);
+                    if (!string.IsNullOrEmpty(obj.Code))
+                        com.Parameters.AddWithValue("@Code", obj.Code);
+                    else
+                        com.Parameters.AddWithValue("@Code", DBNull.Value);
+                    if (!string.IsNullOrEmpty(obj.Price.ToString()))
+                        com.Parameters.AddWithValue("@Price", obj.Price);
+                    else
+                        com.Parameters.AddWithValue("@Price", 0);
+                    if (!string.IsNullOrEmpty(obj.DiscountAmount.ToString()))
+                        com.Parameters.AddWithValue("@DiscountAmount", obj.DiscountAmount);
+                    else
+                        com.Parameters.AddWithValue("@DiscountAmount", 0);
+                    if (!string.IsNullOrEmpty(obj.CGST.ToString()))
+                        com.Parameters.AddWithValue("@CGST", obj.CGST);
+                    else
+                        com.Parameters.AddWithValue("@CGST", 0);
+                    if (!string.IsNullOrEmpty(obj.SGST.ToString()))
+                        com.Parameters.AddWithValue("@SGST", obj.SGST);
+                    else
+                        com.Parameters.AddWithValue("@SGST", 0);
+                    if (!string.IsNullOrEmpty(obj.IGST.ToString()))
+                        com.Parameters.AddWithValue("@IGST", obj.IGST);
+                    else
+                        com.Parameters.AddWithValue("@IGST", 0);
+                    if (!string.IsNullOrEmpty(obj.RewardPoint.ToString()))
+                        com.Parameters.AddWithValue("@RewardPoint", obj.RewardPoint);
+                    else
+                        com.Parameters.AddWithValue("@RewardPoint", 0);
+                    if (!string.IsNullOrEmpty(obj.Detail))
+                        com.Parameters.AddWithValue("@Detail", obj.Detail);
+                    else
+                        com.Parameters.AddWithValue("@Detail", DBNull.Value);
+                    if (!string.IsNullOrEmpty(obj.Image))
+                        com.Parameters.AddWithValue("@Image", obj.Image);
+                    else
+                        com.Parameters.AddWithValue("@Image", DBNull.Value);
 
-                if (!string.IsNullOrEmpty(obj.YoutubeTitle))
-                    com.Parameters.AddWithValue("@YoutubeTitle", obj.YoutubeTitle);
-                else
-                    com.Parameters.AddWithValue("@YoutubeTitle", DBNull.Value);
-                if (!string.IsNullOrEmpty(obj.YoutubeURL))
-                    com.Parameters.AddWithValue("@YoutubeURL", obj.YoutubeURL);
-                else
-                    com.Parameters.AddWithValue("@YoutubeURL", DBNull.Value);
-                com.Parameters.AddWithValue("@IsActive", obj.IsActive);
-                com.Parameters.AddWithValue("@IsDaily", obj.IsDaily);
+                    if (!string.IsNullOrEmpty(obj.PurchaseAmount.ToString()))
+                        com.Parameters.AddWithValue("@PurchasePrice", obj.PurchaseAmount);
+                    else
+                        com.Parameters.AddWithValue("@PurchasePrice", 0);
+                    if (!string.IsNullOrEmpty(obj.SaleAmount.ToString()))
+                        com.Parameters.AddWithValue("@SalePrice", obj.SaleAmount);
+                    else
+                        com.Parameters.AddWithValue("@SalePrice", 0);
+                    if (!string.IsNullOrEmpty(obj.Profit.ToString()))
+                        com.Parameters.AddWithValue("@Profit", obj.Profit);
+                    else
+                        com.Parameters.AddWithValue("@Profit", 0);
+                    if (!string.IsNullOrEmpty(obj.Subscription.ToString()))
+                        com.Parameters.AddWithValue("@Subscription", obj.Subscription);
+                    else
+                        com.Parameters.AddWithValue("@Subscription", 0);
+                    if (!string.IsNullOrEmpty(obj.OrderBy.ToString()))
+                        com.Parameters.AddWithValue("@OrderBy", obj.OrderBy);
+                    else
+                        com.Parameters.AddWithValue("@OrderBy", 0);
 
-                com.Parameters.AddWithValue("@IsAlternate", obj.IsAlternate);
-                com.Parameters.AddWithValue("@IsMultiple", obj.IsMultipleDay);
-                com.Parameters.AddWithValue("@IsWeeklyDay", obj.IsWeeklyDay);
-                com.Parameters.AddWithValue("@Id", SqlDbType.Int).Direction = ParameterDirection.Output;
+                    if (!string.IsNullOrEmpty(obj.YoutubeTitle))
+                        com.Parameters.AddWithValue("@YoutubeTitle", obj.YoutubeTitle);
+                    else
+                        com.Parameters.AddWithValue("@YoutubeTitle", DBNull.Value);
+                    if (!string.IsNullOrEmpty(obj.YoutubeURL))
+                        com.Parameters.AddWithValue("@YoutubeURL", obj.YoutubeURL);
+                    else
+                        com.Parameters.AddWithValue("@YoutubeURL", DBNull.Value);
+                    com.Parameters.AddWithValue("@IsActive", obj.IsActive);
+                    com.Parameters.AddWithValue("@IsDaily", obj.IsDaily);
+
+                    com.Parameters.AddWithValue("@IsAlternate", obj.IsAlternate);
+                    com.Parameters.AddWithValue("@IsMultiple", obj.IsMultipleDay);
+                    com.Parameters.AddWithValue("@IsWeeklyDay", obj.IsWeeklyDay);
+
+                    com.Parameters.AddWithValue("@Id", SqlDbType.Int).Direction = ParameterDirection.Output;
 
                 
                
 
-                i = com.ExecuteNonQuery();
-                i = Convert.ToInt32(com.Parameters["@Id"].Value);
+                    i = com.ExecuteNonQuery();
+                    i = Convert.ToInt32(com.Parameters["@Id"].Value);
 
-                SqlCommand cmd1 = new SqlCommand("UPDATE tbl_Product_Master set OrderBy=OrderBy +1 where Id<>" + i + " AND OrderBy>="+ obj.OrderBy+"", con);
-
-
-                cmd1.CommandType = CommandType.Text;
-               int so1 = cmd1.ExecuteNonQuery();
+                    SqlCommand cmd1 = new SqlCommand("UPDATE tbl_Product_Master set OrderBy=OrderBy +1 where Id<>" + i + " AND OrderBy>="+ obj.OrderBy+"", con);
 
 
+                    cmd1.CommandType = CommandType.Text;
+                   int so1 = cmd1.ExecuteNonQuery();
 
-                con.Close();
+
+
+                    con.Close();
+                }
+                catch (Exception ex)
+                { }
+                return i;
+
             }
-            catch (Exception ex)
-            { }
-            return i;
-
-        }
 
         public DataTable ProductInTransaction(int pid)
         {

@@ -65,6 +65,8 @@ namespace MilkWayIndia.Controllers
 
 			DataTable dtcategory = new DataTable();
 			dtcategory = objProdt.GetAllMaincategory();
+
+
 			ViewBag.Category = dtcategory;
 
 			return View();
@@ -111,6 +113,7 @@ namespace MilkWayIndia.Controllers
                 category = Request["ddlCategory"];
                 objProdt.CategoryId = Convert.ToInt32(category);
             }
+
             string active = Request["IsActive"].Split(',')[0];
             if (!string.IsNullOrEmpty(active))
             {
@@ -187,8 +190,10 @@ namespace MilkWayIndia.Controllers
                         }
                     }
                 }
-                //int addresult = 0;
-                int addresult = objProdt.InsertProduct(objProdt);
+				
+
+				//int addresult = 0;
+				int addresult = objProdt.InsertProduct(objProdt);
 
                 foreach (HttpPostedFileBase file in photos)
                 {
@@ -201,8 +206,8 @@ namespace MilkWayIndia.Controllers
 
                         var ServerSavePath = Path.Combine(Server.MapPath("~/image/product/") + fname);
                         file.SaveAs(ServerSavePath);
-                        _clsCommon.insertdata("tbl_Product_Images", "(ProductId,Image,IsDefault)", "'" + addresult + "','" + fname + "','false'");
-                    }
+						_clsCommon.updatedata("tbl_Product_Master", "MainImage='" + fname + "'", "Id=" + addresult);
+					}
                 }
 
                 if (addresult > 0)
@@ -272,9 +277,9 @@ namespace MilkWayIndia.Controllers
 
                     SqlCommand com = new SqlCommand(@"
                 INSERT INTO tbl_Vendor_Product_Assign
-                (SectorId,VendorId,CategoryId,ProductId,IsActive,MRPPrice,DiscountPrice,CGST,SGST,IGST,Profit,SellPrice,RewardPoint)
+                (SectorId,VendorId,CategoryId,ProductId,IsActive,MRPPrice,DiscountPrice,CGST,SGST,IGST,Profit,SellPrice,RewardPoint,IsDaily, IsAlternate, IsMultiple, IsWeekDay,OrderBy,PurchasePrice,Subscription,SubCategoryId)
                 VALUES
-                (@SectorId,@VendorId,@CategoryId,@ProductId,@IsActive,@MRPPrice,@DiscountPrice,@CGST,@SGST,@IGST,@Profit,@SellPrice,@RewardPoint)", con);
+                (@SectorId,@VendorId,@CategoryId,@ProductId,@IsActive,@MRPPrice,@DiscountPrice,@CGST,@SGST,@IGST,@Profit,@SellPrice,@RewardPoint,@IsDaily, @IsAlternate, @IsMultiple, @IsWeekDay,@OrderBy,@PurchasePrice,@Subscription,@SubCategoryId)", con);
                 //(ProductId, VendorId, Price, DiscountAmount, CGST, SGST, IGST, RewardPoint,
                 // IsActive, IsDaily, IsAlternate, IsMultiple, IsWeekDay,
                 // PurchasePrice, SalePrice, Profit, OrderBy)
@@ -285,28 +290,25 @@ namespace MilkWayIndia.Controllers
 
                     com.Parameters.AddWithValue("@SectorId", Convert.ToInt32(Session["VendorSectorId"]));
 					com.Parameters.AddWithValue("@VendorId", vendorId);
-					com.Parameters.AddWithValue("@CategoryId", (object)objProdt.CategoryId ?? DBNull.Value);
+					com.Parameters.AddWithValue("@CategoryId", (object)objProdt.ParentCategoryId ?? DBNull.Value);
+					com.Parameters.AddWithValue("@SubCategoryId", (object)objProdt.CategoryId ?? DBNull.Value);
 					com.Parameters.AddWithValue("@ProductId", (object)objProdt.Id ?? DBNull.Value);
 					com.Parameters.AddWithValue("@IsActive", form["IsActive"]?.Contains("true") == true);					
                     com.Parameters.AddWithValue("@MRPPrice", (object)objProdt.Price ?? DBNull.Value);
-                    com.Parameters.AddWithValue("@DiscountAmount", (object)objProdt.DiscountAmount ?? DBNull.Value);
+                    com.Parameters.AddWithValue("@DiscountPrice", (object)objProdt.DiscountAmount ?? DBNull.Value);
                     com.Parameters.AddWithValue("@CGST", (object)objProdt.CGST ?? DBNull.Value);
-                    com.Parameters.AddWithValue("@SGST", (object)objProdt.SGST ?? DBNull.Value);
+					com.Parameters.AddWithValue("@Subscription", (object)objProdt.SGST ?? DBNull.Value);
+					com.Parameters.AddWithValue("@SGST", (object)objProdt.SGST ?? DBNull.Value);
                     com.Parameters.AddWithValue("@IGST", (object)objProdt.IGST ?? DBNull.Value);
 					com.Parameters.AddWithValue("@Profit", (object)objProdt.Profit ?? DBNull.Value);
-					com.Parameters.AddWithValue("@SalePrice", (object)objProdt.SaleAmount ?? DBNull.Value);
+					com.Parameters.AddWithValue("@SellPrice", (object)objProdt.SaleAmount ?? DBNull.Value);
 					com.Parameters.AddWithValue("@RewardPoint", (object)objProdt.RewardPoint ?? DBNull.Value);
-
-                    
-                    //com.Parameters.AddWithValue("@IsDaily", form["IsDaily"]?.Contains("true") == true);
-                    //com.Parameters.AddWithValue("@IsAlternate", form["IsAlternate"]?.Contains("true") == true);
-                    //com.Parameters.AddWithValue("@IsMultiple", form["IsMultiple"]?.Contains("true") == true);
-                    //com.Parameters.AddWithValue("@IsWeekDay", form["IsWeekDay"]?.Contains("true") == true);
-
-                    //com.Parameters.AddWithValue("@PurchasePrice", (object)objProdt.PurchaseAmount ?? DBNull.Value);
-                    
-                    
-                    //com.Parameters.AddWithValue("@OrderBy", (object)objProdt.OrderBy ?? DBNull.Value);
+                    com.Parameters.AddWithValue("@IsDaily", form["IsDaily"]?.Contains("true") == true);
+                    com.Parameters.AddWithValue("@IsAlternate", form["IsAlternate"]?.Contains("true") == true);
+                    com.Parameters.AddWithValue("@IsMultiple", form["IsMultiple"]?.Contains("true") == true);
+                    com.Parameters.AddWithValue("@IsWeekDay", form["IsWeekDay"]?.Contains("true") == true);
+                    com.Parameters.AddWithValue("@PurchasePrice", (object)objProdt.PurchaseAmount ?? DBNull.Value);
+                    com.Parameters.AddWithValue("@OrderBy", (object)objProdt.OrderBy ?? DBNull.Value);
 
                     i = com.ExecuteNonQuery();
                     con.Close();
@@ -594,7 +596,11 @@ namespace MilkWayIndia.Controllers
                     ViewBag.Image = dt.Rows[0]["Image"].ToString();
                 else
                     ViewBag.Image = "";
-                if (!string.IsNullOrEmpty(dt.Rows[0]["YoutubeTitle"].ToString()))
+				if (!string.IsNullOrEmpty(dt.Rows[0]["MainImage"].ToString()))
+					ViewBag.MainImage = dt.Rows[0]["MainImage"].ToString();
+				else
+					ViewBag.MainImage = "";
+				if (!string.IsNullOrEmpty(dt.Rows[0]["YoutubeTitle"].ToString()))
                     ViewBag.YoutubeTitle = dt.Rows[0]["YoutubeTitle"].ToString();
                 else
                     ViewBag.YoutubeTitle = "";
@@ -655,63 +661,76 @@ namespace MilkWayIndia.Controllers
             return View();
         }
 
-        [HttpGet]
-        public ActionResult EditProductVendor(int id = 0)
-        {
-            if (HttpContext.Session["UserId"] == null)
-                return Redirect("/home/login?ReturnURL=" + Request.RawUrl);
-            // Prepare product list for dropdown
-            DataTable productData = objProdt.GetAllProducts();
-            List<SelectListItem> productList = new List<SelectListItem>();
+		[HttpGet]
+		public ActionResult EditProductVendor(int id = 0)
+		{
+			if (HttpContext.Session["UserId"] == null)
+				return Redirect("/home/login?ReturnURL=" + Request.RawUrl);
 
-       
-            ViewBag.SelectedProductId = null;
+			
+			DataTable categoryData = _clsCommon.selectwhere("*", "tbl_Product_Category_Master", "");
+			ViewBag.Category = categoryData;
 
-            // If editing, load existing values
-            if (id > 0)
-            {
-                DataTable dt = _clsCommon.selectwhere("*", "tbl_ProductVendor_Master", $"Id='{id}'");
-                if (dt.Rows.Count > 0)
-                {
-                    DataRow dr = dt.Rows[0];
+			
+			DataTable productData = objProdt.GetAllProducts();
+			ViewBag.Products = productData;
+			ViewBag.SelectedProductId = null;
+			ViewBag.CategorId = null;
+			ViewBag.SubCategoryId = null;
 
-                    ViewBag.SelectedProductId = Convert.ToInt32(dr["ProductId"]);
+			
+			if (id > 0)
+			{
+				DataTable dt = _clsCommon.selectwhere("*", "tbl_Vendor_Product_Assign", $"Id='{id}'");
+				if (dt.Rows.Count > 0)
+				{
+					DataRow dr = dt.Rows[0];
 
-                    string productName = "";
-                    DataRow[] matchingRows = productData.Select("Id = '" + ViewBag.SelectedProductId + "'");
-                    if (matchingRows.Length > 0)
-                    {
-                        productName = matchingRows[0]["ProductName"].ToString();
-                    }
-                    ViewBag.ProductName = productName;
-                    Console.WriteLine($"Product Name set in ViewBag: {ViewBag.ProductName}");
-                    ViewBag.Price = dr["Price"].ToString();
-                    ViewBag.DiscountAmount = dr["DiscountAmount"].ToString();
-                    ViewBag.CGST = dr["CGST"].ToString();
-                    ViewBag.SGST = dr["SGST"].ToString();
-                    ViewBag.IGST = dr["IGST"].ToString();
-                    ViewBag.RewardPoint = dr["RewardPoint"].ToString();
-                    ViewBag.IsActive = Convert.ToBoolean(dr["IsActive"]);
-                    ViewBag.IsDaily = Convert.ToBoolean(dr["IsDaily"]);
-                    ViewBag.IsAlternate = Convert.ToBoolean(dr["IsAlternate"]);
-                    ViewBag.IsMultiple = Convert.ToBoolean(dr["IsMultiple"]);
-                    ViewBag.IsWeekDay = Convert.ToBoolean(dr["IsWeekDay"]);
-                    ViewBag.PurchaseAmount = dr["PurchasePrice"].ToString();
-                    ViewBag.SaleAmount = dr["SalePrice"].ToString();
-                    ViewBag.Subscription = dr["Subscription"].ToString();
+					ViewBag.SelectedProductId = Convert.ToInt32(dr["ProductId"]);
+					ViewBag.CategorId = Convert.ToInt32(dr["CategoryId"]);
+					ViewBag.SubCategoryId = Convert.ToInt32(dr["SubCategoryId"]);
 
-                    ViewBag.Profit = dr["Profit"].ToString();
-                    ViewBag.OrderBy = dr["OrderBy"].ToString();
-                }
-            }
+					// Set other data for text fields/checkboxes
+					ViewBag.Price = dr["MRPPrice"].ToString();
+					ViewBag.DiscountAmount = dr["DiscountPrice"].ToString();
+					ViewBag.CGST = dr["CGST"].ToString();
+					ViewBag.SGST = dr["SGST"].ToString();
+					ViewBag.IGST = dr["IGST"].ToString();
+					ViewBag.RewardPoint = dr["RewardPoint"].ToString();
+					ViewBag.IsActive = Convert.ToBoolean(dr["IsActive"]);
+					ViewBag.IsDaily = Convert.ToBoolean(dr["IsDaily"]);
+					ViewBag.IsAlternate = Convert.ToBoolean(dr["IsAlternate"]);
+					ViewBag.IsMultiple = Convert.ToBoolean(dr["IsMultiple"]);
+					ViewBag.IsWeekDay = Convert.ToBoolean(dr["IsWeekDay"]);
+					ViewBag.PurchaseAmount = dr["PurchasePrice"].ToString();
+					ViewBag.SaleAmount = dr["SellPrice"].ToString();
+					ViewBag.Subscription = dr["Subscription"].ToString();
+					ViewBag.Profit = dr["Profit"].ToString();
+					ViewBag.OrderBy = dr["OrderBy"].ToString();
+				}
+			}
+			if (ViewBag.CategorId != null)
+			{
+				DataTable subcategoryData = _clsCommon.selectwhere("*", "tbl_Product_Category_Master", $"Id = '{ViewBag.CategorId}'");
+				ViewBag.SubCategory = subcategoryData;
+			}
+			if (ViewBag.SubCategoryId != null)
+			{
+				DataTable subcategoryData = _clsCommon.selectwhere("*", "tbl_Product_Category_Master", $"Id = '{ViewBag.SubCategoryId}'");
+				ViewBag.SubCategory = subcategoryData;
+			}
+			else
+			{
+				ViewBag.SubCategory = new DataTable();
+			}
 
-            return View();
-        }
+			return View();
+		}
 
 
 
 
-        [HttpPost]
+		[HttpPost]
         public ActionResult EditProduct(Product objProdt, FormCollection form, HttpPostedFileBase Document1, HttpPostedFileBase[] photos)
         {
             //if (Request.Cookies["gstusr"] == null)
@@ -971,22 +990,21 @@ namespace MilkWayIndia.Controllers
                         }
                     }
 
-                    foreach (HttpPostedFileBase file in photos)
-                    {
-                        if (file != null)
-                        {
-                            string fileName = Path.GetFileNameWithoutExtension(file.FileName);
-                            fileName = dHelper.RemoveIllegalCharacters(fileName);
-                            string _ext = Path.GetExtension(file.FileName);
-                            fname = fileName + "_" + DateTime.Now.ToString("yyyyMMdd-hhmmssfff") + _ext;
+					foreach (HttpPostedFileBase file in photos)
+					{
+						if (file != null)
+						{
+							string fileName = Path.GetFileNameWithoutExtension(file.FileName);
+							fileName = dHelper.RemoveIllegalCharacters(fileName);
+							string _ext = Path.GetExtension(file.FileName);
+							fname = fileName + "_" + DateTime.Now.ToString("yyyyMMdd-hhmmssfff") + _ext;
 
-                            var ServerSavePath = Path.Combine(Server.MapPath("~/image/product/") + fname);
-                            file.SaveAs(ServerSavePath);
-                            _clsCommon.insertdata("tbl_Product_Images", "(ProductId,Image,IsDefault)", "'" + objProdt.Id + "','" + fname + "','false'");
-                        }
-                    }
-
-                    if (addresult > 0)
+							var ServerSavePath = Path.Combine(Server.MapPath("~/image/product/") + fname);
+							file.SaveAs(ServerSavePath);
+							_clsCommon.updatedata("tbl_Product_Master", "MainImage='" + fname + "'", "Id=" + objProdt.Id);
+						}
+					}
+					if (addresult > 0)
                     {
                         ViewBag.SuccessMsg = "Product Updated Successfully!!!";
                     }
@@ -1256,10 +1274,12 @@ namespace MilkWayIndia.Controllers
                 {
                     con.Open();
                     SqlCommand com = new SqlCommand(@"
-                UPDATE tbl_ProductVendor_Master SET
+                UPDATE tbl_Vendor_Product_Assign SET
+                    CategoryId = @ParentCategoryId,
+                    SubCategoryId = @CategoryId,
                     ProductId = @ProductId,
-                    Price = @Price,
-                    DiscountAmount = @DiscountAmount,
+                    MRPPrice = @Price,
+                    DiscountPrice = @DiscountAmount,
                     CGST = @CGST,
                     SGST = @SGST,
                     IGST = @IGST,
@@ -1270,7 +1290,7 @@ namespace MilkWayIndia.Controllers
                     IsMultiple = @IsMultiple,
                     IsWeekDay = @IsWeekDay,
                     PurchasePrice = @PurchasePrice,
-                    SalePrice = @SalePrice,
+                    SellPrice = @SalePrice,
                     Subscription = @Subscription,
                     Profit = @Profit,
                     OrderBy = @OrderBy
@@ -1280,7 +1300,9 @@ namespace MilkWayIndia.Controllers
                     com.Parameters.AddWithValue("@Id", objProdt.Id); // Assuming objProdt.Id is the record ID in tbl_ProductVendor_Master
 
                     com.Parameters.AddWithValue("@ProductId", (object)objProdt.Id ?? DBNull.Value);
-                    com.Parameters.AddWithValue("@Price", (object)objProdt.Price ?? DBNull.Value);
+					com.Parameters.AddWithValue("@ParentCategoryId", (object)objProdt.Id ?? DBNull.Value);
+					com.Parameters.AddWithValue("@CategoryId", (object)objProdt.Id ?? DBNull.Value);
+					com.Parameters.AddWithValue("@Price", (object)objProdt.Price ?? DBNull.Value);
                     com.Parameters.AddWithValue("@DiscountAmount", (object)objProdt.DiscountAmount ?? DBNull.Value);
                     com.Parameters.AddWithValue("@CGST", (object)objProdt.CGST ?? DBNull.Value);
                     com.Parameters.AddWithValue("@SGST", (object)objProdt.SGST ?? DBNull.Value);

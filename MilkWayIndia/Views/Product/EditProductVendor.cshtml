@@ -26,7 +26,6 @@
             <li class="active">Product</li>
         </ol>
     </section>
-    <!-- Main content -->
     <section class="content">
         <div class="col-md-12">
             <div class="box box-info">
@@ -41,180 +40,186 @@
                 <div class="form-horizontal">
                     @using (Html.BeginForm("EditProductVendor", "Product", FormMethod.Post, new { enctype = "multipart/form-data" }))
                     {
+                        @* Add a hidden field for the ID if you're updating an existing record *@
+                        @Html.HiddenFor(m => m.Id)
                         <div class="box-body">
                             <div class="row">
                                 <div class="col-md-12">
                                     <div id="SuccessMsg" style="color: red">@ViewBag.SuccessMsg</div>
-                                    @*@Html.HiddenFor(m => m.Id, new { @Value = ViewBag.ProductId })*@
-                                <div class="col-md-6">
+                                    <div class="col-md-6">
 
-                                    <div class="form-group">
-                                        <label for="ProductId" class="col-sm-3 control-label">Product</label>
-                                        <div class="col-sm-6">
-                                          
-                                                <select class="form-control" disabled>
-                                                    <option selected>@ViewBag.ProductName</option>
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label">Category</label>
+                                            <div class="col-sm-6">
+                                                <select id="ddlCategory" name="CategoryId" class="form-control">
+                                                    <option value="0">---Select---</option>
+                                                    @if (ViewBag.Category != null)
+                                                    {
+                                                        foreach (System.Data.DataRow dr in ViewBag.Category.Rows)
+                                                        {
+                                                            <option value="@dr["Id"]" @(ViewBag.CategorId != null && ViewBag.CategorId.ToString() == dr["Id"].ToString() ? "selected" : "")>
+                                                                @dr["CategoryName"]
+                                                            </option>
+                                                        }
+                                                    }
                                                 </select>
-                                                <input type="hidden" name="ProductId" value="@ViewBag.SelectedProductId" />
-                                           
+                                            </div>
                                         </div>
-                                    </div>
 
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label">Sub Category</label>
+                                            <div class="col-sm-6">
+                                                <select id="ddlSubCategory" name="SubCategoryId" class="form-control">
+                                                    <option value="0">---Select---</option>
+                                                    @if (ViewBag.SubCategory != null)
+                                                    {
+                                                        foreach (System.Data.DataRow dr in ViewBag.SubCategory.Rows)
+                                                        {
+                                                            <option value="@dr["Id"]" @(ViewBag.SubCategoryId != null && ViewBag.SubCategoryId.ToString() == dr["Id"].ToString() ? "selected" : "")>
+                                                                @dr["CategoryName"]
+                                                            </option>
+                                                        }
+                                                    }
+                                                </select>
+                                            </div>
+                                        </div>
 
-                                    <div class="form-group">
-                                        <label for="inputEmail3" class="col-sm-3 control-label">Order By</label>
-                                        <div class="col-sm-6">
-                                            @Html.TextBoxFor(m => m.OrderBy, new { @class = "form-control", @id = "OrderBy", onkeypress = "return ValidateNumber(event);", @Value = ViewBag.OrderBy })
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label">Product</label>
+                                            <div class="col-sm-6">
+                                                <select id="ProductId" name="ProductId" class="form-control">
+                                                    <option value="0">---Select---</option>
+                                                    @if (ViewBag.Products != null)
+                                                    {
+                                                        foreach (System.Data.DataRow dr in ViewBag.Products.Rows)
+                                                        {
+                                                            <option value="@dr["Id"]" @(ViewBag.SelectedProductId != null && ViewBag.SelectedProductId.ToString() == dr["Id"].ToString() ? "selected" : "")>
+                                                                @dr["ProductName"]
+                                                            </option>
+                                                        }
+                                                    }
+                                                </select>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="inputEmail3" class="col-sm-3 control-label">Reward Point</label>
-                                        <div class="col-sm-6">
-                                            @Html.TextBoxFor(m => m.RewardPoint, new { @class = "form-control", @id = "RewardPoint", @Value = ViewBag.RewardPoint, onkeypress = "return ValidateNumber(event);" })
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="inputEmail3" class="col-sm-3 control-label">MRP Price</label>
-                                        <div class="col-sm-6">
-                                            @Html.TextBoxFor(m => m.Price, new { @class = "form-control", @id = "Price", @Value = ViewBag.Price, onkeypress = "return ValidateNumber(event);" })
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="inputEmail3" class="col-sm-3 control-label">Purchase Price</label>
-                                        <div class="col-sm-6">
-                                            @Html.TextBoxFor(m => m.PurchaseAmount, new { @class = "form-control", @id = "PurchaseAmount", onkeypress = "return ValidateNumber(event);", @Value = ViewBag.PurchaseAmount })
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="inputEmail3" class="col-sm-3 control-label">Discount Price</label>
-                                        <div class="col-sm-6">
-                                            @Html.TextBoxFor(m => m.DiscountAmount, new { @class = "form-control", @id = "DiscountAmount", @Value = ViewBag.DiscountAmount, onkeypress = "return ValidateNumber(event);" })
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="inputEmail3" class="col-sm-3 control-label">CGST (%)</label>
-                                        <div class="col-sm-6">
-                                            @Html.TextBoxFor(m => m.CGST, new { @class = "form-control", @id = "CGST", @Value = ViewBag.CGST, onkeypress = "return ValidateNumber(event);" })
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="inputEmail3" class="col-sm-3 control-label">SGST (%)</label>
-                                        <div class="col-sm-6">
-                                            @Html.TextBoxFor(m => m.SGST, new { @class = "form-control", @id = "SGST", @Value = ViewBag.SGST, onkeypress = "return ValidateNumber(event);" })
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="inputEmail3" class="col-sm-3 control-label">IGST (%)</label>
-                                        <div class="col-sm-6">
-                                            @Html.TextBoxFor(m => m.IGST, new { @class = "form-control", @id = "IGST", @Value = ViewBag.IGST, onkeypress = "return ValidateNumber(event);", onchange = "CalculateSaleAmt();" })
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
 
-                                    <div class="form-group">
-                                        <label for="inputEmail3" class="col-sm-3 control-label">Profit / Margin</label>
-                                        <div class="col-sm-6">
-                                            @Html.TextBoxFor(m => m.Profit, new { @class = "form-control", @id = "Profit", onkeypress = "return ValidateNumber(event);", @Value = ViewBag.Profit })
+                                        <div class="form-group">
+                                            <label for="OrderBy" class="col-sm-3 control-label">Order By</label>
+                                            <div class="col-sm-6">
+                                                @Html.TextBoxFor(m => m.OrderBy, new { @class = "form-control", @id = "OrderBy", onkeypress = "return ValidateNumber(event);", @Value = ViewBag.OrderBy })
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="RewardPoint" class="col-sm-3 control-label">Reward Point</label>
+                                            <div class="col-sm-6">
+                                                @Html.TextBoxFor(m => m.RewardPoint, new { @class = "form-control", @id = "RewardPoint", @Value = ViewBag.RewardPoint, onkeypress = "return ValidateNumber(event);" })
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="Price" class="col-sm-3 control-label">MRP Price</label>
+                                            <div class="col-sm-6">
+                                                @Html.TextBoxFor(m => m.Price, new { @class = "form-control", @id = "Price", @Value = ViewBag.Price, onkeypress = "return ValidateNumber(event);" })
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="PurchaseAmount" class="col-sm-3 control-label">Purchase Price</label>
+                                            <div class="col-sm-6">
+                                                @Html.TextBoxFor(m => m.PurchaseAmount, new { @class = "form-control", @id = "PurchaseAmount", onkeypress = "return ValidateNumber(event);", @Value = ViewBag.PurchaseAmount })
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="DiscountAmount" class="col-sm-3 control-label">Discount Price</label>
+                                            <div class="col-sm-6">
+                                                @Html.TextBoxFor(m => m.DiscountAmount, new { @class = "form-control", @id = "DiscountAmount", @Value = ViewBag.DiscountAmount, onkeypress = "return ValidateNumber(event);" })
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="CGST" class="col-sm-3 control-label">CGST (%)</label>
+                                            <div class="col-sm-6">
+                                                @Html.TextBoxFor(m => m.CGST, new { @class = "form-control", @id = "CGST", @Value = ViewBag.CGST, onkeypress = "return ValidateNumber(event);" })
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="SGST" class="col-sm-3 control-label">SGST (%)</label>
+                                            <div class="col-sm-6">
+                                                @Html.TextBoxFor(m => m.SGST, new { @class = "form-control", @id = "SGST", @Value = ViewBag.SGST, onkeypress = "return ValidateNumber(event);" })
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="IGST" class="col-sm-3 control-label">IGST (%)</label>
+                                            <div class="col-sm-6">
+                                                @Html.TextBoxFor(m => m.IGST, new { @class = "form-control", @id = "IGST", @Value = ViewBag.IGST, onkeypress = "return ValidateNumber(event);", onchange = "CalculateSaleAmt();" })
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="form-group">
-                                        <label for="inputEmail3" class="col-sm-3 control-label">Sale Price</label>
-                                        <div class="col-sm-6">
-                                            @Html.TextBoxFor(m => m.SaleAmount, new { @class = "form-control", @id = "SaleAmount", onkeypress = "return ValidateNumber(event);", @Value = ViewBag.SaleAmount })
+                                    <div class="col-md-6">
+
+                                        <div class="form-group">
+                                            <label for="Profit" class="col-sm-3 control-label">Profit / Margin</label>
+                                            <div class="col-sm-6">
+                                                @Html.TextBoxFor(m => m.Profit, new { @class = "form-control", @id = "Profit", onkeypress = "return ValidateNumber(event);", @Value = ViewBag.Profit })
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="inputEmail3" class="col-sm-3 control-label">Subscription</label>
-                                        <div class="col-sm-6">
-                                            @Html.TextBoxFor(m => m.Subscription, new { @class = "form-control", @id = "Subscription", onkeypress = "return ValidateNumber(event);", @Value = ViewBag.Subscription })
+                                        <div class="form-group">
+                                            <label for="SaleAmount" class="col-sm-3 control-label">Sale Price</label>
+                                            <div class="col-sm-6">
+                                                @Html.TextBoxFor(m => m.SaleAmount, new { @class = "form-control", @id = "SaleAmount", onkeypress = "return ValidateNumber(event);", @Value = ViewBag.SaleAmount })
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="inputEmail3" class="col-sm-3 control-label">Is Daily</label>
-                                        <div class="col-sm-5">
-                                            @if (ViewBag.IsDaily != null && (bool)ViewBag.IsDaily)
-                                            {
-                                                <input type="hidden" name="IsDaily" value="false" />
+                                        <div class="form-group">
+                                            <label for="Subscription" class="col-sm-3 control-label">Subscription</label>
+                                            <div class="col-sm-6">
+                                                @Html.TextBoxFor(m => m.Subscription, new { @class = "form-control", @id = "Subscription", onkeypress = "return ValidateNumber(event);", @Value = ViewBag.Subscription })
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="IsDaily" class="col-sm-3 control-label">Is Daily</label>
+                                            <div class="col-sm-5">
+                                                <input type="hidden" name="IsDaily" value="false" /> @* Hidden field for unchecked checkbox value *@
                                                 <input type="checkbox" class="Checked" id="IsDaily" name="IsDaily" value="true" @(ViewBag.IsDaily != null && (bool)ViewBag.IsDaily ? "checked" : "") />
-                                            }
-                                            else
-                                            {
-                                                <input type="checkbox" class="Checked" id="IsDaily" name="IsDaily" />
-                                            }
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label">Is Alternate</label>
+                                            <div class="col-sm-5">
+                                                <input type="hidden" name="IsAlternate" value="false" />
+                                                <input type="checkbox" class="Checked" id="IsAlternate" name="IsAlternate" value="true" @(ViewBag.IsAlternate != null && (bool)ViewBag.IsAlternate ? "checked" : "") />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label">Is Multiple</label>
+                                            <div class="col-sm-5">
+                                                <input type="hidden" name="IsMultiple" value="false" />
+                                                <input type="checkbox" class="Checked" id="IsMultiple" name="IsMultiple" value="true" @(ViewBag.IsMultiple != null && (bool)ViewBag.IsMultiple ? "checked" : "") />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label">Is WeekDay</label>
+                                            <div class="col-sm-5">
+                                                <input type="hidden" name="IsWeekDay" value="false" />
+                                                <input type="checkbox" class="Checked" id="IsWeekDay" name="IsWeekDay" value="true" @(ViewBag.IsWeekDay != null && (bool)ViewBag.IsWeekDay ? "checked" : "") />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="IsActive" class="col-sm-3 control-label">Is Active</label>
+                                            <div class="col-sm-5">
+                                                <input type="hidden" name="IsActive" value="false" /> @* Hidden field for unchecked checkbox value *@
+                                                <input type="checkbox" class="Checked" id="IsActive" name="IsActive" value="true" @(ViewBag.IsActive != null && (bool)ViewBag.IsActive ? "checked" : "") />
+                                            </div>
                                         </div>
                                     </div>
-
-
-                                    <div class="form-group">
-                                        <label class="col-sm-3 control-label">Is Alternate</label>
-                                        <div class="col-sm-5">
-                                            <input type="hidden" name="IsAlternate" value="false" />
-                                            <input type="checkbox" class="Checked" id="IsAlternate" name="IsAlternate" value="true" @(ViewBag.IsAlternate != null && (bool)ViewBag.IsAlternate ? "checked" : "") />
-
-                                        </div>
-                                    </div>
-
-
-
-                                    <div class="form-group">
-                                        <label class="col-sm-3 control-label">Is Multiple</label>
-                                        <div class="col-sm-5">
-                                            <input type="hidden" name="IsMultiple" value="false" />
-                                            <input type="checkbox" class="Checked" id="IsMultiple" name="IsMultiple" value="true" @(ViewBag.IsMultiple != null && (bool)ViewBag.IsMultiple ? "checked" : "") />
-                                        </div>
-                                    </div>
-
-
-                                    <div class="form-group">
-                                        <label class="col-sm-3 control-label">Is WeekDay</label>
-                                        <div class="col-sm-5">
-                                            <input type="hidden" name="IsWeekDay" value="false" />
-                                            <input type="checkbox" class="Checked" id="IsWeekDay" name="IsWeekDay" value="true" @(ViewBag.IsWeekDay != null && (bool)ViewBag.IsWeekDay ? "checked" : "") />
-
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="inputEmail3" class="col-sm-3 control-label">Is Active</label>
-                                        <div class="col-sm-5">
-                                            @if (Convert.ToBoolean(ViewBag.Active) == true)
-                                            {<input type="checkbox" class="Checked" id="IsActive" name="IsActive" checked />
-                                            }
-                                            else
-                                            {
-                                                @Html.CheckBox("IsActive", new { @class = "Checked" })
-                                            }
-                                        </div>
-                                    </div>
-
-                                </div>
-
-
-
-
-
-                                       
-                               </div>
                                 </div>
                             </div>
-                            <div class="box-footer text-right">
-                                @*<input type="button" class="btn btn-orange" value="Cancel" />*@
-                                <input type="submit" value="Save" class="btn btn-primary" onclick="return ValidProduct();" />
-                            </div>
-                          
-
-                        
+                        </div>
+                        <div class="box-footer text-right">
+                            <input type="submit" value="Save" class="btn btn-primary" onclick="return ValidProduct();" />
+                        </div>
                     }
                 </div>
             </div>
-       </div>
+        </div>
     </section>
 
-
-
     <script>
-
         $(document).ready(function () {
             $('#datepicker').datepicker({
                 "setDate": new Date(),
@@ -223,104 +228,88 @@
                 todayHighlight: true,
                 defaultDate: new Date(),
             });
-
+            if ($('#ddlCategory').val() !== '0' && $('#ddlCategory').val() !== '') {
+                setSubCategory($('#ddlCategory').val(), @(ViewBag.SubCategoryId != null ? ViewBag.SubCategoryId.ToString() : "0"));
+            }
+            $('#ddlCategory').change(function () {
+                var categoryId = $(this).val();
+                setSubCategory(categoryId, 0); 
+            });
         });
 
-
-    </script>
-    <script>
+        function setSubCategory(categoryId, selectedSubCategoryId) {
+            $('#ddlSubCategory').html('<option value="0">---Select---</option>'); 
+            if (categoryId !== '0') {
+                var URL = '/product/GetSubCategory?CategoryId=' + categoryId;
+                $.getJSON(URL, function (data) {
+                    $.each(data, function (key, val) {
+                        $('#ddlSubCategory').append($('<option></option>').val(val.Value).html(val.Text));
+                    });
+                    if (selectedSubCategoryId !== 0) {
+                        $('#ddlSubCategory').val(selectedSubCategoryId);
+                    }
+                });
+            }
+        }
         function ValidProduct() {
             var status = true;
-
-
-            var FromDate = $('#datepicker').val();
-            if (FromDate == "" || FromDate == null) {
-
-                document.getElementById('datepicker').style.border = "1px solid #ff0000";
-
-                status = false;
-            }
-            else {
-                document.getElementById('datepicker').style.border = "";
-            }
-
 
             var Category = document.getElementById("ddlCategory").value;
             if (Category == null || Category == "" || Category == "0") {
                 document.getElementById("ddlCategory").style.border = "1px solid #ff0000";
                 document.getElementById("ddlCategory").style.color = "#ff0000";
-                document.getElementById("ddlCategory").value = "0";
                 status = false;
-                return false;
+            } else {
+                document.getElementById("ddlCategory").style.border = "";
+                document.getElementById("ddlCategory").style.color = "";
             }
-            var product = document.getElementById("ProductName").value;
-            if (product == null || product == "" || product == "Please Enter Product") {
-                document.getElementById("ProductName").style.border = "1px solid #ff0000";
-                document.getElementById("ProductName").style.color = "#ff0000";
-                document.getElementById("ProductName").value = "Please Enter Product";
+
+            var ProductId = document.getElementById("ProductId").value; 
+            if (ProductId == null || ProductId == "" || ProductId == "0") { 
+                document.getElementById("ProductId").style.border = "1px solid #ff0000";
+                document.getElementById("ProductId").style.color = "#ff0000";
                 status = false;
-                return false;
+            } else {
+                document.getElementById("ProductId").style.border = "";
+                document.getElementById("ProductId").style.color = "";
             }
+
             var Price = document.getElementById("Price").value;
             if (Price == null || Price == "" || Price == "Please Enter Price") {
                 document.getElementById("Price").style.border = "1px solid #ff0000";
                 document.getElementById("Price").style.color = "#ff0000";
                 document.getElementById("Price").value = "Please Enter Price";
                 status = false;
+            } else {
+                document.getElementById("Price").style.border = "";
+                document.getElementById("Price").style.color = "";
+            }
+            return status; 
+        }
+
+        function CalculateSaleAmt() {
+            var MRP = parseFloat(document.getElementById("Price").value || 0);
+            var Purchase = parseFloat(document.getElementById("PurchaseAmount").value || 0);
+            var discount = parseFloat(document.getElementById("DiscountAmount").value || 0);
+            var igst = parseFloat(document.getElementById("IGST").value || 0);
+
+            var priceBeforeDiscount = MRP - Purchase;
+            var discountedPrice = priceBeforeDiscount - discount;
+            var gstAmount = (Purchase * igst) / 100;
+
+            var profit = discountedPrice;
+
+            document.getElementById("Profit").value = profit.toFixed(2); 
+            var saleprice = Purchase + profit + gstAmount;
+            document.getElementById("SaleAmount").value = saleprice.toFixed(2); 
+        }
+
+        function ValidateNumber(e) {
+            var keycode = (e.which) ? e.which : e.keyCode;
+            if (!(keycode == 8 || keycode == 46) && (keycode < 48 || keycode > 57)) {
                 return false;
             }
-        }
-        function CalculateSaleAmt() {
-            var MRP = document.getElementById("Price").value;
-            var Purchase = document.getElementById("PurchaseAmount").value;
-            var discount = document.getElementById("DiscountAmount").value;
-            var price = (parseFloat(MRP) - parseFloat(Purchase)) - parseFloat(discount);
-            var TotalPrice = parseFloat(Purchase) + parseFloat(price);
-
-            var igst = document.getElementById("IGST").value;
-            var gstprice = (parseFloat(TotalPrice) * parseFloat(igst)) / 100;
-
-            var profit = parseFloat(price) - parseFloat(gstprice);
-            document.getElementById("Profit").value = profit;
-
-            var saleprice = parseFloat(profit) + parseFloat(gstprice) + parseFloat(Purchase);
-            document.getElementById("SaleAmount").value = saleprice;
-
-        }
-        //function ValidateNumber(e) {
-
-        //    var keycode = (e.which) ? e.which : e.keyCode;
-        //    //console.log(keycode);
-        //    var phn = document.getElementById('MobileNo');
-        //    //comparing pressed keycodes
-        //    if (!(keycode == 8 || keycode == 46) && (keycode < 48 || keycode > 57)) {
-        //        return false;
-        //    }
-        //    return true;
-        //};
-
-        function setSubCategory() {
-            var catid = $('#ddlCategory').val();
-            var URL = '/product/GetSubCategory?CategoryId=' + catid;
-            $('#ddlSubCategory').html('');
-            $.getJSON(URL, function (data) {
-                $('#ddlSubCategory').html(data);
-                document.getElementById('ddlSubCategory').value = @ViewBag.CategoryId;
-            });
-        }
-
-        $(document).ready(function () {
-            setSubCategory();
-            $('#ddlCategory').change(function () {
-                setSubCategory();
-            });
-        });
+            return true;
+        };
     </script>
-
 }
-
-
-
-
-
-
