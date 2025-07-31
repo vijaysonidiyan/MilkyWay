@@ -902,7 +902,7 @@ namespace MilkWayIndia.Controllers
                                 path = Path.Combine(Server.MapPath("~/image/product/"), fname);
                                 img.Save(path);
                                 // file.SaveAs(path);
-                                objProdt.Image = fname;
+                                objProdt.MainImage = fname;
                             }
                             catch (Exception ex)
                             {
@@ -914,7 +914,7 @@ namespace MilkWayIndia.Controllers
                             ViewBag.SuccessMsg = "File Not Get Updated!!!";
                             var existfile = "";
                             DataTable dt1 = objProdt.BindProuct(objProdt.Id);
-                            ViewBag.Image = dt1.Rows[0]["Image"].ToString();
+                            ViewBag.Image = dt1.Rows[0]["MainImage"].ToString();
                             existfile = ViewBag.Image;
                             objProdt.Image = existfile;
                         }
@@ -1001,7 +1001,7 @@ namespace MilkWayIndia.Controllers
 
 							var ServerSavePath = Path.Combine(Server.MapPath("~/image/product/") + fname);
 							file.SaveAs(ServerSavePath);
-							_clsCommon.updatedata("tbl_Product_Master", "MainImage='" + fname + "'", "Id=" + objProdt.Id);
+							_clsCommon.updatedata("tbl_Product_Master", "Image='" + fname + "'", "Id=" + objProdt.Id);
 						}
 					}
 					if (addresult > 0)
@@ -2649,42 +2649,52 @@ namespace MilkWayIndia.Controllers
                         string[] sAllowedExt = new string[] { ".jpg", ".jpeg", ".png" };
                         if (document1 != null)
                         {
-                            if (document1.ContentLength > 0)
-                            {
-                                try
-                                {
-                                    HttpFileCollectionBase files = Request.Files;
-                                    HttpPostedFileBase file = Document1;
-                                    //Resize image 200*200 coding
-                                    WebImage img = new WebImage(file.InputStream);
-                                    img.Resize(200, 200, false, false);
-                                    string fileName = Path.GetFileNameWithoutExtension(file.FileName);
-                                    string extension = Path.GetExtension(file.FileName);
-                                    if (Request.Browser.Browser.ToUpper() == "IE" || Request.Browser.Browser.ToUpper() == "INTERNETEXPLORER")
-                                    {
-                                        string[] testfiles = file.FileName.Split(new char[] { '\\' });
-                                        fname = testfiles[testfiles.Length - 1];
-                                    }
-                                    else if (!sAllowedExt.Contains(file.FileName.Substring(file.FileName.LastIndexOf('.'))))
-                                    {
-                                        ViewBag.Message = string.Format("Please upload Your Notification File of type" + string.Join(",", sAllowedExt));
-                                    }
-                                    else
-                                    {
-                                        fname = fileName + "_" + DateTime.Now.ToString("yyyyMMdd-hhmmssfff") + extension;
-                                    }
-                                    path = Path.Combine(Server.MapPath("~/image/productcategory/"), fname);
-                                    img.Save(path);
-                                    objProdt.Image = fname;
-                                }
+						if (document1 != null)
+						{
+							if (document1.ContentLength > 0)
+							{
+								try
+								{
+									string extension = Path.GetExtension(document1.FileName).ToLower();
+									if (!sAllowedExt.Contains(extension))
+									{
+										ViewBag.Message = "Please upload a file of type: " + string.Join(", ", sAllowedExt);
+									}
+									else
+									{
+										
+										WebImage img = new WebImage(document1.InputStream);
+										img.Resize(300, 300, false, false);
 
-                                catch (Exception ex)
-                                {
-                                    ViewBag.SuccessMsg = "Error occurred. Error details: " + ex.Message;
-                                }
-                            }
-                            else
-                            {
+										string fileName = Path.GetFileNameWithoutExtension(document1.FileName);
+										fname = fileName + "_" + DateTime.Now.ToString("yyyyMMddhhmmssfff") + extension;
+										fname = fname.Replace(" ", "");
+
+										path = Path.Combine(Server.MapPath("~/image/product/"), fname);
+										img.Save(path);
+
+										objProdt.MainImage = fname;
+									}
+								}
+								catch (Exception ex)
+								{
+									ViewBag.SuccessMsg = "Error occurred. Error details: " + ex.Message;
+								}
+							}
+							else
+							{
+								ViewBag.SuccessMsg = "File not updated!";
+								DataTable dt1 = objProdt.BindProuct(objProdt.Id);
+								if (dt1.Rows.Count > 0)
+								{
+									var existingFile = dt1.Rows[0]["MainImage"].ToString();
+									objProdt.MainImage = existingFile;  
+								}
+							}
+						}
+
+						else
+						{
                             var existfile = "";
                             DataTable dt1 = objProdt.BindParentCategory(objProdt.Id);
                             ViewBag.Image = dt1.Rows[0]["Image"].ToString();

@@ -47,7 +47,7 @@ namespace MilkWayIndia.Models
         public TimeSpan ToTime { get; set; }
         public TimeSpan DeliveryFrom { get; set; }
         public TimeSpan DeliveryTo { get; set; }
-
+        public string MainImage { get; set; }
 
         public string previous1 { get; set; }
         public string next1 { get; set; }
@@ -1448,8 +1448,8 @@ namespace MilkWayIndia.Models
                     com.Parameters.AddWithValue("@Detail", obj.Detail);
                 else
                     com.Parameters.AddWithValue("@Detail", DBNull.Value);
-                if (!string.IsNullOrEmpty(obj.Image))
-                    com.Parameters.AddWithValue("@Image", obj.Image);
+                if (!string.IsNullOrEmpty(obj.MainImage))
+                    com.Parameters.AddWithValue("@Image", obj.MainImage);
                 else
                     com.Parameters.AddWithValue("@Image", DBNull.Value);
                 if (!string.IsNullOrEmpty(obj.PurchaseAmount.ToString()))
