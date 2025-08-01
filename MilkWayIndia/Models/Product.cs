@@ -1242,10 +1242,7 @@ namespace MilkWayIndia.Models
                         com.Parameters.AddWithValue("@Detail", obj.Detail);
                     else
                         com.Parameters.AddWithValue("@Detail", DBNull.Value);
-                    if (!string.IsNullOrEmpty(obj.Image))
-                        com.Parameters.AddWithValue("@Image", obj.Image);
-                    else
-                        com.Parameters.AddWithValue("@Image", DBNull.Value);
+                    
 
                     if (!string.IsNullOrEmpty(obj.PurchaseAmount.ToString()))
                         com.Parameters.AddWithValue("@PurchasePrice", obj.PurchaseAmount);
@@ -1282,8 +1279,11 @@ namespace MilkWayIndia.Models
                     com.Parameters.AddWithValue("@IsAlternate", obj.IsAlternate);
                     com.Parameters.AddWithValue("@IsMultiple", obj.IsMultipleDay);
                     com.Parameters.AddWithValue("@IsWeeklyDay", obj.IsWeeklyDay);
-
-                    com.Parameters.AddWithValue("@Id", SqlDbType.Int).Direction = ParameterDirection.Output;
+				if (!string.IsNullOrEmpty(obj.Image))
+					com.Parameters.AddWithValue("@Image", obj.Image);
+				else
+					com.Parameters.AddWithValue("@Image", DBNull.Value);
+				com.Parameters.AddWithValue("@Id", SqlDbType.Int).Direction = ParameterDirection.Output;
 
                 
                

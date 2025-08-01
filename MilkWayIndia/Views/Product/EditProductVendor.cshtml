@@ -218,74 +218,75 @@
             </div>
         </div>
     </section>
+ <script>
+   function setSubCategory() {
+    var catid = $('#ddlCategory').val();
+    var URL = '/product/GetSubCategorynew?CategoryId=' + catid;
+    $('#ddlSubCategory').html('');
+    $.getJSON(URL, function (data) {
+        $('#ddlSubCategory').html(data);
+    });
+}
+
+$(document).ready(function () {
+    $('#ddlCategory').change(function () {
+        setSubCategory();
+    });
+
+
+
+    var url = '/Product/FetchAttributeList';
+    var div_subcat = $('#div_subcat');
+    $('#ddlSubCategory').change(function () {
+
+
+        var selectedCat = $(this).val();
+        if (!selectedCat) {
+            div_subcat.empty();
+            return;
+        }
+        if (selectedCat > 0) {
+            $.get(url, { id: selectedCat }, function (data) {
+                div_subcat.html(data);
+            })
+        }
+        else {
+            div_subcat.empty();
+        }
+    });
+});
+
+function setSubCategory() {
+    var catid = $('#ddlCategory').val();
+    var URL = '/product/GetSubCategory?CategoryId=' + catid;
+    $('#ddlSubCategory').html('');
+    $.getJSON(URL, function (data) {
+        $('#ddlSubCategory').html(data);
+    });
+}
+
+function setPrroductCategory() {
+    var catid = $('#ddlSubCategory').val();
+    var URL = '/product/setPrroductCategory?CategoryId=' + catid;
+    $('#ProductId').html('');
+    $.getJSON(URL, function (data) {
+        $('#ProductId').html(data);
+    });
+}
+
+$(document).ready(function () {
+    $('#ddlCategory').change(function () {
+        setSubCategory();
+    });
+
+    $('#ddlSubCategory').change(function () {
+        setPrroductCategory();
+    });
+});
+    </script>
 
     <script>
-        $(document).ready(function () {
-            $('#datepicker').datepicker({
-                "setDate": new Date(),
-                "autoclose": true,
-                format: 'dd/mm/yyyy',
-                todayHighlight: true,
-                defaultDate: new Date(),
-            });
-            if ($('#ddlCategory').val() !== '0' && $('#ddlCategory').val() !== '') {
-                setSubCategory($('#ddlCategory').val(), @(ViewBag.SubCategoryId != null ? ViewBag.SubCategoryId.ToString() : "0"));
-            }
-            $('#ddlCategory').change(function () {
-                var categoryId = $(this).val();
-                setSubCategory(categoryId, 0); 
-            });
-        });
 
-        function setSubCategory(categoryId, selectedSubCategoryId) {
-            $('#ddlSubCategory').html('<option value="0">---Select---</option>'); 
-            if (categoryId !== '0') {
-                var URL = '/product/GetSubCategory?CategoryId=' + categoryId;
-                $.getJSON(URL, function (data) {
-                    $.each(data, function (key, val) {
-                        $('#ddlSubCategory').append($('<option></option>').val(val.Value).html(val.Text));
-                    });
-                    if (selectedSubCategoryId !== 0) {
-                        $('#ddlSubCategory').val(selectedSubCategoryId);
-                    }
-                });
-            }
-        }
-        function ValidProduct() {
-            var status = true;
-
-            var Category = document.getElementById("ddlCategory").value;
-            if (Category == null || Category == "" || Category == "0") {
-                document.getElementById("ddlCategory").style.border = "1px solid #ff0000";
-                document.getElementById("ddlCategory").style.color = "#ff0000";
-                status = false;
-            } else {
-                document.getElementById("ddlCategory").style.border = "";
-                document.getElementById("ddlCategory").style.color = "";
-            }
-
-            var ProductId = document.getElementById("ProductId").value; 
-            if (ProductId == null || ProductId == "" || ProductId == "0") { 
-                document.getElementById("ProductId").style.border = "1px solid #ff0000";
-                document.getElementById("ProductId").style.color = "#ff0000";
-                status = false;
-            } else {
-                document.getElementById("ProductId").style.border = "";
-                document.getElementById("ProductId").style.color = "";
-            }
-
-            var Price = document.getElementById("Price").value;
-            if (Price == null || Price == "" || Price == "Please Enter Price") {
-                document.getElementById("Price").style.border = "1px solid #ff0000";
-                document.getElementById("Price").style.color = "#ff0000";
-                document.getElementById("Price").value = "Please Enter Price";
-                status = false;
-            } else {
-                document.getElementById("Price").style.border = "";
-                document.getElementById("Price").style.color = "";
-            }
-            return status; 
-        }
 
         function CalculateSaleAmt() {
             var MRP = parseFloat(document.getElementById("Price").value || 0);
@@ -299,9 +300,9 @@
 
             var profit = discountedPrice;
 
-            document.getElementById("Profit").value = profit.toFixed(2); 
+            document.getElementById("Profit").value = profit.toFixed(2);
             var saleprice = Purchase + profit + gstAmount;
-            document.getElementById("SaleAmount").value = saleprice.toFixed(2); 
+            document.getElementById("SaleAmount").value = saleprice.toFixed(2);
         }
 
         function ValidateNumber(e) {

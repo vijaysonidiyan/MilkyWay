@@ -206,7 +206,7 @@ namespace MilkWayIndia.Controllers
 
                         var ServerSavePath = Path.Combine(Server.MapPath("~/image/product/") + fname);
                         file.SaveAs(ServerSavePath);
-						_clsCommon.updatedata("tbl_Product_Master", "MainImage='" + fname + "'", "Id=" + addresult);
+						_clsCommon.updatedata("tbl_Product_Master", "Image='" + fname + "'", "Id=" + addresult);
 					}
                 }
 
@@ -667,18 +667,19 @@ namespace MilkWayIndia.Controllers
 			if (HttpContext.Session["UserId"] == null)
 				return Redirect("/home/login?ReturnURL=" + Request.RawUrl);
 
-			
-			DataTable categoryData = _clsCommon.selectwhere("*", "tbl_Product_Category_Master", "");
+			// Load all main categories (where ParentCategoryId is null or 0)
+			DataTable categoryData = _clsCommon.selectwhere("*", "tbl_Product_Category_Master", "ParentCategoryId IS NULL OR ParentCategoryId = 0");
 			ViewBag.Category = categoryData;
 
-			
 			DataTable productData = objProdt.GetAllProducts();
 			ViewBag.Products = productData;
+
+			// Initialize ViewBag defaults
 			ViewBag.SelectedProductId = null;
 			ViewBag.CategorId = null;
 			ViewBag.SubCategoryId = null;
+			ViewBag.SubCategory = new DataTable();
 
-			
 			if (id > 0)
 			{
 				DataTable dt = _clsCommon.selectwhere("*", "tbl_Vendor_Product_Assign", $"Id='{id}'");
@@ -686,11 +687,10 @@ namespace MilkWayIndia.Controllers
 				{
 					DataRow dr = dt.Rows[0];
 
+					ViewBag.Id = id;
 					ViewBag.SelectedProductId = Convert.ToInt32(dr["ProductId"]);
 					ViewBag.CategorId = Convert.ToInt32(dr["CategoryId"]);
 					ViewBag.SubCategoryId = Convert.ToInt32(dr["SubCategoryId"]);
-
-					// Set other data for text fields/checkboxes
 					ViewBag.Price = dr["MRPPrice"].ToString();
 					ViewBag.DiscountAmount = dr["DiscountPrice"].ToString();
 					ViewBag.CGST = dr["CGST"].ToString();
@@ -707,25 +707,19 @@ namespace MilkWayIndia.Controllers
 					ViewBag.Subscription = dr["Subscription"].ToString();
 					ViewBag.Profit = dr["Profit"].ToString();
 					ViewBag.OrderBy = dr["OrderBy"].ToString();
+
+					if (ViewBag.CategorId != null)
+					{
+						DataTable subcategoryData = _clsCommon.selectwhere("*", "tbl_Product_Category_Master", $"ParentCategoryId = '{ViewBag.CategorId}'");
+						ViewBag.SubCategory = subcategoryData;
+					}
+
 				}
-			}
-			if (ViewBag.CategorId != null)
-			{
-				DataTable subcategoryData = _clsCommon.selectwhere("*", "tbl_Product_Category_Master", $"Id = '{ViewBag.CategorId}'");
-				ViewBag.SubCategory = subcategoryData;
-			}
-			if (ViewBag.SubCategoryId != null)
-			{
-				DataTable subcategoryData = _clsCommon.selectwhere("*", "tbl_Product_Category_Master", $"Id = '{ViewBag.SubCategoryId}'");
-				ViewBag.SubCategory = subcategoryData;
-			}
-			else
-			{
-				ViewBag.SubCategory = new DataTable();
 			}
 
 			return View();
 		}
+
 
 
 
@@ -1188,10 +1182,10 @@ namespace MilkWayIndia.Controllers
                 ViewBag.Detail = dt.Rows[0]["Detail"].ToString();
             else
                 ViewBag.Detail = "";
-            if (!string.IsNullOrEmpty(dt.Rows[0]["Image"].ToString()))
-                ViewBag.Image = dt.Rows[0]["Image"].ToString();
+            if (!string.IsNullOrEmpty(dt.Rows[0]["MainImage"].ToString()))
+                ViewBag.MainImage = dt.Rows[0]["MainImage"].ToString();
             else
-                ViewBag.Image = "";
+                ViewBag.MainImage = "";
             if (!string.IsNullOrEmpty(dt.Rows[0]["OrderBy"].ToString()))
                 ViewBag.OrderBy = dt.Rows[0]["OrderBy"].ToString();
             else
@@ -1298,10 +1292,9 @@ namespace MilkWayIndia.Controllers
 
                     // Bind parameters
                     com.Parameters.AddWithValue("@Id", objProdt.Id); // Assuming objProdt.Id is the record ID in tbl_ProductVendor_Master
-
-                    com.Parameters.AddWithValue("@ProductId", (object)objProdt.Id ?? DBNull.Value);
-					com.Parameters.AddWithValue("@ParentCategoryId", (object)objProdt.Id ?? DBNull.Value);
-					com.Parameters.AddWithValue("@CategoryId", (object)objProdt.Id ?? DBNull.Value);
+					com.Parameters.AddWithValue("@ParentCategoryId", Convert.ToInt32(form["CategoryId"]));
+					com.Parameters.AddWithValue("@CategoryId", Convert.ToInt32(form["SubCategoryId"]));
+					com.Parameters.AddWithValue("@ProductId", Convert.ToInt32(form["ProductId"]));
 					com.Parameters.AddWithValue("@Price", (object)objProdt.Price ?? DBNull.Value);
                     com.Parameters.AddWithValue("@DiscountAmount", (object)objProdt.DiscountAmount ?? DBNull.Value);
                     com.Parameters.AddWithValue("@CGST", (object)objProdt.CGST ?? DBNull.Value);
