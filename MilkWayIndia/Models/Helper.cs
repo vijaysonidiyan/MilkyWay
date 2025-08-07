@@ -1269,7 +1269,7 @@ namespace MilkWayIndia.Models
         //Dibakar 07-12-2022
 
 
-        public PaytmInitiateTransaction InitiateTransactionnew(string CustomerId, Decimal Amount)
+        public PaytmInitiateTransaction InitiateTransactionnew(string CustomerId, Decimal Amount,int paymentSourceId)
         {
             try
             {

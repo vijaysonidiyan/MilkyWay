@@ -6,8 +6,8 @@ by editing this MSBuild file. In order to learn more about this please visit htt
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <TimeStampOfAssociatedLegacyPublishXmlFile />
-    <_PublishTargetUrl>D:\publish\Milkyway\2807</_PublishTargetUrl>
-    <History>True|2025-07-28T06:17:33.7995230Z||;True|2025-07-24T21:47:26.9815358+05:30||;True|2025-07-24T21:28:52.8591501+05:30||;True|2025-07-24T21:16:46.0944798+05:30||;True|2025-07-22T15:54:57.0740134+05:30||;True|2025-07-21T15:26:45.6949870+05:30||;True|2025-07-11T15:46:34.6152782+05:30||;</History>
+    <_PublishTargetUrl>D:\publish\Milkyway\0708_01</_PublishTargetUrl>
+    <History>True|2025-08-07T08:59:21.7496233Z||;True|2025-08-07T12:21:32.4807084+05:30||;True|2025-08-04T16:42:55.1874360+05:30||;True|2025-07-28T11:47:33.7995230+05:30||;True|2025-07-24T21:47:26.9815358+05:30||;True|2025-07-24T21:28:52.8591501+05:30||;True|2025-07-24T21:16:46.0944798+05:30||;True|2025-07-22T15:54:57.0740134+05:30||;True|2025-07-21T15:26:45.6949870+05:30||;True|2025-07-11T15:46:34.6152782+05:30||;</History>
     <LastFailureDetails />
   </PropertyGroup>
   <ItemGroup>
@@ -165,10 +165,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>07/07/2025 11:39:56</publishTime>
     </File>
     <File Include="bin/MilkWayIndia.dll">
-      <publishTime>07/28/2025 11:47:18</publishTime>
+      <publishTime>08/07/2025 14:29:17</publishTime>
     </File>
     <File Include="bin/MilkWayIndia.pdb">
-      <publishTime>07/28/2025 11:47:18</publishTime>
+      <publishTime>08/07/2025 14:29:17</publishTime>
     </File>
     <File Include="bin/Newtonsoft.Json.dll">
       <publishTime>07/07/2025 11:39:56</publishTime>
@@ -3795,10 +3795,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>07/07/2025 11:39:48</publishTime>
     </File>
     <File Include="Views/CashBack/AddPaymentPlateFormFees.cshtml">
-      <publishTime>07/09/2025 12:20:16</publishTime>
+      <publishTime>07/31/2025 16:49:56</publishTime>
     </File>
     <File Include="Views/CashBack/AddPaymentSource.cshtml">
-      <publishTime>07/09/2025 12:20:16</publishTime>
+      <publishTime>07/31/2025 16:49:56</publishTime>
     </File>
     <File Include="Views/CashBack/BillPayCashback.cshtml">
       <publishTime>07/07/2025 11:39:48</publishTime>
@@ -3819,13 +3819,13 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>07/07/2025 11:39:48</publishTime>
     </File>
     <File Include="Views/CashBack/EditPaymentPlateFormFees.cshtml">
-      <publishTime>07/11/2025 15:17:16</publishTime>
+      <publishTime>07/31/2025 16:49:56</publishTime>
     </File>
     <File Include="Views/CashBack/EditPaymentSource.cshtml">
-      <publishTime>07/09/2025 12:20:16</publishTime>
+      <publishTime>07/31/2025 16:49:56</publishTime>
     </File>
     <File Include="Views/CashBack/PaymentPlateFormFeesList.cshtml">
-      <publishTime>07/11/2025 15:17:16</publishTime>
+      <publishTime>07/31/2025 16:49:56</publishTime>
     </File>
     <File Include="Views/CashBack/PaymentSourceList.cshtml">
       <publishTime>07/11/2025 15:17:16</publishTime>
@@ -3993,7 +3993,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>07/07/2025 11:39:48</publishTime>
     </File>
     <File Include="Views/Home/Login.cshtml">
-      <publishTime>07/07/2025 11:39:48</publishTime>
+      <publishTime>07/31/2025 16:49:56</publishTime>
+    </File>
+    <File Include="Views/Home/ResetPassword.cshtml">
+      <publishTime>07/31/2025 16:49:56</publishTime>
     </File>
     <File Include="Views/Home/Success.cshtml">
       <publishTime>07/07/2025 11:39:48</publishTime>
@@ -4038,7 +4041,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>07/07/2025 11:39:48</publishTime>
     </File>
     <File Include="Views/Product/AddProductNew.cshtml">
-      <publishTime>07/07/2025 11:39:48</publishTime>
+      <publishTime>07/31/2025 16:49:56</publishTime>
     </File>
     <File Include="Views/Product/AddProductParentCtaegory.cshtml">
       <publishTime>07/07/2025 11:39:48</publishTime>
@@ -4047,7 +4050,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>07/07/2025 11:39:48</publishTime>
     </File>
     <File Include="Views/Product/AddProductVendor.cshtml">
-      <publishTime>07/21/2025 15:24:58</publishTime>
+      <publishTime>07/31/2025 16:49:56</publishTime>
     </File>
     <File Include="Views/Product/AssignProduct.cshtml">
       <publishTime>07/07/2025 11:39:48</publishTime>
@@ -4056,13 +4059,13 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>07/07/2025 11:39:48</publishTime>
     </File>
     <File Include="Views/Product/EditProduct.cshtml">
-      <publishTime>07/07/2025 11:39:48</publishTime>
+      <publishTime>07/31/2025 16:49:56</publishTime>
     </File>
     <File Include="Views/Product/EditProductCategory.cshtml">
       <publishTime>07/07/2025 11:39:48</publishTime>
     </File>
     <File Include="Views/Product/EditProductVendor.cshtml">
-      <publishTime>07/21/2025 15:24:58</publishTime>
+      <publishTime>08/04/2025 15:44:53</publishTime>
     </File>
     <File Include="Views/Product/EditSubCategory.cshtml">
       <publishTime>07/07/2025 11:39:48</publishTime>
@@ -4071,7 +4074,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>07/07/2025 11:39:48</publishTime>
     </File>
     <File Include="Views/Product/ProductList.cshtml">
-      <publishTime>07/07/2025 11:39:48</publishTime>
+      <publishTime>07/31/2025 16:49:56</publishTime>
     </File>
     <File Include="Views/Product/ProductParentCtaegoryList.cshtml">
       <publishTime>07/07/2025 11:39:48</publishTime>
@@ -4080,7 +4083,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>07/07/2025 11:39:48</publishTime>
     </File>
     <File Include="Views/Product/ProductVendorList.cshtml">
-      <publishTime>07/21/2025 15:24:58</publishTime>
+      <publishTime>07/28/2025 16:51:44</publishTime>
     </File>
     <File Include="Views/Product/Product_List_New.cshtml">
       <publishTime>07/07/2025 11:39:48</publishTime>
@@ -4197,7 +4200,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>07/07/2025 11:39:48</publishTime>
     </File>
     <File Include="Views/Security/Authenticate.cshtml">
-      <publishTime>07/07/2025 11:39:48</publishTime>
+      <publishTime>08/04/2025 16:11:48</publishTime>
     </File>
     <File Include="Views/Security/Error.cshtml">
       <publishTime>07/07/2025 11:39:48</publishTime>
@@ -4443,7 +4446,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>07/07/2025 11:39:48</publishTime>
     </File>
     <File Include="Web.config">
-      <publishTime>07/28/2025 11:47:19</publishTime>
+      <publishTime>08/07/2025 14:29:18</publishTime>
     </File>
   </ItemGroup>
 </Project>
