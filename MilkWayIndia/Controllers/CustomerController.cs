@@ -1542,8 +1542,8 @@ namespace MilkWayIndia.Controllers
 			if (Session["Username"] != null && !string.IsNullOrEmpty(Session["Username"] as string))
 			{
 				var control = Helper.CheckPermission(Request.RawUrl.ToString());
-				if (control.IsView == false)
-					return Redirect("/notaccess/index");
+				//if (control.IsView == false)
+				//	return Redirect("/notaccess/index");
 
 				ViewBag.IsAdmin = control.IsAdmin;
 				ViewBag.IsView = control.IsView;

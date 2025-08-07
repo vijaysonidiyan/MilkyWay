@@ -508,38 +508,55 @@ namespace MilkWayIndia.Models
             //string b = HttpContext.Current.Request.Cookies["gstusr"].Values["key"].ToString();
                 if (HttpContext.Current.Request.Cookies["gstusr"] == null)
                 return control;
-            else
-            {
-                try
-                {
-                    var roleName = "";
-                    if (HttpContext.Current.Request.Cookies["gstusr"].Values["key"] != null)
-                    {
-                        Staff _staff = new Staff();
-                        var id = HttpContext.Current.Request.Cookies["gstusr"].Values["key"];
-                        var staff = _staff.getStaffList(Convert.ToInt32(id));
-                        if (staff.Rows.Count > 0)
-                        {
-                            roleName = staff.Rows[0]["Role"] == null ? "" : staff.Rows[0]["Role"].ToString();
-                        }
-                    }
+			else
+			{
+				try
+				{
+					var roleName = "";
 
-                    if (roleName == "")
-                        return control;
-                    if (roleName.ToLower() == "admin")
-                    {
-                        control.IsAdmin = true;
-                        control.IsAdd = true;
-                        control.IsDeleted = true;
-                        control.IsView = true;
-                        control.IsEdit = true;
-                        return control;
-                    }
-                }
-                catch { }
-            }
+					if (HttpContext.Current.Request.Cookies["gstusr"].Values["key"] != null)
+					{
+						var id = HttpContext.Current.Request.Cookies["gstusr"].Values["key"];
 
-            return control;
+						// Try from Staff table
+						Staff _staff = new Staff();
+						var staff = _staff.getStaffList(Convert.ToInt32(id));
+						if (staff != null && staff.Rows.Count > 0)
+						{
+							roleName = staff.Rows[0]["Role"] == null ? "" : staff.Rows[0]["Role"].ToString();
+						}
+						if (string.IsNullOrEmpty(roleName))
+						{
+							Vendor _vendor = new Vendor(); 
+							var vendor = _vendor.getVendorList(Convert.ToInt32(id));
+							if (vendor != null && vendor.Rows.Count > 0)
+							{
+								roleName = vendor.Rows[0]["VendorStatus"] == null ? "" : vendor.Rows[0]["VendorStatus"].ToString();
+							}
+						}
+					}
+					if (string.IsNullOrEmpty(roleName))
+						return control;
+
+					if (roleName.ToLower() == "admin" || roleName.ToLower() == "approved")
+					{
+						control.IsAdmin = true;
+						control.IsAdd = true;
+						control.IsDeleted = true;
+						control.IsView = true;
+						control.IsEdit = true;
+					}
+
+					return control;
+				}
+				catch
+				{
+					return control;
+				}
+			}
+
+
+			return control;
         }
 
         public static string RenderRazorViewToString(Controller controller, string viewName, object model)
