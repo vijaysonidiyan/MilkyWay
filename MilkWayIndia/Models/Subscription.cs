@@ -20,6 +20,9 @@ namespace MilkWayIndia.Models
         public string Name { get; set; }
         public int Days { get; set; }
         public decimal Amount { get; set; }
+        public int PaymentSourceId { get; set; }
+        public decimal PaymentCharge { get; set; }
+        public decimal PlatformCharge { get; set; }
 
         //customer subscription
         public int CustomerId { get; set; }
@@ -764,7 +767,10 @@ namespace MilkWayIndia.Models
                     com.Parameters.AddWithValue("@TransactionType", obj.TransactionType);
                 else
                     com.Parameters.AddWithValue("@TransactionType", 0);
-                com.Parameters.AddWithValue("@Id", SqlDbType.Int).Direction = ParameterDirection.Output;
+				com.Parameters.AddWithValue("@PaymentCharge", obj.PaymentCharge);
+				com.Parameters.AddWithValue("@PlatformCharge", obj.PlatformCharge);
+				com.Parameters.AddWithValue("@PaymentSourceId", obj.PaymentSourceId);
+				com.Parameters.AddWithValue("@Id", SqlDbType.Int).Direction = ParameterDirection.Output;
                 i = com.ExecuteNonQuery();
                 con.Close();
             }

@@ -1407,7 +1407,7 @@ namespace MilkWayIndia.Controllers
                 dtNew.Columns.Add("cgst", typeof(decimal));
                 dtNew.Columns.Add("sgst", typeof(decimal));
                 dtNew.Columns.Add("igst", typeof(decimal));
-                dtNew.Columns.Add("rewardpoint", typeof(Int64));
+                //dtNew.Columns.Add("rewardpoint", typeof(Int64));
                 dtNew.Columns.Add("detail", typeof(string));
                 dtNew.Columns.Add("image", typeof(string));
                 dtNew.Columns.Add("isdaily", typeof(Boolean));
@@ -1453,10 +1453,10 @@ namespace MilkWayIndia.Controllers
                             dr["igst"] = Convert.ToDecimal(dtprodRecord.Rows[i]["IGST"]);
                         else
                             dr["igst"] = "0";
-                        if (!string.IsNullOrEmpty(dtprodRecord.Rows[i]["RewardPoint"].ToString()))
-                            dr["rewardpoint"] = Convert.ToInt64(dtprodRecord.Rows[i]["RewardPoint"]);
-                        else
-                            dr["rewardpoint"] = "0";
+                        //if (!string.IsNullOrEmpty(dtprodRecord.Rows[i]["RewardPoint"].ToString()))
+                        //    dr["rewardpoint"] = Convert.ToInt64(dtprodRecord.Rows[i]["RewardPoint"]);
+                        //else
+                        //    dr["rewardpoint"] = "0";
                         dr["detail"] = dtprodRecord.Rows[i]["Detail"].ToString().Trim();
                         if (!string.IsNullOrEmpty(dtprodRecord.Rows[i]["Image"].ToString()))
                         {

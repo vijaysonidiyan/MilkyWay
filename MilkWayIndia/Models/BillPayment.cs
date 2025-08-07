@@ -161,7 +161,7 @@ namespace MilkWayIndia.Models
 				con.Open();
 
 				string query = @"SELECT tp.PaymentSource, tps.PaymentSourceId, tps.FromPrice, tps.ToPrice, 
-		                        tps.IsPriceRangeApplicable, tps.Percentage, tps.LumsumAmount, 
+		                        tp.IsPriceRangeApplicable, tps.Percentage, tps.LumsumAmount, 
 		                        tps.PlatformChargesPercentage, tps.PlatformChargesLumsumAmount
 		                FROM tbl_PaymentSourceWisePlatformFees tps
 		                INNER JOIN tbl_PaymentSourceMaster tp ON tps.PaymentSourceId = tp.Id";
@@ -181,6 +181,7 @@ namespace MilkWayIndia.Models
 							{
 								PaymentSourceId = sourceId,
 								PaymentSource = reader.GetString(reader.GetOrdinal("PaymentSource")),
+								IsPriceRangeApplicable = Convert.ToBoolean(reader.GetOrdinal("IsPriceRangeApplicable")),
 								detail = new List<PaymentSourcePlatformFeesDetailModel>()
 							};
 						}

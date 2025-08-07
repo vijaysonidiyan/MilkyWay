@@ -56,13 +56,13 @@ namespace MilkWayIndia.Controllers.API
             return Request.CreateResponse(HttpStatusCode.BadRequest, response);
         }
 
-        [Route("api/InitiateTransaction/{CustomerId?}/{Amount?}"), HttpGet]
-        public HttpResponseMessage InitiateTransaction(string CustomerId, decimal Amount)
+        [Route("api/InitiateTransaction/{CustomerId?}/{Amount?}/{paymentSourceId?}"), HttpGet]
+        public HttpResponseMessage InitiateTransaction(string CustomerId, decimal Amount,int paymentSourceId)
         {
             try
             {
                 //var s = dHelper.InitiateTransaction(CustomerId, Amount);
-                var s = dHelper.InitiateTransactionnew(CustomerId, Amount);
+                var s = dHelper.InitiateTransactionnew(CustomerId, Amount, paymentSourceId);
                 return Request.CreateResponse(HttpStatusCode.OK, s);
             }
             catch (Exception ex)
