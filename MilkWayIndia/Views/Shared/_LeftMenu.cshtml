@@ -23,29 +23,22 @@
                     <i class="fa fa-angle-left pull-right"></i>
                 </span>
             </a>
-            <ul class="treeview-menu">
-                <li>@*<a href="@Url.Action("AddProductNew", "Product")"><i class="fa fa-circle-o"></i>Product New</a>*@</li>
+            <ul class="treeview-menu">            
 
-                <li><a href="@Url.Action("AddProductVendor", "Product")"><i class="fa fa-circle-o"></i>Product Vendor </a></li>
+                <li><a href="@Url.Action("ProductVendorList", "Product")"><i class="fa fa-circle-o"></i>Product Vendor </a></li>
 
             </ul>
         </li>
         <li class="treeview" id="LiSubscri">
             <a href="#">
                 <i class="fa fa-briefcase"></i>
-                <span>Subscription</span>
+                <span>Customer Wallet</span>
                 <span class="pull-right-container">
                     <i class="fa fa-angle-left pull-right"></i>
                 </span>
             </a>
             <ul class="treeview-menu">
-                @*<li><a href="@Url.Action("SubscriptionList", "Subscription")"><i class="fa fa-circle-o"></i>Subscription Master </a></li>
-                    <li><a href="@Url.Action("CustomerSubscriptionList", "Subscription")"><i class="fa fa-circle-o"></i>Customer Subscription </a></li>*@
-                <li><a href="@Url.Action("CustomerWalletList", "Customer")"><i class="fa fa-circle-o"></i>Customer Wallet </a></li>
-                <li><a href="@Url.Action("CanceledSubscriptionList", "Subscription")"><i class="fa fa-circle-o"></i>Cancel Subscription </a></li>
-                <li><a href="@Url.Action("ExpiredSubscriptionList", "Subscription")"><i class="fa fa-circle-o"></i>Expired Subscriptions </a></li>
-
-                <li><a href="@Url.Action("SectorSubscriptionList", "Subscription")"><i class="fa fa-circle-o"></i>Sectorwise Subscriptions </a></li>
+                <li><a href="@Url.Action("CustomerWalletList", "Customer")"><i class="fa fa-circle-o"></i>Customer Wallet </a></li>              
             </ul>
         </li>
         <li class="treeview" id="LiOrder">
@@ -61,8 +54,7 @@
                 <li><a href="@Url.Action("CustomerHistoryOrderList", "CustomerOrder")"><i class="fa fa-circle-o"></i>Order History List </a></li>
                 <li><a href="/order/schedule"><i class="fa fa-circle-o"></i>Schedule Order</a></li>
                 <li><a href="/Medicine/index"><i class="fa fa-circle-o"></i>Medicine Order </a></li>
-                <li><a href="@Url.Action("ReplaceOrder", "CustomerOrder")"><i class="fa fa-circle-o"></i>Replace Order </a></li>
-                @*<li><a href="@Url.Action("OrderMultipleDelete", "CustomerOrder")"><i class="fa fa-circle-o"></i>Order Delete </a></li>*@
+                <li><a href="@Url.Action("ReplaceOrder", "CustomerOrder")"><i class="fa fa-circle-o"></i>Replace Order </a></li>                
             </ul>
         </li>
         <li class="treeview" id="ReportLi">
@@ -161,8 +153,8 @@
                     <li><a href="@Url.Action("StateList", "Sector")"><i class="fa fa-circle-o"></i>State Master </a></li>
                     <li><a href="@Url.Action("CityList", "Sector")"><i class="fa fa-circle-o"></i>City Master </a></li>
                     <li><a href="@Url.Action("SectorList", "Sector")"><i class="fa fa-circle-o"></i>Sector Master </a></li>
-                    <li><a href="@Url.Action("BuildingList", "Sector")"><i class="fa fa-circle-o"></i>Building Master </a></li>
-                    <li><a href="@Url.Action("FlatNoList", "Sector")"><i class="fa fa-circle-o"></i>FlatNo Master</a></li>
+                    @*<li><a href="@Url.Action("BuildingList", "Sector")"><i class="fa fa-circle-o"></i>Building Master </a></li>
+                    <li><a href="@Url.Action("FlatNoList", "Sector")"><i class="fa fa-circle-o"></i>FlatNo Master</a></li>*@
                     <li><a href="@Url.Action("ModuleList", "Staff")"><i class="fa fa-circle-o"></i>Module Master</a></li>
                     <li><a href="@Url.Action("PlatformList", "Staff")"><i class="fa fa-circle-o"></i>Role/Designation Master </a></li>
                     <li><a href="@Url.Action("StaffList", "Staff")"><i class="fa fa-circle-o"></i>Staff Master </a></li>
@@ -174,9 +166,9 @@
                     <li><a href="/Slider/Index"><i class="fa fa-circle-o"></i>Slider Master </a></li>
                     <li><a href="/Advertisement/Index"><i class="fa fa-circle-o"></i>Advertisement Master </a></li>
 
-                    <li><a href="@Url.Action("ChatbotList", "Chatbot")"><i class="fa fa-circle-o"></i>Chatbot Settings </a></li>
+                    @*<li><a href="@Url.Action("ChatbotList", "Chatbot")"><i class="fa fa-circle-o"></i>Chatbot Settings </a></li>*@
                     <li><a href="@Url.Action("TermsList", "Terms")"><i class="fa fa-circle-o"></i>Terms & Conditions </a></li>
-                    <li><a href="@Url.Action("BackTutorialList", "Admin")"><i class="fa fa-circle-o"></i>BackOffice Settings </a></li>
+                    @*<li><a href="@Url.Action("BackTutorialList", "Admin")"><i class="fa fa-circle-o"></i>BackOffice Settings </a></li>*@
                     <li><a href="@Url.Action("AddPaymentSource", "CashBack")"><i class="fa fa-circle-o"></i>PaymentSource Master </a></li>
                     <li><a href="@Url.Action("AddPaymentPlateFormFees", "CashBack")"><i class="fa fa-circle-o"></i>Payment PlateFormFees </a></li>
                 </ul>
@@ -191,9 +183,9 @@
                 </a>
                 <ul class="treeview-menu">
 
-                    <li><a href="@Url.Action("ProductParentCtaegoryList", "Product")"><i class="fa fa-circle-o"></i>Product Parent Category Master </a></li>
-                    <li><a href="@Url.Action("ProductSubCategoryList", "Product")"><i class="fa fa-circle-o"></i>Product Sub Category Master </a></li>
-                    <li><a href="@Url.Action("AddProductNew", "Product")"><i class="fa fa-circle-o"></i>Product New </a></li>
+                    @*<li><a href="@Url.Action("ProductParentCtaegoryList", "Product")"><i class="fa fa-circle-o"></i>Product Parent Category Master </a></li>
+                    <li><a href="@Url.Action("ProductSubCategoryList", "Product")"><i class="fa fa-circle-o"></i>Product Sub Category Master </a></li>*@
+                    @*<li><a href="@Url.Action("AddProductNew", "Product")"><i class="fa fa-circle-o"></i>Product New </a></li>*@
                     <li><a href="@Url.Action("AddProductVendor", "Product")"><i class="fa fa-circle-o"></i>Product Vendor </a></li>
 
                     <li><a href="@Url.Action("Index", "Category")"><i class="fa fa-circle-o"></i>Product Category Master </a></li>
@@ -201,8 +193,8 @@
                     <li><a href="/Attribute/Index"><i class="fa fa-circle-o"></i>Product Attribute Master </a></li>
                     <li><a href="@Url.Action("ProductList", "Product")"><i class="fa fa-circle-o"></i>Product Master </a></li>
                     <li><a href="@Url.Action("Product_List_New", "Product")"><i class="fa fa-circle-o"></i>Product Master New </a></li>
-                    <li><a href="@Url.Action("SectorProductAssignList", "Vendor")"><i class="fa fa-circle-o"></i>SectorWise Product Assign </a></li>
-                    <li><a href="/Vendor/ProductUnAssign"><i class="fa fa-circle-o"></i>SectorWise Product UnAssign </a></li>
+                    @*<li><a href="@Url.Action("SectorProductAssignList", "Vendor")"><i class="fa fa-circle-o"></i>SectorWise Product Assign </a></li>
+                    <li><a href="/Vendor/ProductUnAssign"><i class="fa fa-circle-o"></i>SectorWise Product UnAssign </a></li>*@
                     <li><a href="/Category/AssignSubCategory"><i class="fa fa-circle-o"></i>Product Assign To SubCategory </a></li>
                     <li><a href="/bulkupload/index"><i class="fa fa-circle-o"></i>Bulk Upload </a></li>
                     <li><a href="/bulkupload/DownloadProduct"><i class="fa fa-circle-o"></i>Bulk Product Update </a></li>

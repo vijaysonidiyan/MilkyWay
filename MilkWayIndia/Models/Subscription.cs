@@ -2279,15 +2279,15 @@ namespace MilkWayIndia.Models
                     com.Parameters.AddWithValue("@Amount", obj.Amount);
                 else
                     com.Parameters.AddWithValue("@Amount", 0);
-                //if (!string.IsNullOrEmpty(obj.MRPPrice.ToString()))
-                //    com.Parameters.AddWithValue("@Mrp", obj.MRPPrice);
-                //else
-                //    com.Parameters.AddWithValue("@Mrp", 0);
+                if (!string.IsNullOrEmpty(obj.MRPPrice.ToString()))
+                    com.Parameters.AddWithValue("@Mrp", obj.MRPPrice);
+                else
+                    com.Parameters.AddWithValue("@Mrp", 0);
 
-                //if (!string.IsNullOrEmpty(obj.PurchasePrice.ToString()))
-                //    com.Parameters.AddWithValue("@PurchasePrice", obj.PurchasePrice);
-                //else
-                //    com.Parameters.AddWithValue("@PurchasePrice", 0);
+                if (!string.IsNullOrEmpty(obj.PurchasePrice.ToString()))
+                    com.Parameters.AddWithValue("@PurchasePrice", obj.PurchasePrice);
+                else
+                    com.Parameters.AddWithValue("@PurchasePrice", 0);
 
                 if (!string.IsNullOrEmpty(obj.Discount.ToString()))
                     com.Parameters.AddWithValue("@Discount", obj.Discount);

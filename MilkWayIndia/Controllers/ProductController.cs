@@ -11,6 +11,7 @@ using System.Text;
 using System.Web;
 using System.Web.Helpers;
 using System.Web.Mvc;
+using static iTextSharp.tool.xml.html.HTML;
 
 namespace MilkWayIndia.Controllers
 {
@@ -290,7 +291,7 @@ namespace MilkWayIndia.Controllers
 
                     com.Parameters.AddWithValue("@SectorId", Convert.ToInt32(Session["VendorSectorId"]));
 					com.Parameters.AddWithValue("@VendorId", vendorId);
-					com.Parameters.AddWithValue("@CategoryId", (object)objProdt.ParentCategoryId ?? DBNull.Value);
+					com.Parameters.AddWithValue("@CategoryId", (object)objProdt.CategoryId ?? DBNull.Value);
 					com.Parameters.AddWithValue("@SubCategoryId", (object)objProdt.CategoryId ?? DBNull.Value);
 					com.Parameters.AddWithValue("@ProductId", (object)objProdt.Id ?? DBNull.Value);
 					com.Parameters.AddWithValue("@IsActive", form["IsActive"]?.Contains("true") == true);					
@@ -671,6 +672,9 @@ namespace MilkWayIndia.Controllers
 			DataTable categoryData = _clsCommon.selectwhere("*", "tbl_Product_Category_Master", "ParentCategoryId IS NULL OR ParentCategoryId = 0");
 			ViewBag.Category = categoryData;
 
+
+			
+
 			DataTable productData = objProdt.GetAllProducts();
 			ViewBag.Products = productData;
 
@@ -687,9 +691,12 @@ namespace MilkWayIndia.Controllers
 				{
 					DataRow dr = dt.Rows[0];
 
+					DataTable dtparent = new DataTable();
+					dtparent = _clsCommon.selectwhere("*", "tbl_Product_Category_Master", " IsActive='True' AND Id ='" + Convert.ToInt32(dr["CategoryId"]) + "' Order by OrderBy ASC");
+
 					ViewBag.Id = id;
 					ViewBag.SelectedProductId = Convert.ToInt32(dr["ProductId"]);
-					ViewBag.CategorId = Convert.ToInt32(dr["CategoryId"]);
+					ViewBag.CategorId = Convert.ToInt32(dtparent.Rows[0]["ParentCategoryId"]);
 					ViewBag.SubCategoryId = Convert.ToInt32(dr["SubCategoryId"]);
 					ViewBag.Price = dr["MRPPrice"].ToString();
 					ViewBag.DiscountAmount = dr["DiscountPrice"].ToString();
@@ -1292,7 +1299,7 @@ namespace MilkWayIndia.Controllers
 
                     // Bind parameters
                     com.Parameters.AddWithValue("@Id", objProdt.Id); // Assuming objProdt.Id is the record ID in tbl_ProductVendor_Master
-					com.Parameters.AddWithValue("@ParentCategoryId", Convert.ToInt32(form["CategoryId"]));
+					com.Parameters.AddWithValue("@ParentCategoryId", Convert.ToInt32(form["SubCategoryId"]));
 					com.Parameters.AddWithValue("@CategoryId", Convert.ToInt32(form["SubCategoryId"]));
 					com.Parameters.AddWithValue("@ProductId", Convert.ToInt32(form["ProductId"]));
 					com.Parameters.AddWithValue("@Price", (object)objProdt.Price ?? DBNull.Value);

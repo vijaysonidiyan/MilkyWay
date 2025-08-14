@@ -494,7 +494,7 @@ namespace MilkWayIndia.Models
 
             //HttpContext.Response.Cookies["gstusr"].Values["key"] = "10";
             
-            if (HttpContext.Current.Session["UserId"] != null && HttpContext.Current.Session["RoleName"].ToString()=="Admin")
+            if (HttpContext.Current.Session["UserId"] != null && HttpContext.Current.Session["RoleName"].ToString()=="Admin" && HttpContext.Current.Session["RoleName"].ToString() == "Vendor")
             {
                 control.IsAdd = true;
                 control.IsDeleted = true;

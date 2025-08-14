@@ -219,43 +219,7 @@
         </div>
     </section>
  <script>
-   function setSubCategory() {
-    var catid = $('#ddlCategory').val();
-    var URL = '/product/GetSubCategorynew?CategoryId=' + catid;
-    $('#ddlSubCategory').html('');
-    $.getJSON(URL, function (data) {
-        $('#ddlSubCategory').html(data);
-    });
-}
-
-$(document).ready(function () {
-    $('#ddlCategory').change(function () {
-        setSubCategory();
-    });
-
-
-
-    var url = '/Product/FetchAttributeList';
-    var div_subcat = $('#div_subcat');
-    $('#ddlSubCategory').change(function () {
-
-
-        var selectedCat = $(this).val();
-        if (!selectedCat) {
-            div_subcat.empty();
-            return;
-        }
-        if (selectedCat > 0) {
-            $.get(url, { id: selectedCat }, function (data) {
-                div_subcat.html(data);
-            })
-        }
-        else {
-            div_subcat.empty();
-        }
-    });
-});
-
+  
 function setSubCategory() {
     var catid = $('#ddlCategory').val();
     var URL = '/product/GetSubCategory?CategoryId=' + catid;

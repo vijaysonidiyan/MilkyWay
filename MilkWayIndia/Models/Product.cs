@@ -188,7 +188,30 @@ namespace MilkWayIndia.Models
             con.Close();
             return dt;
         }
-        public DataTable BindProuct1(int? Id)
+
+		public DataTable BindProuctVendor(int? Id)
+		{
+			if (con.State == ConnectionState.Open)
+			{
+				con.Close();
+			}
+			con.Open();
+
+
+			SqlCommand cmd = new SqlCommand("Product_SelectAll_Vendor", con);
+
+			cmd.CommandType = CommandType.StoredProcedure;
+			if (!string.IsNullOrEmpty(Id.ToString()))
+				cmd.Parameters.AddWithValue("@Id", Id);
+			else
+				cmd.Parameters.AddWithValue("@Id", DBNull.Value);
+			SqlDataAdapter da = new SqlDataAdapter(cmd);
+			DataTable dt = new DataTable();
+			da.Fill(dt);
+			con.Close();
+			return dt;
+		}
+		public DataTable BindProuct1(int? Id)
         {
             if (con.State == ConnectionState.Open)
             {

@@ -24,9 +24,9 @@ namespace MilkWayIndia.Controllers
 
 
 
-        [Route("api/OrderNewApi/UpdateOrder/{id?}/{newqty?}/{CusType?}")]
+        [Route("api/OrderNewApi/UpdateOrder_New/{id?}/{newqty?}/{CusType?}")]
         [HttpGet]
-        public IHttpActionResult UpdateOrder(int id,int newqty,string CusType)
+        public IHttpActionResult UpdateOrder_New(int id,int newqty,string CusType)
         {
             Subscription obj = new Subscription();
             Customer objcust = new Customer();
@@ -425,11 +425,347 @@ namespace MilkWayIndia.Controllers
 
         }
 
+		[Route("api/OrderNewApi/UpdateOrder/{id?}/{newqty?}")]
+		[HttpGet]
+		public IHttpActionResult UpdateOrder(int id, int newqty)
+		{
+			Subscription obj = new Subscription();
+			Customer objcust = new Customer();
+			Product objproduct = new Product();
+			int UpdateProductOrder = 0; int UpdateAddProductDetail = 0;
+
+			DataTable dtNew = new DataTable();
+
+			dtNew.Columns.Add("status", typeof(string));
+			dtNew.Columns.Add("error_msg", typeof(string));
+			DataRow dr = dtNew.NewRow();
+
+			if (!string.IsNullOrEmpty(id.ToString()) && id != 0 && !string.IsNullOrEmpty(newqty.ToString()) && newqty != 0)
+			{
+
+				obj.Id = id;
+				obj.Qty = newqty;
+
+				//get customer Id From order
+				int CustomerId = 0;
+				CustomerId = obj.getOrederCustomerId(obj.Id.ToString());
+				obj.CustomerId = CustomerId;
+
+				//check wallet balance
+				decimal Walletbal = 0, TotalCredit = 0, TotalDebit = 0, Total2daybal = 0;
+				DataTable dtprodRecord1 = new DataTable();
+				dtprodRecord1 = obj.getCustomerWallet(obj.CustomerId);
+				int userRecords1 = dtprodRecord1.Rows.Count;
+				if (userRecords1 > 0)
+				{
+					var balance = obj.GetCustomerBalace(obj.CustomerId);
+					Walletbal = balance;
+
+					DataTable dtcheckbal = new DataTable();
+					if (CustomerId > 0)
+					{
+						// check balance future 2 days
+						dtcheckbal = obj.getLast2daytotal(CustomerId.ToString());
+						if (dtcheckbal.Rows.Count > 0)
+						{
+							Total2daybal = Convert.ToDecimal(dtcheckbal.Rows[0]["Total"].ToString());
+						}
+					}
+				}
+				//if (Walletbal < (Total2daybal))
+				//{
+				//    dr["status"] = "Failed";
+				//    dr["error_msg"] = "Wallet balance is Low!!Can't Update Qty";
+				//}
+				//else
+				//{
+				//if (Walletbal > obj.Amount)
+				//{
+				//get OrderId from parent to remove child records
+				DataTable dtprodRecord = new DataTable();
+				dtprodRecord = obj.getCustomerOnedateOrderList(obj.Id);
+				int userRecords = dtprodRecord.Rows.Count;
+				obj.OrderId = 0;
+
+				if (userRecords > 0)
+				{
+					if (!string.IsNullOrEmpty(dtprodRecord.Rows[0]["OrderId"].ToString()))
+					{
+						obj.OrderId = Convert.ToInt32(dtprodRecord.Rows[0]["OrderId"]);
+						//get Item 
+						obj.ProductId = Convert.ToInt32(dtprodRecord.Rows[0]["ProductId"]);
+						DataTable dtProduct = objproduct.BindProuct(obj.ProductId);
+
+						if (!string.IsNullOrEmpty(dtprodRecord.Rows[0]["OrderDate"].ToString()))
+						{
+							DateTime CurrentDate = Helper.indianTime.AddDays(1);
+							DateTime OrderDate = Convert.ToDateTime(dtprodRecord.Rows[0]["OrderDate"]);
+							if (CurrentDate.Day == OrderDate.Day && CurrentDate.Month == OrderDate.Month && CurrentDate.Year == OrderDate.Year)
+							{
+								var timming = objproduct.CheckProductOrderTimimg(obj.ProductId);
+								if (timming.IsTime == false)
+								{
+									dr["status"] = "Fail";
+									dr["error_msg"] = "Unable to update... - " + timming.message;
+									dtNew.Rows.Add(dr);
+									return Ok(dtNew);
+								}
+							}
+						}
+
+						if (dtProduct.Rows.Count > 0)
+						{
+							if (!string.IsNullOrEmpty(dtProduct.Rows[0]["SalePrice"].ToString()))
+								obj.Amount = Convert.ToDecimal(dtProduct.Rows[0]["SalePrice"]) * obj.Qty;
+							else
+								obj.Amount = 0;
 
 
-        #region Update Customer Order Working
-        //edit order
-        [Route("api/OrderNewApi/UpdateCustomerOrder")]
+							if (!string.IsNullOrEmpty(dtProduct.Rows[0]["PurchasePrice"].ToString()))
+							{
+								obj.PurchasePrice = Convert.ToDecimal(dtProduct.Rows[0]["PurchasePrice"]) * obj.Qty;
+
+							}
+							else
+							{
+								obj.PurchasePrice = 0;
+
+							}
+
+							if (!string.IsNullOrEmpty(dtProduct.Rows[0]["Price"].ToString()))
+							{
+								obj.MRPPrice = Convert.ToDecimal(dtProduct.Rows[0]["Price"]) * obj.Qty;
+
+							}
+							else
+							{
+								obj.MRPPrice = 0;
+
+							}
+
+							if (!string.IsNullOrEmpty(dtProduct.Rows[0]["DiscountAmount"].ToString()))
+								obj.Discount = Convert.ToDecimal(dtProduct.Rows[0]["DiscountAmount"]) * obj.Qty;
+							else
+								obj.Discount = 0;
+
+
+							if (!string.IsNullOrEmpty(dtProduct.Rows[0]["CGST"].ToString()))
+								obj.CGSTPerct = Convert.ToDecimal(dtProduct.Rows[0]["CGST"]) * obj.Qty;
+							else
+								obj.CGSTPerct = 0;
+							//count cgst Amount
+							if (obj.CGSTPerct > 0)
+								obj.CGSTAmount = (obj.Amount * obj.CGSTPerct) / 100;
+							else
+								obj.CGSTAmount = 0;
+
+							if (!string.IsNullOrEmpty(dtProduct.Rows[0]["IGST"].ToString()))
+								obj.IGSTPerct = Convert.ToDecimal(dtProduct.Rows[0]["IGST"]) * obj.Qty;
+							else
+								obj.IGSTPerct = 0;
+							//count igst Amount
+							if (obj.IGSTPerct > 0)
+								obj.IGSTAmount = (obj.Amount * obj.IGSTPerct) / 100;
+							else
+								obj.IGSTAmount = 0;
+
+							if (!string.IsNullOrEmpty(dtProduct.Rows[0]["SGST"].ToString()))
+								obj.SGSTPerct = Convert.ToDecimal(dtProduct.Rows[0]["SGST"]) * obj.Qty;
+							else
+								obj.SGSTPerct = 0;
+							//count sgst Amount
+							if (obj.SGSTPerct > 0)
+								obj.SGSTAmount = (obj.Amount * obj.SGSTPerct) / 100;
+							else
+								obj.SGSTAmount = 0;
+
+							if (!string.IsNullOrEmpty(dtProduct.Rows[0]["RewardPoint"].ToString()))
+								obj.RewardPoint = Convert.ToInt64(dtProduct.Rows[0]["RewardPoint"]) * obj.Qty;
+							else
+								obj.RewardPoint = 0;
+							if (!string.IsNullOrEmpty(dtProduct.Rows[0]["Profit"].ToString()))
+								obj.Profit = Convert.ToDecimal(dtProduct.Rows[0]["Profit"]) * obj.Qty;
+							else
+								obj.Profit = 0;
+
+							//Final Amount
+							obj.TotalFinalAmount = obj.Amount - obj.Discount;
+						}
+						//update order main
+						obj.Status = "Pending";
+
+						obj.TotalAmount = obj.TotalFinalAmount;
+						UpdateProductOrder = obj.UpdateCustomerOrderMobile(obj);
+
+						//update item order
+						obj.OrderId = id;
+						UpdateAddProductDetail = obj.UpdateCustomerOrderDetailMobile(obj);
+					}
+					else
+					{
+						dr["status"] = "Success";
+						dr["error_msg"] = "Order Not Found";
+					}
+					if (UpdateAddProductDetail > 0)
+					{
+						dr["status"] = "Success";
+						dr["error_msg"] = "Order Updated Successfully";
+					}
+					else
+					{
+						dr["status"] = "Success";
+						dr["error_msg"] = "Order Not Updated";
+					}
+				}
+				else
+				{
+					dr["status"] = "Success";
+					dr["error_msg"] = "Order Not Found";
+				}
+				//}
+				//else
+				//{
+				//    dr["status"] = "Failed";
+				//    dr["error_msg"] = "Wallet balance is Low!!Can't Update Qty";
+				//}
+				//}
+			}
+			else if (!string.IsNullOrEmpty(id.ToString()) && id != 0 && !string.IsNullOrEmpty(newqty.ToString()) && newqty == 0)
+			{
+				obj.Id = id;
+				obj.Qty = newqty;
+				//get OrderId from parent to remove child records
+				DataTable dtprodRecord = new DataTable();
+				dtprodRecord = obj.getCustomerOnedateOrderList(obj.Id);
+				int userRecords = dtprodRecord.Rows.Count;
+				obj.OrderId = 0;
+
+				if (userRecords > 0)
+				{
+					if (!string.IsNullOrEmpty(dtprodRecord.Rows[0]["OrderId"].ToString()))
+					{
+						obj.OrderId = Convert.ToInt32(dtprodRecord.Rows[0]["OrderId"]);
+
+						//get Item 
+						obj.ProductId = Convert.ToInt32(dtprodRecord.Rows[0]["ProductId"]);
+						DataTable dtProduct = objproduct.BindProuct(obj.ProductId);
+						if (dtProduct.Rows.Count > 0)
+						{
+							if (!string.IsNullOrEmpty(dtprodRecord.Rows[0]["OrderDate"].ToString()))
+							{
+								DateTime CurrentDate = Helper.indianTime.AddDays(1);
+								DateTime OrderDate = Convert.ToDateTime(dtprodRecord.Rows[0]["OrderDate"]);
+								if (CurrentDate.Day == OrderDate.Day && CurrentDate.Month == OrderDate.Month && CurrentDate.Year == OrderDate.Year)
+								{
+									var timming = objproduct.CheckProductOrderTimimg(obj.ProductId);
+									if (timming.IsTime == false)
+									{
+										dr["status"] = "Fail";
+										dr["error_msg"] = "Unable to update... - " + timming.message;
+										dtNew.Rows.Add(dr);
+										return Ok(dtNew);
+									}
+								}
+							}
+							if (!string.IsNullOrEmpty(dtProduct.Rows[0]["SalePrice"].ToString()))
+								obj.Amount = Convert.ToDecimal(dtProduct.Rows[0]["SalePrice"]);
+							else
+								obj.Amount = 0;
+							if (!string.IsNullOrEmpty(dtProduct.Rows[0]["DiscountAmount"].ToString()))
+								obj.Discount = Convert.ToDecimal(dtProduct.Rows[0]["DiscountAmount"]);
+							else
+								obj.Discount = 0;
+
+
+							if (!string.IsNullOrEmpty(dtProduct.Rows[0]["CGST"].ToString()))
+								obj.CGSTPerct = Convert.ToDecimal(dtProduct.Rows[0]["CGST"]);
+							else
+								obj.CGSTPerct = 0;
+							//count cgst Amount
+							if (obj.CGSTPerct > 0)
+								obj.CGSTAmount = (obj.Amount * obj.CGSTPerct) / 100;
+							else
+								obj.CGSTAmount = 0;
+
+							if (!string.IsNullOrEmpty(dtProduct.Rows[0]["IGST"].ToString()))
+								obj.IGSTPerct = Convert.ToDecimal(dtProduct.Rows[0]["IGST"]);
+							else
+								obj.IGSTPerct = 0;
+							//count igst Amount
+							if (obj.IGSTPerct > 0)
+								obj.IGSTAmount = (obj.Amount * obj.IGSTPerct) / 100;
+							else
+								obj.IGSTAmount = 0;
+
+							if (!string.IsNullOrEmpty(dtProduct.Rows[0]["SGST"].ToString()))
+								obj.SGSTPerct = Convert.ToDecimal(dtProduct.Rows[0]["SGST"]);
+							else
+								obj.SGSTPerct = 0;
+							//count sgst Amount
+							if (obj.SGSTPerct > 0)
+								obj.SGSTAmount = (obj.Amount * obj.SGSTPerct) / 100;
+							else
+								obj.SGSTAmount = 0;
+
+							if (!string.IsNullOrEmpty(dtProduct.Rows[0]["RewardPoint"].ToString()))
+								obj.RewardPoint = Convert.ToInt64(dtProduct.Rows[0]["RewardPoint"]);
+							else
+								obj.RewardPoint = 0;
+							if (!string.IsNullOrEmpty(dtProduct.Rows[0]["Profit"].ToString()))
+								obj.Profit = Convert.ToDecimal(dtProduct.Rows[0]["Profit"]);
+							else
+								obj.Profit = 0;
+
+							//Final Amount
+							obj.TotalFinalAmount = obj.Amount - obj.Discount;
+						}
+						//update order main
+						obj.Status = "Cancel";
+
+						obj.TotalAmount = obj.TotalFinalAmount;
+						UpdateProductOrder = obj.UpdateCustomerOrderMobile(obj);
+
+						//update item order
+						obj.OrderId = id;
+						UpdateAddProductDetail = obj.UpdateCustomerOrderDetailMobile(obj);
+					}
+					else
+					{
+						dr["status"] = "Success";
+						dr["error_msg"] = "Order Not Found";
+					}
+					if (UpdateAddProductDetail > 0)
+					{
+						dr["status"] = "Success";
+						dr["error_msg"] = "Order Cancelled Successfully";
+					}
+					else
+					{
+						dr["status"] = "Success";
+						dr["error_msg"] = "Order Not Cancelled";
+					}
+				}
+				else
+				{
+					dr["status"] = "Success";
+					dr["error_msg"] = "Order Not Found";
+				}
+			}
+			else
+			{
+				dr["status"] = "Failed";
+				dr["error_msg"] = "Please Fill Correct Details";
+			}
+			dtNew.Rows.Add(dr);
+			return Ok(dtNew);
+
+		}
+
+
+
+		#region Update Customer Order Working
+		//edit order
+		[Route("api/OrderNewApi/UpdateCustomerOrder")]
         public IHttpActionResult UpdateCustomerOrder(SubscriptionNew item)//string strjson
         {   //
             SubscriptionNew obj = new SubscriptionNew();
@@ -740,9 +1076,9 @@ namespace MilkWayIndia.Controllers
         }
         #endregion
 
-        [Route("api/OrderNewApi/AddCustomerOrderalternate/{customerid?}/{productid?}/{qty?}/{startdate?}/{AttributeId?}/{VendorId?}/{VendorcatId?}/{SectorId?}/{DmId?}/{CusType?}")]
+        [Route("api/OrderNewApi/AddCustomerOrderalternate_new/{customerid?}/{productid?}/{qty?}/{startdate?}/{AttributeId?}/{VendorId?}/{VendorcatId?}/{SectorId?}/{DmId?}/{CusType?}")]
         [HttpGet]
-        public IHttpActionResult AddCustomerOrderalternate(string customerid, string productid, string qty, DateTime? startdate, string AttributeId, string VendorId, string VendorcatId,string SectorId,string DmId,string CusType)//string strjson
+        public IHttpActionResult AddCustomerOrderalternate_new(string customerid, string productid, string qty, DateTime? startdate, string AttributeId, string VendorId, string VendorcatId,string SectorId,string DmId,string CusType)//string strjson
         {
             //Get CurrentTime
 
@@ -1173,8 +1509,300 @@ namespace MilkWayIndia.Controllers
         }
 
 
-        //Work Week Day Order Start old
-        [Route("api/OrderNewApi/AddCustomerOrderweeklyday/{customerid?}/{productid?}/{qty?}/{firstdate?}/{seconddate?}/{thirddate?}/{fourthdate?}/{fifthdate?}/{sixthdate?}/{seventhdate?}")]
+		[Route("api/OrderNewApi/AddCustomerOrderalternate/{customerid?}/{productid?}/{qty?}/{startdate?}")]
+		[HttpGet]
+		public IHttpActionResult AddCustomerOrderalternate(string customerid, string productid, string qty, DateTime? startdate)//string strjson
+		{
+			//Get CurrentTime
+
+			DateTime centuryBegin = new DateTime(2001, 1, 1);
+			var currentDate = Helper.indianTime;
+			long elapsedTicks = currentDate.Ticks - centuryBegin.Ticks;
+			TimeSpan elapsedSpan = TimeSpan.Parse(currentDate.ToString("HH:mm"));
+			string curhour = elapsedSpan.ToString();
+			curhour = curhour.Substring(0, 2);
+
+			//
+
+
+			Subscription obj = new Subscription();
+			Customer objcust = new Customer();
+			Product objproduct = new Product();
+
+
+			DataTable dtNew = new DataTable();
+
+			dtNew.Columns.Add("status", typeof(string));
+			dtNew.Columns.Add("error_msg", typeof(string));
+			DataRow dr = dtNew.NewRow();
+
+			long AddProductOrder = 0; int AddProductDetail = 0;
+			if (!string.IsNullOrEmpty(customerid) && Convert.ToInt32(customerid) != 0 && !string.IsNullOrEmpty(productid) && Convert.ToInt32(productid) != 0 && !string.IsNullOrEmpty(qty) && Convert.ToInt32(qty) != 0 && !string.IsNullOrEmpty(startdate.ToString()))
+			{
+				int r = 0;
+				string msg = "Order Placed Successfully";
+				DataTable dtcuttime = objcust.GetSchedularTime(null);
+				int dbcutOfftime = Convert.ToInt32(dtcuttime.Rows[0]["CutOffTime"]);
+				DateTime FromDate = Convert.ToDateTime(startdate);
+				//DateTime FromDate1 = DateTime.Now;
+				DateTime FromDate1 = Helper.indianTime;
+				FromDate1 = FromDate1.AddDays(1);
+				//if (DateTime.Now.Hour < dbcutOfftime)
+				if (Convert.ToInt32(curhour) < dbcutOfftime)
+				{
+					FromDate = Convert.ToDateTime(startdate);
+
+					r = FromDate.Date.CompareTo(FromDate1.Date);
+					if (r == 0)
+					{
+						var timming = objproduct.CheckProductOrderTimimg(Convert.ToInt32(productid));
+						if (timming.IsTime == false)
+						{
+							//dr["status"] = "Fail";
+							//dr["error_msg"] = timming.message;
+							//dtNew.Rows.Add(dr);
+							//return Ok(dtNew);
+							FromDate = FromDate.AddDays(2);
+							msg = timming.message + "So your order successfully placed on " + FromDate.Date;
+						}
+					}
+				}
+				else
+					FromDate = FromDate.AddDays(2);
+
+				DateTime ToDate = FromDate;
+
+
+				if (!string.IsNullOrEmpty(customerid))
+				{ obj.CustomerId = Convert.ToInt32(customerid); }
+				else { obj.CustomerId = 0; }
+
+
+
+				DataTable dtDupliAssign = objcust.DuplicateStaffCustomer(null, obj.CustomerId);
+				if (dtDupliAssign.Rows.Count == 0)
+				{
+					dr["status"] = "Fail";
+					dr["error_msg"] = "Deliveryboy not assign...";
+					dtNew.Rows.Add(dr);
+					return Ok(dtNew);
+				}
+
+
+				int societyid = 0;
+
+				ToDate = Helper.indianTime.AddMonths(2);
+
+				DataTable dtBuildingId = objcust.BindCustomer(obj.CustomerId);
+
+				if (dtBuildingId.Rows.Count > 0)
+				{
+					//if (!string.IsNullOrEmpty(dtBuildingId.Rows[0]["BuildingId"].ToString()))
+					//    societyid = Convert.ToInt32(dtBuildingId.Rows[0]["BuildingId"]);
+
+					societyid = 0;
+					if (!string.IsNullOrEmpty(dtBuildingId.Rows[0]["IsActive"].ToString()))
+					{
+						if (dtBuildingId.Rows[0]["IsActive"].ToString() == "False")
+						{
+							dr["status"] = "Fail";
+							dr["error_msg"] = "Account Not Active...";
+							dtNew.Rows.Add(dr);
+							return Ok(dtNew);
+						}
+					}
+				}
+
+
+
+				if (!string.IsNullOrEmpty(societyid.ToString()))
+				{ obj.BuildingId = Convert.ToInt32(societyid); }
+				else { obj.BuildingId = 0; }
+
+				obj.Qty = Convert.ToInt32(qty);
+
+
+				obj.ProductId = Convert.ToInt32(productid);
+				//get Product detail
+				//DataTable dtProduct = objproduct.BindProuct(obj.ProductId);
+				DataTable dtProduct = objproduct.BindProuctVendor(obj.ProductId);
+				if (dtProduct.Rows.Count > 0)
+				{
+					if (!string.IsNullOrEmpty(dtProduct.Rows[0]["Id"].ToString()))
+						productid = dtProduct.Rows[0]["Id"].ToString();
+					if (!string.IsNullOrEmpty(dtProduct.Rows[0]["SalePrice"].ToString()))
+					{
+						obj.Amount = Convert.ToDecimal(dtProduct.Rows[0]["SalePrice"]) * obj.Qty;
+						obj.SalePrice = Convert.ToDecimal(dtProduct.Rows[0]["SalePrice"]);
+					}
+					else
+					{
+						obj.Amount = 0;
+						obj.SalePrice = 0;
+					}
+
+					if (!string.IsNullOrEmpty(dtProduct.Rows[0]["PurchasePrice"].ToString()))
+					{
+						obj.PurchasePrice = Convert.ToDecimal(dtProduct.Rows[0]["PurchasePrice"]) * obj.Qty;
+
+					}
+					else
+					{
+						obj.PurchasePrice = 0;
+
+					}
+
+					if (!string.IsNullOrEmpty(dtProduct.Rows[0]["Price"].ToString()))
+					{
+						obj.MRPPrice = Convert.ToDecimal(dtProduct.Rows[0]["Price"]) * obj.Qty;
+
+					}
+					else
+					{
+						obj.MRPPrice = 0;
+
+					}
+					if (!string.IsNullOrEmpty(dtProduct.Rows[0]["DiscountAmount"].ToString()))
+						obj.Discount = Convert.ToDecimal(dtProduct.Rows[0]["DiscountAmount"]) * obj.Qty;
+					else
+						obj.Discount = 0;
+
+					if (!string.IsNullOrEmpty(dtProduct.Rows[0]["CGST"].ToString()))
+						obj.CGSTPerct = Convert.ToDecimal(dtProduct.Rows[0]["CGST"]) * obj.Qty;
+					else
+						obj.CGSTPerct = 0;
+					//count cgst Amount
+					if (obj.CGSTPerct > 0)
+						obj.CGSTAmount = (obj.Amount * obj.CGSTPerct) / 100;
+					else
+						obj.CGSTAmount = 0;
+
+					if (!string.IsNullOrEmpty(dtProduct.Rows[0]["IGST"].ToString()))
+						obj.IGSTPerct = Convert.ToDecimal(dtProduct.Rows[0]["IGST"]) * obj.Qty;
+					else
+						obj.IGSTPerct = 0;
+					//count igst Amount
+					if (obj.IGSTPerct > 0)
+						obj.IGSTAmount = (obj.Amount * obj.IGSTPerct) / 100;
+					else
+						obj.IGSTAmount = 0;
+
+					if (!string.IsNullOrEmpty(dtProduct.Rows[0]["SGST"].ToString()))
+						obj.SGSTPerct = Convert.ToDecimal(dtProduct.Rows[0]["SGST"]) * obj.Qty;
+					else
+						obj.SGSTPerct = 0;
+					//count sgst Amount
+					if (obj.SGSTPerct > 0)
+						obj.SGSTAmount = (obj.Amount * obj.SGSTPerct) / 100;
+					else
+						obj.SGSTAmount = 0;
+
+					if (!string.IsNullOrEmpty(dtProduct.Rows[0]["RewardPoint"].ToString()))
+						obj.RewardPoint = Convert.ToInt64(dtProduct.Rows[0]["RewardPoint"]) * obj.Qty;
+					else
+						obj.RewardPoint = 0;
+					if (!string.IsNullOrEmpty(dtProduct.Rows[0]["Profit"].ToString()))
+						obj.Profit = Convert.ToDecimal(dtProduct.Rows[0]["Profit"]) * obj.Qty;
+					else
+						obj.Profit = 0;
+
+					//Final Amount
+					obj.TotalFinalAmount = obj.Amount;
+				}
+
+				if (!string.IsNullOrEmpty(obj.TotalFinalAmount.ToString()))
+				{ obj.TotalAmount = obj.TotalFinalAmount; }
+				else { obj.TotalAmount = 0; }
+
+				obj.TotalGSTAmt = obj.CGSTAmount + obj.SGSTAmount;
+
+				obj.Status = "Pending";
+				obj.StateCode = null;
+				obj.ProductId = Convert.ToInt32(productid);
+
+				obj.OrderFlag = "Alternate";
+				var checkAmount = objproduct.CheckProductOrderAmount(Convert.ToInt32(productid), obj.TotalAmount);
+				if (checkAmount.IsOrderAmount == false)
+				{
+					dr["status"] = "Fail";
+					dr["error_msg"] = checkAmount.message;
+					dtNew.Rows.Add(dr);
+					return Ok(dtNew);
+				}
+
+				DateTime _fromDate = FromDate;
+				for (int idate = 0; FromDate <= ToDate; idate++)
+				{
+					//Generate OrderNo
+					con.Open();
+					SqlCommand com1 = new SqlCommand("Generate_OrderNo", con);
+					com1.CommandType = CommandType.StoredProcedure;
+					var Formno = com1.ExecuteScalar();
+					con.Close();
+
+					obj.OrderNo = Convert.ToInt32(Formno);
+					obj.OrderDate = FromDate;
+
+					//get Subscription Id
+					DataTable dtCustSubscription = obj.getCustomerSubscriptionOrderdate(obj);
+					if (dtCustSubscription.Rows.Count > 0)
+					{
+						if (!string.IsNullOrEmpty(dtCustSubscription.Rows[0]["Id"].ToString()))
+							obj.CustSubscriptionId = Convert.ToInt32(dtCustSubscription.Rows[0]["Id"]);
+						else
+							obj.CustSubscriptionId = 0;
+					}
+					else
+						obj.CustSubscriptionId = 0;
+
+					AddProductOrder = obj.InsertCustomerOrder(obj);
+
+					if (AddProductOrder > 0)
+					{
+						obj.OrderId = Convert.ToInt32(AddProductOrder);
+						obj.ProductId = Convert.ToInt32(productid);
+						obj.Qty = Convert.ToInt32(qty);
+						obj.OrderItemDate = FromDate;
+
+						AddProductDetail = obj.InsertCustomerOrderDetail(obj);
+					}
+					FromDate = FromDate.AddDays(2);
+
+
+				}
+				ToDate = FromDate.AddDays(-2);
+
+				if (AddProductDetail > 0)
+				{
+					dr["status"] = "Success";
+					dr["error_msg"] = msg.ToString();
+					string OrderFlag = "Alternate";
+					Helper dHelper = new Helper();
+					dHelper.InsertCustomerOrderTrackNew(obj.CustomerId, obj.ProductId, obj.Qty, _fromDate, ToDate, OrderFlag);
+
+
+					dtNew.Rows.Add(dr);
+					return Ok(dtNew);
+				}
+				else
+				{
+					dr["status"] = "Fail";
+					dr["error_msg"] = "Order Not Inserted.";
+				}
+			}
+			else
+			{
+				dr["status"] = "Failed";
+				dr["error_msg"] = "Please Fill Correct Details";
+			}
+
+
+			return Ok(dtNew);
+		}
+
+
+		//Work Week Day Order Start old
+		[Route("api/OrderNewApi/AddCustomerOrderweeklyday/{customerid?}/{productid?}/{qty?}/{firstdate?}/{seconddate?}/{thirddate?}/{fourthdate?}/{fifthdate?}/{sixthdate?}/{seventhdate?}")]
         [HttpGet]
         public IHttpActionResult AddCustomerOrderweeklyday(string customerid, string productid, string qty, string firstdate, string seconddate, string thirddate, string fourthdate, string fifthdate,string sixthdate, string seventhdate)//string strjson
         {
@@ -2712,9 +3340,9 @@ namespace MilkWayIndia.Controllers
 
         //Work Multiple Day Order Start
 
-        [Route("api/OrderNewApi/AddCustomerOrdermultipledate/{customerid?}/{productid?}/{qty?}/{dates}/{AttributeId?}/{VendorId?}/{VendorcatId?}/{SectorId?}/{DmId?}/{CusType?}")]
+        [Route("api/OrderNewApi/AddCustomerOrdermultipledate_new/{customerid?}/{productid?}/{qty?}/{dates}/{AttributeId?}/{VendorId?}/{VendorcatId?}/{SectorId?}/{DmId?}/{CusType?}")]
         [HttpGet]
-        public IHttpActionResult AddCustomerOrdermultipledate(string customerid, string productid, string qty, string dates, string AttributeId, string VendorId, string VendorcatId, string SectorId,string DmId,string CusType)//string strjson
+        public IHttpActionResult AddCustomerOrdermultipledate_new(string customerid, string productid, string qty, string dates, string AttributeId, string VendorId, string VendorcatId, string SectorId,string DmId,string CusType)//string strjson
         {
             //Get CurrentTime
 
@@ -3174,8 +3802,330 @@ namespace MilkWayIndia.Controllers
 
         }
 
+		[Route("api/OrderNewApi/AddCustomerOrdermultipledate/{customerid?}/{productid?}/{qty?}/{dates}")]
+		[HttpGet]
+		public IHttpActionResult AddCustomerOrdermultipledate(string customerid, string productid, string qty, string dates)//string strjson
+		{
+			DateTime centuryBegin = new DateTime(2001, 1, 1);
+			var currentDate = Helper.indianTime;
+			long elapsedTicks = currentDate.Ticks - centuryBegin.Ticks;
+			TimeSpan elapsedSpan = TimeSpan.Parse(currentDate.ToString("HH:mm"));
+			string curhour = elapsedSpan.ToString();
+			curhour = curhour.Substring(0, 2);
 
-        [Route("api/OrderNewApi/CustomerAlternateOrderDelete/{customerid?}/{productid?}/{startdate}/{status}")]
+			Subscription obj = new Subscription();
+			Customer objcust = new Customer();
+			Product objproduct = new Product();
+
+
+			DataTable dtNew = new DataTable();
+
+			dtNew.Columns.Add("status", typeof(string));
+			dtNew.Columns.Add("error_msg", typeof(string));
+			DataRow dr = dtNew.NewRow();
+
+			long AddProductOrder = 0; int AddProductDetail = 0;
+			int r = 0;
+			string msg = "Order Placed Successfully";
+			string notinsert = "";
+			if (!string.IsNullOrEmpty(customerid) && Convert.ToInt32(customerid) != 0 && !string.IsNullOrEmpty(productid) && Convert.ToInt32(productid) != 0 && !string.IsNullOrEmpty(qty) && Convert.ToInt32(qty) != 0 && !string.IsNullOrEmpty(dates.ToString()))
+			{
+
+				int c = dates.Length;
+
+				string delimStr = ",";
+				char[] delimiter = delimStr.ToCharArray();
+				string a = "";
+				foreach (string s in dates.Split(delimiter))
+				{
+					// a = a + "-" + s;
+
+					DataTable dtcuttime = objcust.GetSchedularTime(null);
+					int dbcutOfftime = Convert.ToInt32(dtcuttime.Rows[0]["CutOffTime"]);
+					DateTime FromDate = Convert.ToDateTime(s);
+
+					DateTime FromDate1 = Helper.indianTime;
+					FromDate1 = FromDate1.AddDays(1);
+
+					r = FromDate.Date.CompareTo(FromDate1.Date);
+					if (r == 0)
+					{
+						if (Convert.ToInt32(curhour) < dbcutOfftime)
+						{
+							FromDate = Convert.ToDateTime(s);
+
+
+
+							var timming = objproduct.CheckProductOrderTimimg(Convert.ToInt32(productid));
+							if (timming.IsTime == false)
+							{
+
+								notinsert = "Invalid";
+								msg = timming.message + "So your order successfully placed on " + FromDate.Date;
+							}
+
+
+
+						}
+						else
+						{
+							notinsert = "Invalid";
+						}
+					}
+
+					else
+					{
+
+						FromDate = Convert.ToDateTime(s);
+					}
+
+
+					if (!string.IsNullOrEmpty(customerid))
+					{ obj.CustomerId = Convert.ToInt32(customerid); }
+					else { obj.CustomerId = 0; }
+
+
+					DataTable dtDupliAssign = objcust.DuplicateStaffCustomer(null, obj.CustomerId);
+					if (dtDupliAssign.Rows.Count == 0)
+					{
+						dr["status"] = "Fail";
+						dr["error_msg"] = "Deliveryboy not assign...";
+						dtNew.Rows.Add(dr);
+						return Ok(dtNew);
+					}
+					int societyid = 0;
+
+
+					DataTable dtBuildingId = objcust.BindCustomer(obj.CustomerId);
+
+					if (dtBuildingId.Rows.Count > 0)
+					{
+						//if (!string.IsNullOrEmpty(dtBuildingId.Rows[0]["BuildingId"].ToString()))
+						//    societyid = Convert.ToInt32(dtBuildingId.Rows[0]["BuildingId"]);
+
+						societyid = 0;
+						if (!string.IsNullOrEmpty(dtBuildingId.Rows[0]["IsActive"].ToString()))
+						{
+							if (dtBuildingId.Rows[0]["IsActive"].ToString() == "False")
+							{
+								dr["status"] = "Fail";
+								dr["error_msg"] = "Account Not Active...";
+								dtNew.Rows.Add(dr);
+								return Ok(dtNew);
+							}
+						}
+					}
+
+
+					if (!string.IsNullOrEmpty(societyid.ToString()))
+					{ obj.BuildingId = Convert.ToInt32(societyid); }
+					else { obj.BuildingId = 0; }
+
+					obj.Qty = Convert.ToInt32(qty);
+
+
+					obj.ProductId = Convert.ToInt32(productid);
+					//get Product detail
+					//DataTable dtProduct = objproduct.BindProuct(obj.ProductId);
+					DataTable dtProduct = objproduct.BindProuctVendor(obj.ProductId);
+
+					if (dtProduct.Rows.Count > 0)
+					{
+						if (!string.IsNullOrEmpty(dtProduct.Rows[0]["Id"].ToString()))
+							productid = dtProduct.Rows[0]["Id"].ToString();
+						if (!string.IsNullOrEmpty(dtProduct.Rows[0]["SalePrice"].ToString()))
+						{
+							obj.Amount = Convert.ToDecimal(dtProduct.Rows[0]["SalePrice"]) * obj.Qty;
+							obj.SalePrice = Convert.ToDecimal(dtProduct.Rows[0]["SalePrice"]);
+						}
+						else
+						{
+							obj.Amount = 0;
+							obj.SalePrice = 0;
+						}
+
+						if (!string.IsNullOrEmpty(dtProduct.Rows[0]["PurchasePrice"].ToString()))
+						{
+							obj.PurchasePrice = Convert.ToDecimal(dtProduct.Rows[0]["PurchasePrice"]) * obj.Qty;
+
+						}
+						else
+						{
+							obj.PurchasePrice = 0;
+
+						}
+
+						if (!string.IsNullOrEmpty(dtProduct.Rows[0]["Price"].ToString()))
+						{
+							obj.MRPPrice = Convert.ToDecimal(dtProduct.Rows[0]["Price"]) * obj.Qty;
+
+						}
+						else
+						{
+							obj.MRPPrice = 0;
+
+						}
+						if (!string.IsNullOrEmpty(dtProduct.Rows[0]["DiscountAmount"].ToString()))
+							obj.Discount = Convert.ToDecimal(dtProduct.Rows[0]["DiscountAmount"]) * obj.Qty;
+						else
+							obj.Discount = 0;
+
+						if (!string.IsNullOrEmpty(dtProduct.Rows[0]["CGST"].ToString()))
+							obj.CGSTPerct = Convert.ToDecimal(dtProduct.Rows[0]["CGST"]) * obj.Qty;
+						else
+							obj.CGSTPerct = 0;
+						//count cgst Amount
+						if (obj.CGSTPerct > 0)
+							obj.CGSTAmount = (obj.Amount * obj.CGSTPerct) / 100;
+						else
+							obj.CGSTAmount = 0;
+
+						if (!string.IsNullOrEmpty(dtProduct.Rows[0]["IGST"].ToString()))
+							obj.IGSTPerct = Convert.ToDecimal(dtProduct.Rows[0]["IGST"]) * obj.Qty;
+						else
+							obj.IGSTPerct = 0;
+						//count igst Amount
+						if (obj.IGSTPerct > 0)
+							obj.IGSTAmount = (obj.Amount * obj.IGSTPerct) / 100;
+						else
+							obj.IGSTAmount = 0;
+
+						if (!string.IsNullOrEmpty(dtProduct.Rows[0]["SGST"].ToString()))
+							obj.SGSTPerct = Convert.ToDecimal(dtProduct.Rows[0]["SGST"]) * obj.Qty;
+						else
+							obj.SGSTPerct = 0;
+						//count sgst Amount
+						if (obj.SGSTPerct > 0)
+							obj.SGSTAmount = (obj.Amount * obj.SGSTPerct) / 100;
+						else
+							obj.SGSTAmount = 0;
+
+						if (!string.IsNullOrEmpty(dtProduct.Rows[0]["RewardPoint"].ToString()))
+							obj.RewardPoint = Convert.ToInt64(dtProduct.Rows[0]["RewardPoint"]) * obj.Qty;
+						else
+							obj.RewardPoint = 0;
+						if (!string.IsNullOrEmpty(dtProduct.Rows[0]["Profit"].ToString()))
+							obj.Profit = Convert.ToDecimal(dtProduct.Rows[0]["Profit"]) * obj.Qty;
+						else
+							obj.Profit = 0;
+
+						//Final Amount
+						obj.TotalFinalAmount = obj.Amount;
+					}
+
+
+					if (!string.IsNullOrEmpty(obj.TotalFinalAmount.ToString()))
+					{ obj.TotalAmount = obj.TotalFinalAmount; }
+					else { obj.TotalAmount = 0; }
+
+					obj.TotalGSTAmt = obj.CGSTAmount + obj.SGSTAmount;
+
+					obj.Status = "Pending";
+					obj.StateCode = null;
+					obj.ProductId = Convert.ToInt32(productid);
+
+					obj.OrderFlag = "MultipleDt";
+					var checkAmount = objproduct.CheckProductOrderAmount(Convert.ToInt32(productid), obj.TotalAmount);
+					if (checkAmount.IsOrderAmount == false)
+					{
+						dr["status"] = "Fail";
+						dr["error_msg"] = checkAmount.message;
+						dtNew.Rows.Add(dr);
+						return Ok(dtNew);
+					}
+
+					DateTime _fromDate = FromDate;
+
+					con.Open();
+					SqlCommand com1 = new SqlCommand("Generate_OrderNo", con);
+					com1.CommandType = CommandType.StoredProcedure;
+					var Formno = com1.ExecuteScalar();
+					con.Close();
+
+					obj.OrderNo = Convert.ToInt32(Formno);
+					obj.OrderDate = FromDate;
+
+					//get Subscription Id
+					DataTable dtCustSubscription = obj.getCustomerSubscriptionOrderdate(obj);
+					if (dtCustSubscription.Rows.Count > 0)
+					{
+						if (!string.IsNullOrEmpty(dtCustSubscription.Rows[0]["Id"].ToString()))
+							obj.CustSubscriptionId = Convert.ToInt32(dtCustSubscription.Rows[0]["Id"]);
+						else
+							obj.CustSubscriptionId = 0;
+					}
+					else
+						obj.CustSubscriptionId = 0;
+
+
+					if (notinsert == "")
+					{
+						AddProductOrder = obj.InsertCustomerOrder(obj);
+					}
+
+
+					if (AddProductOrder > 0)
+					{
+						obj.OrderId = Convert.ToInt32(AddProductOrder);
+						obj.ProductId = Convert.ToInt32(productid);
+						obj.Qty = Convert.ToInt32(qty);
+						obj.OrderItemDate = FromDate;
+
+						AddProductDetail = obj.InsertCustomerOrderDetail(obj);
+					}
+
+
+					//if (AddProductDetail > 0)
+					//{
+					//    dr["status"] = "Success";
+					//    dr["error_msg"] = "Order Placed Successfully";
+					//    string OrderFlag = "MultipleDt";
+					//    Helper dHelper = new Helper();
+					//    dHelper.InsertCustomerOrderTrackNew(obj.CustomerId, obj.ProductId, obj.Qty, _fromDate, _fromDate, OrderFlag);
+					//}
+					//else
+					//{
+					//    dr["status"] = "Fail";
+					//    dr["error_msg"] = "Order Not Inserted.";
+					//}
+
+
+
+				}
+
+				dr["status"] = "Success";
+				dr["error_msg"] = "Order Placed Successfully";
+
+			}
+			else
+			{
+				dr["status"] = "Failed";
+				dr["error_msg"] = "Please Fill Correct Details";
+			}
+
+			if (AddProductDetail > 0)
+			{
+				dr["status"] = "Success";
+				dr["error_msg"] = "Order Placed Successfully";
+				dtNew.Rows.Add(dr);
+				return Ok(dtNew);
+				//return Ok("Product Added Successfully");
+			}
+			else
+			{
+				dr["status"] = "Failed";
+				dr["error_msg"] = "Please Fill Correct Details";
+
+
+				return Ok(dtNew);
+			}
+			//return Ok(dtNew);
+
+		}
+
+
+
+		[Route("api/OrderNewApi/CustomerAlternateOrderDelete/{customerid?}/{productid?}/{startdate}/{status}")]
         [HttpGet]
         public IHttpActionResult CustomerAlternateOrderDelete(int customerid,int productid, DateTime? startdate,string status)//string strjson
         {
